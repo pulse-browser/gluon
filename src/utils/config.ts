@@ -7,8 +7,8 @@ import { join } from 'path'
 
 import { log } from '..'
 
-const configDir = process.cwd()
-export const configPath = join(configDir, 'melon.json')
+export const projectDir = process.cwd()
+export const configPath = join(projectDir, 'melon.json')
 
 export enum SupportedProducts {
   Firefox = 'firefox',
@@ -74,16 +74,15 @@ const defaultConfig: Config = {
 }
 
 export function getConfig(): Config {
-  const configExists = existsSync(configDir)
+  const configExists = existsSync(configPath)
 
   let fileContents = '{}'
   let fileParsed: Config
 
   if (!configExists) {
     log.warning(
-      `Config file not found at ${configDir}. It is recommended to create one by running |melon setup-project|`
+      `Config file not found at ${configPath}. It is recommended to create one by running |melon setup-project|`
     )
-    process.exit(1)
   } else {
     fileContents = readFileSync(configPath).toString()
   }

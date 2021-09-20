@@ -1,3 +1,9 @@
+import Log from './log'
+
+// The logger must be initialized before the config generator, otherwise reference
+// errors occur
+export let log = new Log()
+
 import chalk from 'chalk'
 import commander, { Command } from 'commander'
 import { existsSync, readFileSync } from 'fs'
@@ -5,15 +11,12 @@ import { resolve } from 'path'
 import { errorHandler, getConfig } from './utils'
 import { commands } from './cmds'
 import { ENGINE_DIR } from './constants'
-import Log from './log'
 import { shaCheck } from './middleware/sha-check'
 import { updateCheck } from './middleware/update-check'
 
 export const config = getConfig()
 
 const program = new Command()
-
-export let log = new Log()
 
 program.storeOptionsAsProperties(false).passCommandToAction(false)
 
