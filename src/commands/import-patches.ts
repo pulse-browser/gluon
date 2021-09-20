@@ -4,9 +4,6 @@ import { SRC_DIR } from '../constants'
 import Patch from '../controllers/patch'
 import manualPatches from '../manual-patches'
 import { delay, dispatch } from '../utils'
-const {
-  versions: { dot },
-} = require('../../package.json')
 
 const importManual = async (minimal?: boolean, noIgnore?: boolean) => {
   log.info(`Applying ${manualPatches.length} manual patches...`)
