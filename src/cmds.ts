@@ -23,14 +23,14 @@ import { Cmd } from './types'
 export const commands: Cmd[] = [
   {
     cmd: 'bootstrap',
-    description: 'Bootstrap Dot Browser.',
+    description: 'Bootstrap the melon app.',
     controller: bootstrap,
   },
   {
     cmd: 'build [os]',
     aliases: ['b'],
     description:
-      'Build Dot Browser. Specify the OS param for cross-platform builds.',
+      'Build the melon app. Specify the OS param for cross-platform builds.',
     options: [
       {
         arg: '--a, --arch <architecture>',
@@ -142,7 +142,7 @@ export const commands: Cmd[] = [
   },
   {
     cmd: 'test',
-    description: 'Run the test suite for Dot Browser.',
+    description: 'Run the test suite for the melon app.',
     controller: test,
   },
 ]
