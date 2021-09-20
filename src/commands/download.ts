@@ -6,12 +6,12 @@ import { ensureDirSync, removeSync } from 'fs-extra'
 import ora from 'ora'
 import { homedir } from 'os'
 import { posix, resolve, sep } from 'path'
-import { bin_name, log } from '..'
+import { bin_name, config, log } from '..'
 import { ENGINE_DIR } from '../constants'
-import { getLatestFF, writeMetadata } from '../utils'
+import { getConfig, getLatestFF, writeMetadata } from '../utils'
 import { downloadArtifacts } from './download-artifacts'
 
-const pjson = require('../../package.json')
+const gFFVersion = getConfig().version.version
 
 let initProgressText = 'Initialising...'
 let initProgress: any = ora({
@@ -89,14 +89,6 @@ const unpack = async (name: string, version: string) => {
       )
       console.log()
 
-      pjson.versions['firefox-display'] = version
-      pjson.versions['firefox'] = version.split('b')[0]
-
-      writeFileSync(
-        resolve(process.cwd(), 'package.json'),
-        JSON.stringify(pjson, null, 4)
-      )
-
       await writeMetadata()
 
       removeSync(resolve(cwd, '.dotbuild', 'engines', name))
@@ -113,7 +105,7 @@ export const download = async (firefoxVersion?: string) => {
     )
 
   if (!firefoxVersion) {
-    firefoxVersion = pjson.versions['firefox-display']
+    firefoxVersion = gFFVersion
   }
 
   let version = await getLatestFF()

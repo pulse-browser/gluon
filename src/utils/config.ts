@@ -8,7 +8,7 @@ import { join } from 'path'
 import { log } from '..'
 
 const configDir = process.cwd()
-const configPath = join(configDir, 'melon.json')
+export const configPath = join(configDir, 'melon.json')
 
 export enum SupportedProducts {
   Firefox = 'firefox',
@@ -33,6 +33,14 @@ export interface Config {
    * The name of the product to build
    */
   name: string
+  /**
+   * The name of the company the build is for
+   */
+  vendor: string
+  /**
+   * e.g. co.dothq.melon
+   */
+  appId: string
   version: {
     /**
      * What branch of firefox you are forking. e.g. stable ('firefox'), dev ('firefox-dev')
@@ -56,6 +64,8 @@ export interface Config {
 
 const defaultConfig: Config = {
   name: 'Unknown melon build',
+  vendor: 'Unknown',
+  appId: 'unknown.appid',
   version: {
     product: SupportedProducts.Firefox,
     version: '92.0',
@@ -66,17 +76,21 @@ const defaultConfig: Config = {
 export function getConfig(): Config {
   const configExists = existsSync(configDir)
 
-  if (!configExists) {
-    log.error(`Config file not found at ${configDir}`)
-    process.exit(1)
-  }
-
-  const fileContents = readFileSync(configPath)
+  let fileContents = '{}'
   let fileParsed: Config
+
+  if (!configExists) {
+    log.warning(
+      `Config file not found at ${configDir}. It is recommended to create one by running |melon setup-project|`
+    )
+    process.exit(1)
+  } else {
+    fileContents = readFileSync(configPath).toString()
+  }
 
   try {
     // Try to parse the contents of the file. May not be valid JSON
-    fileParsed = JSON.parse(fileContents.toString())
+    fileParsed = JSON.parse(fileContents)
   } catch (e) {
     // Report the error to the user
     log.error(`Error parsing melon config file located at ${configPath}`)

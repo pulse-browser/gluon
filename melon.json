@@ -1,1 +1,10 @@
-{}
+{
+  "name": "Example browser",
+  "vendor": "Example company",
+  "appId": "com.example.browser",
+  "version": {
+    "product": "firefox",
+    "version": "92.0",
+    "displayVersion": "1.0.0"
+  }
+}

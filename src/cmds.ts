@@ -18,6 +18,7 @@ import {
   status,
   test,
 } from './commands'
+import { setupProject } from './commands/setupProject'
 import { Cmd } from './types'
 
 export const commands: Cmd[] = [
@@ -134,6 +135,11 @@ export const commands: Cmd[] = [
     cmd: 'set-branch <branch>',
     description: 'Change the default branch.',
     controller: setBranch,
+  },
+  {
+    cmd: 'setup-project',
+    description: 'Sets up a melon project for the first time',
+    controller: setupProject,
   },
   {
     cmd: 'status',

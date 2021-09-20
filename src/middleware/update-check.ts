@@ -1,10 +1,8 @@
 import axios from 'axios'
-import { log } from '../'
-
-const pjson = require('../../package.json')
+import { config, log } from '../'
 
 export const updateCheck = async () => {
-  const firefoxVersion = pjson.versions['firefox-display']
+  const firefoxVersion = config.version.version
 
   try {
     const { data } = await axios.get(
