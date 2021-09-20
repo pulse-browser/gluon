@@ -7,7 +7,7 @@ import { ENGINE_DIR } from './constants'
 import Log from './log'
 import { shaCheck } from './middleware/sha-check'
 import { updateCheck } from './middleware/update-check'
-import { errorHandler } from './utils'
+import { errorHandler, getConfig } from './utils'
 
 const program = new Command()
 
@@ -15,7 +15,9 @@ export let log = new Log()
 
 program.storeOptionsAsProperties(false).passCommandToAction(false)
 
-const { dot, firefox, melon } = require('../package.json').versions
+export const config = getConfig()
+
+const { version: melon } = require('../package.json')
 
 let reportedFFVersion
 
@@ -25,14 +27,14 @@ if (existsSync(resolve(ENGINE_DIR, 'browser', 'config', 'version.txt'))) {
     'utf-8'
   ).replace(/\n/g, '')
 
-  if (version !== firefox) reportedFFVersion = version
+  if (version !== config.version.version) reportedFFVersion = version
 }
 
 export const bin_name = 'melon'
 
 program.version(`
-\t${chalk.bold('Dot Browser')}     ${dot}
-\t${chalk.bold('Firefox')}         ${firefox} ${
+\t${chalk.bold(config.name)}     ${config.version.displayVersion}
+\t${chalk.bold('Firefox')}         ${config.version.version} ${
   reportedFFVersion ? `(being reported as ${reportedFFVersion})` : ``
 }
 \t${chalk.bold('Melon')}           ${melon}

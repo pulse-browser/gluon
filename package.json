@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "format": "prettier . -w"
+    "format": "prettier . -w",
+    "app": "ts-node ./src/index"
   },
   "repository": {
     "type": "git",
@@ -48,6 +49,7 @@
     "@types/node": "^14.14.16",
     "@types/promptly": "^3.0.1",
     "@types/rimraf": "^3.0.0",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "ts-node": "^10.2.1"
   }
 }
