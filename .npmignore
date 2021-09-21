@@ -1,0 +1,7 @@
+src/
+testing/
+.gitignore/
+.prettierrc.json
+melon.json
+yarn.lock
+node_modules/

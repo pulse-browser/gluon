@@ -60,7 +60,7 @@ const unpack = async (name: string, version: string) => {
 
   let tarProc = execa('tar', [
     '--transform',
-    's,firefox-89.0,engine,',
+    `s,firefox-${gFFVersion},engine,`,
     `--show-transformed`,
     '-xf',
     resolve(cwd, '.dotbuild', 'engines', name),
@@ -72,7 +72,7 @@ const unpack = async (name: string, version: string) => {
   tarProc.on('exit', () => {
     if (process.env.CI_SKIP_INIT) return log.info('Skipping initialisation.')
 
-    const initProc = execa(`./${bin_name}`, ['init', 'engine'])
+    const initProc = execa('npx', ['melon', 'init', 'engine'])
 
     ;(initProc.stdout as any).on('data', onData)
     ;(initProc.stdout as any).on('error', onData)

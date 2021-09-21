@@ -1,0 +1,10 @@
+body {
+  background-color: #333333;
+  color: white;
+  font-family: sans-serif;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}

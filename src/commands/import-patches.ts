@@ -85,13 +85,14 @@ const importPatchFiles = async (minimal?: boolean, noIgnore?: boolean) => {
   }
 
   console.log()
-  await dispatch(
-    `./${bin_name}`,
-    ['doctor', 'patches'],
-    process.cwd(),
-    true,
-    true
-  )
+  // TODO: Setup a custom patch doctor
+  // await dispatch(
+  //   `./${bin_name}`,
+  //   ['doctor', 'patches'],
+  //   process.cwd(),
+  //   true,
+  //   true
+  // )
 
   log.success(`Successfully imported ${patches.length} patch files!`)
 }

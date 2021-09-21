@@ -1,0 +1,11 @@
+diff --git a/toolkit/toolkit.mozbuild b/toolkit/toolkit.mozbuild
+index fd9903bac5b07c655ee77c94f8f795b6773676ad..3127dc35fd8793b91ddd437f30b1917f6eff29ce 100644
+--- a/toolkit/toolkit.mozbuild
++++ b/toolkit/toolkit.mozbuild
+@@ -202,3 +202,6 @@ if CONFIG['ENABLE_TESTS']:
+ 
+ if CONFIG['FUZZING']:
+     DIRS += ['/tools/fuzzing']
++
++# Custom UI toolkit
++DIRS += ['/customui']

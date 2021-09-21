@@ -1,0 +1,13 @@
+diff --git a/browser/themes/shared/browser.inc.css b/browser/themes/shared/browser.inc.css
+index b345560225ee8619524481c4570540746be9fcba..5ea066212edf45aed3f294f14bc57b0e29ccbf0a 100644
+--- a/browser/themes/shared/browser.inc.css
++++ b/browser/themes/shared/browser.inc.css
+@@ -2,6 +2,8 @@
+  * License, v. 2.0. If a copy of the MPL was not distributed with this
+  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+ 
++%include ../../custom/shared/shared.inc.css
++
+ %include downloads/indicator.inc.css
+ %include addons/extension-controlled.inc.css
+ 
