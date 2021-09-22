@@ -1,7 +1,8 @@
-src/
 testing/
-.gitignore/
+node_modules/
+src/
+
 .prettierrc.json
 melon.json
+tsconfig.json
 yarn.lock
-node_modules/
