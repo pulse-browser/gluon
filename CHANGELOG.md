@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Theming patches don't cause errors now
+
+### Removed
+
+- Remove the melon sh executable from the imports
+
 ## [1.0.0-a.3]
 
 ### Fixed
