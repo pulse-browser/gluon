@@ -3,6 +3,7 @@ node_modules/
 src/
 !template/src/
 docs/
+site/
 
 .prettierrc.json
 melon.json
