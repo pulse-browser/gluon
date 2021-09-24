@@ -1,4 +1,4 @@
-name: Enforce code style
+name: Build docs
 
 on:
   push:
