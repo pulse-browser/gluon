@@ -2,3 +2,4 @@ browser.jar:
 % content customui %content/customui/ contentaccessible=yes
     content/customui/browser.html (browser.html)
     content/customui/css/ (css/**/**)
+    content/customui/scripts/ (scripts/**/**)

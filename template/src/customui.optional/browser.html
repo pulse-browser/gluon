@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html id="browser-window" chromemargin="0,2,2,2" windowtype="navigator:browser">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,12 +11,16 @@
 <body>
     <div id="grid">
         <div>
-            <!-- TODO: Melon icon here -->
+            <img width="98" src="https://twemoji.maxcdn.com/v/13.0.1/svg/1f349.svg"/>
         </div>
         <div>
             <h1>Good, you are setup!</h1>
             <p>You chose the option to customize the html of the browser. This means you inherit none of the UI or logic firefox has in relation to tabs, etc. I wish you the best of luck!</p>
+            <button id="launchDevTools">Launch dev tools</button>
+            <button onclick="window.location.reload()">Reload chrome</button>
         </div>
     </div>
+
+    <script type="module" src="scripts/browser.js"></script>
 </body>
 </html>
