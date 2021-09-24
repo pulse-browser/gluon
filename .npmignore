@@ -2,6 +2,7 @@ testing/
 node_modules/
 src/
 !template/src/
+docs/
 
 .prettierrc.json
 melon.json

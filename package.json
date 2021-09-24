@@ -10,7 +10,10 @@
     "test": "echo \"Error: no test specified\"",
     "build": "tsc && echo \"#!/bin/node\"|cat - ./dist/index.js > /tmp/out && mv /tmp/out ./dist/index.js && chmod +x ./dist/index.js",
     "format": "prettier . -w",
-    "app": "ts-node ./src/index"
+    "app": "ts-node ./src/index",
+    "docs:install": "pip install mkdocs mkdocs-gitbook",
+    "docs:dev": "mkdocs serve",
+    "docs:build": "mkdocs build"
   },
   "repository": {
     "type": "git",
