@@ -5,7 +5,7 @@ build_search_index = true
 
 [markdown]
 highlight_code = true
-highlight_theme = "base16-ocean-light"
+highlight_theme = "base16-ocean-dark"
 
 [extra]
 logo = "https://camo.githubusercontent.com/d8b2046aa769e171cb4c89d0f86dfb52c7f677ff287c2b5ac9451ae3d45b2ef3/68747470733a2f2f7477656d6f6a692e6d617863646e2e636f6d2f762f31332e302e312f7376672f31663334392e737667"
