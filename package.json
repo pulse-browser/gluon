@@ -12,7 +12,8 @@
     "format": "prettier . -w",
     "app": "ts-node ./src/index",
     "docs:install": "",
-    "docs:build": "simple-docs build"
+    "docs:build": "zola --root docs/ build",
+    "docs:dev": "zola --root docs/ serve"
   },
   "repository": {
     "type": "git",

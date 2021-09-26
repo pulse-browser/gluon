@@ -1,16 +1,25 @@
-# Getting started with melon
++++
+title = "Overview"
+weight = 5
++++
 
-## What is melon
+## Getting started with melon
+
+### What is melon
 
 Melon is a build tool and documentation for creating firefox-based browsers. Its goal is to simplify the process of creating web browsers to encourage competition and development within the space.
 
-## System requirements
+### Getting help
+
+If you are having problems with following these instructions, or with melon in general, please contact us. You can [create a discussion on github](https://github.com/dothq/melon/discussions/new), ping @trickypr on the [Dot HQ discord](https://dothq.link/dsc), or [join our Matrix chat](https://dothq.link/matrix).
+
+### System requirements
 
 **OS**: Linux, Windows, MacOS (We only have active contributors on linux, so other platforms might be a touch buggy)
 **Melon dependencies**: NodeJS and npm
 **Browser dependencies**: TODO: find out what firefox's build dependencies are
 
-## Getting started
+### Getting started
 
 The first thing you are going to need to do is to install melon. As it is a nodejs program it can be installed through npm or yarn.
 
@@ -43,4 +52,22 @@ The appid follows reverse dns naming conventions. For example, DotHQ owns the do
 
 Next you need to chose a starting template for your browser. You can go with userchrome, where you apply css changes to firefox or custom html, where you have to write everything (tabs, navigation, search boxes) yourself. We generally recommend userchrome for new users, as it has the lowest learning curve. Additionally, you can chose to use no template.
 
-Now you have created the directory structure for your project, you can build it for the first time.
+Now you have created the directory structure for your project, you can build it for the first time. First, ask melon to download the firefox source.
+
+```sh
+melon download
+```
+
+After the source code has been downloaded, the changes to firefox described in the source code must be applied.
+
+```sh
+melon import
+```
+
+Finally, you can start building the firefox source code. This takes around an hour and a half on my computer, but the binary output will be cached, making later builds faster
+
+```sh
+melon build
+```
+
+Now that you have

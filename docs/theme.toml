@@ -1,0 +1,8 @@
+name = "Melon"
+description = "🍉 Build Firefox-based browsers with ease"
+license = "MPL 2.0"
+homepage = "https://github.com/dothq/melon"
+min_version = "1.14.0"
+
+[author]
+name = "TrickyPR"
