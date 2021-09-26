@@ -70,4 +70,8 @@ Finally, you can start building the firefox source code. This takes around an ho
 melon build
 ```
 
-Now that you have
+Now you can finally start the browser!
+
+```sh
+melon run
+```
