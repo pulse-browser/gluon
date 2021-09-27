@@ -1,16 +1,17 @@
+import { writeFileSync } from 'fs'
 import { sync } from 'glob'
+import { resolve } from 'path'
 import { bin_name, log } from '..'
 import { SRC_DIR } from '../constants'
 import Patch from '../controllers/patch'
 import manualPatches from '../manual-patches'
-import { delay, dispatch } from '../utils'
+import { patchCountFile } from '../middleware/patch-check'
+import { delay, dispatch, walkDirectory } from '../utils'
 
 const importManual = async (minimal?: boolean, noIgnore?: boolean) => {
   log.info(`Applying ${manualPatches.length} manual patches...`)
 
   if (!minimal) console.log()
-
-  await delay(500)
 
   return new Promise(async (res, rej) => {
     var total = 0
@@ -34,7 +35,7 @@ const importManual = async (minimal?: boolean, noIgnore?: boolean) => {
         },
       })
 
-      await delay(100)
+      await delay(10)
 
       await p.apply()
     }
@@ -42,7 +43,12 @@ const importManual = async (minimal?: boolean, noIgnore?: boolean) => {
     log.success(`Successfully imported ${manualPatches.length} manual patches!`)
     console.log()
 
-    await delay(1000)
+    log.info('Storing patch count...')
+
+    const fileList = await walkDirectory(resolve(process.cwd(), 'src'))
+    const fileCount = fileList.length
+
+    writeFileSync(patchCountFile, fileCount.toString())
 
     res(total)
   })

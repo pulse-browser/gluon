@@ -8,6 +8,7 @@ import {
   CONFIGS_DIR,
   ENGINE_DIR,
 } from '../constants'
+import { patchCheck } from '../middleware/patch-check'
 import { dispatch, stringTemplate } from '../utils'
 
 const platform: any = {
@@ -137,6 +138,8 @@ export const build = async (tier: string, options: Options) => {
         )
       else arch = options.arch
     }
+
+    await patchCheck()
 
     applyConfig(prettyHost, options.arch)
 
