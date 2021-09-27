@@ -7,13 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Open devtools and reload button for custom UI
+
 ### Fixed
 
 - Theming patches don't cause errors now
+- Custom UI template compiles and runs
 
 ### Removed
 
-- Remove the melon sh executable from the imports
+- Remove the melon executable from the template
 
 ## [1.0.0-a.3]
 
