@@ -3,7 +3,7 @@ import { sync } from 'glob'
 import { resolve } from 'path'
 import { bin_name, log } from '..'
 import { SRC_DIR } from '../constants'
-import Patch from '../controllers/patch'
+import Patch, { ManualPatch, PatchFile } from '../controllers/patch'
 import manualPatches from '../manual-patches'
 import { patchCountFile } from '../middleware/patch-check'
 import { delay, dispatch, walkDirectory } from '../utils'
@@ -18,26 +18,20 @@ const importManual = async (minimal?: boolean, noIgnore?: boolean) => {
 
     var i = 0
 
-    for await (let { name, action, src, markers, indent } of manualPatches) {
+    for await (let { name, action, src } of manualPatches) {
       ++i
 
-      const p = new Patch({
+      const patch = new ManualPatch(
         name,
+        [i, manualPatches.length],
+        { minimal, noIgnore },
         action,
-        src,
-        type: 'manual',
-        status: [i, manualPatches.length],
-        markers,
-        indent,
-        options: {
-          minimal,
-          noIgnore,
-        },
-      })
+        src
+      )
 
       await delay(10)
 
-      await p.apply()
+      await patch.apply()
     }
 
     log.success(`Successfully imported ${manualPatches.length} manual patches!`)
@@ -72,22 +66,19 @@ const importPatchFiles = async (minimal?: boolean, noIgnore?: boolean) => {
 
   var i = 0
 
-  for await (const patch of patches) {
+  for await (const patchName of patches) {
     ++i
 
-    const p = new Patch({
-      name: patch,
-      type: 'file',
-      status: [i, patches.length],
-      options: {
-        minimal,
-        noIgnore,
-      },
-    })
+    const patch = new PatchFile(
+      patchName,
+      [i, patches.length],
+      { minimal, noIgnore },
+      resolve(SRC_DIR, patchName)
+    )
 
-    await delay(100)
+    await delay(10)
 
-    await p.apply()
+    await patch.apply()
   }
 
   console.log()
