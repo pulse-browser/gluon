@@ -1,12 +1,12 @@
 import { writeFileSync } from 'fs'
 import { sync } from 'glob'
 import { resolve } from 'path'
-import { bin_name, log } from '..'
+import { log } from '..'
 import { SRC_DIR } from '../constants'
-import Patch, { ManualPatch, PatchFile } from '../controllers/patch'
+import { ManualPatch, PatchFile } from '../controllers/patch'
 import manualPatches from '../manual-patches'
 import { patchCountFile } from '../middleware/patch-check'
-import { delay, dispatch, walkDirectory } from '../utils'
+import { delay, walkDirectory } from '../utils'
 
 const importManual = async (minimal?: boolean, noIgnore?: boolean) => {
   log.info(`Applying ${manualPatches.length} manual patches...`)
