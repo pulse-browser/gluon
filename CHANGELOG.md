@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-a.4]
+
 ### Added
 
 - Open devtools and reload button for custom UI
@@ -26,12 +28,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Include `template/src/`
 
-## [1.0.0-a.2] - 2014-05-31
+## [1.0.0-a.2]
 
 ### Added
 
 - Initial beta release
 
-[unreleased]: https://github.com/olivierlacan/keep-a-changelog/compare/v1.0.0-a.3...HEAD
+[unreleased]: https://github.com/dothq/melon/compare/v1.0.0-a.4...HEAD
+[1.0.0-a.4]: https://github.com/dothq/melon/compare/v1.0.0-a.3...v1.0.0-a.4
 [1.0.0-a.3]: https://github.com/dothq/melon/compare/v1.0.0-a.2...v1.0.0-a.3
 [1.0.0-a.2]: https://github.com/dothq/melon/compare/v1.0.0-a.1...v1.0.0-a.2
