@@ -13,9 +13,9 @@ export interface IPatchApplier {
 }
 
 export class PatchBase {
-  public name: string
-  public status: number[]
-  public options: {
+  protected name: string
+  protected status: number[]
+  protected options: {
     minimal?: boolean
     noIgnore?: boolean
   }
@@ -76,8 +76,8 @@ export class PatchBase {
 }
 
 export class ManualPatch extends PatchBase implements IPatchApplier {
-  public action: 'copy' | 'delete'
-  public src: string | string[]
+  private action: 'copy' | 'delete'
+  private src: string | string[]
 
   constructor(
     name: string,
@@ -163,7 +163,7 @@ export class ManualPatch extends PatchBase implements IPatchApplier {
 }
 
 export class PatchFile extends PatchBase implements IPatchApplier {
-  public src: string
+  private src: string
 
   constructor(
     name: string,
