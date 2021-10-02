@@ -10,7 +10,7 @@ import {
   rmSync,
   statSync,
 } from 'fs-extra'
-import { join, resolve } from 'path'
+import { dirname, join, resolve } from 'path'
 import readline from 'readline'
 import sharp from 'sharp'
 import { log } from '..'
@@ -266,13 +266,14 @@ export class BrandingPatch extends PatchBase implements IPatchApplier {
       await sharp(branding).resize(64, 64).toFile(join(dest, 'firefox64.ico'))
 
       // Copy everything else from the default firefox branding directory
-      ;(await walkDirectory(BRANDING_DIR))
+      ;(await walkDirectory(join(ENGINE_DIR, 'branding', 'unofficial')))
         .filter(
           (file) => !existsSync(join(dest, file.replace(BRANDING_DIR, '')))
         )
-        .forEach((file) =>
+        .forEach((file) => {
+          mkdirpSync(dirname(join(dest, file.replace(BRANDING_DIR, ''))))
           copyFileSync(file, join(dest, file.replace(BRANDING_DIR, '')))
-        )
+        })
 
       this.done = true
     } catch (e) {
