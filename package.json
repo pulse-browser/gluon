@@ -3,6 +3,7 @@
   "version": "1.0.0-a.6",
   "description": "🍉 Build Firefox-based browsers with ease",
   "main": "index.js",
+  "reveal": true,
   "bin": {
     "melon": "./dist/index.js"
   },
