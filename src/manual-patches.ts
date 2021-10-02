@@ -2,7 +2,7 @@ import { sync } from 'glob'
 import { SRC_DIR } from './constants'
 import { IPatch } from './interfaces/patch'
 
-let files = sync('**/*', {
+const files = sync('**/*', {
   nodir: true,
   cwd: SRC_DIR,
 }).filter(

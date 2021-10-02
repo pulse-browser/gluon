@@ -22,27 +22,25 @@ const flags: {
 }
 
 const getFiles = async (flags: string, cwd: string) => {
-  let { stdout: ignored } = await execa(
+  const { stdout: ignored } = await execa(
     'git',
     ['ls-files', `-${flags.toLowerCase()}`, '-i', '-o', '--exclude-standard'],
     { cwd }
   )
 
-  let { stdout: fls } = await execa(
+  const { stdout: fls } = await execa(
     'git',
     ['diff', `--diff-filter=${flags}`, '--name-only', '--ignore-space-at-eol'],
     { cwd }
   )
 
-  const files = fls.split('\n').filter((i: any) => {
-    return !(ignored.split('\n').includes(i) || i == '.gitignore')
-  }) // this filters out the manual patches
+  const files = fls.split('\n').filter((i: any) => !(ignored.split('\n').includes(i) || i == '.gitignore')) // this filters out the manual patches
 
   log.info(`Ignoring ${ignored.split('\n').length} files...`)
 
   const fileNames: any = files.map((f: any) => {
     if (f.length !== 0) {
-      return f.replace(/\//g, '-').replace(/\./g, '-') + '.patch'
+      return `${f.replace(/\//g, '-').replace(/\./g, '-')  }.patch`
     }
   })
 
@@ -52,7 +50,7 @@ const getFiles = async (flags: string, cwd: string) => {
 const exportModified = async (patchesDir: string, cwd: string) => {
   const { files, fileNames } = await getFiles('M', cwd)
 
-  var filesWritten = 0
+  let filesWritten = 0
 
   await Promise.all(
     files.map(async (file: any, i: any) => {
@@ -81,7 +79,7 @@ const exportModified = async (patchesDir: string, cwd: string) => {
           ++filesWritten
         } catch (e) {
           log.error(e)
-          return
+          
         }
       }
     })
@@ -101,11 +99,10 @@ const exportFlag = async (flag: string, cwd: string, actions: any[]) => {
   return actions
 }
 
-const exportManual = async (cwd: string) => {
-  return new Promise(async (resol) => {
+const exportManual = async (cwd: string) => new Promise(async (resol) => {
     manualPatches.forEach((patch) => {
       if (patch.action == 'copy') {
-        if (typeof patch.src == 'string') {
+        if (typeof patch.src === 'string') {
           const inSrc = resolve(cwd, patch.src)
           const outsideSrc = resolve(COMMON_DIR, patch.src)
 
@@ -129,14 +126,13 @@ const exportManual = async (cwd: string) => {
       }
     })
   })
-}
 
 export const exportPatches = async () => {
   throw new Error(
     'export-patches has been deprecated in favour of export-file. This change has been made to limit the amount of active patches we have in the tree.'
   )
 
-  let actions: any[] = []
+  const actions: any[] = []
 
   log.info(`Wiping patches directory...`)
   console.log()

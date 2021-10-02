@@ -99,14 +99,14 @@ const genericBuild = async (os: string, tier: string) => {
 }
 
 const parseDate = (d: number) => {
-  d = d / 1000
-  var h = Math.floor(d / 3600)
-  var m = Math.floor((d % 3600) / 60)
-  var s = Math.floor((d % 3600) % 60)
+  d /= 1000
+  const h = Math.floor(d / 3600)
+  const m = Math.floor((d % 3600) / 60)
+  const s = Math.floor((d % 3600) % 60)
 
-  var hDisplay = h > 0 ? h + (h == 1 ? ' hour, ' : ' hours, ') : ''
-  var mDisplay = m > 0 ? m + (m == 1 ? ' minute, ' : ' minutes, ') : ''
-  var sDisplay = s > 0 ? s + (s == 1 ? ' second' : ' seconds') : ''
+  const hDisplay = h > 0 ? h + (h == 1 ? ' hour, ' : ' hours, ') : ''
+  const mDisplay = m > 0 ? m + (m == 1 ? ' minute, ' : ' minutes, ') : ''
+  const sDisplay = s > 0 ? s + (s == 1 ? ' second' : ' seconds') : ''
   return hDisplay + mDisplay + sDisplay
 }
 
@@ -121,7 +121,7 @@ interface Options {
 }
 
 export const build = async (tier: string, options: Options) => {
-  let d = Date.now()
+  const d = Date.now()
 
   // Host build
 
@@ -139,7 +139,7 @@ export const build = async (tier: string, options: Options) => {
             ARCHITECTURE
           )}.`
         )
-      else arch = options.arch
+      arch = options.arch
     }
 
     await patchCheck()

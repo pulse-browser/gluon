@@ -5,7 +5,7 @@ import { bin_name, log } from '..'
 
 const blacklistedCommands = ['reset', 'init', 'set-branch']
 
-export const shaCheck = async (command: string) => {
+export const shaCheck = async (command: string): Promise<void> => {
   if (
     blacklistedCommands.filter((c) => command.startsWith(c)).length !== 0 ||
     !existsSync(resolve(process.cwd(), '.dotbuild', 'metadata'))

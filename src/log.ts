@@ -9,45 +9,49 @@ class Log {
     this.startTime = d.getTime()
   }
 
-  getDiff() {
+  getDiff(): string {
     const d = new Date()
 
     const currentTime = d.getTime()
 
     const elapsedTime = currentTime - this.startTime
 
-    var secs = Math.floor((elapsedTime / 1000) % 60)
-    var mins = Math.floor((elapsedTime / (60 * 1000)) % 60)
-    var hours = Math.floor((elapsedTime / (60 * 60 * 1000)) % 24)
+    const secs = Math.floor((elapsedTime / 1000) % 60)
+    const mins = Math.floor((elapsedTime / (60 * 1000)) % 60)
+    const hours = Math.floor((elapsedTime / (60 * 60 * 1000)) % 24)
 
-    const format = (r: number) => {
-      return r.toString().length == 1 ? '0' + r : r
-    }
+    const format = (r: number) => (r.toString().length == 1 ? `0${r}` : r)
 
     return `${format(hours)}:${format(mins)}:${format(secs)}`
   }
 
-  info(...args: any[]) {
+  info(...args: unknown[]): void {
     console.info(chalk.blueBright.bold(this.getDiff()), ...args)
   }
 
-  warning(...args: any[]) {
+  warning(...args: unknown[]): void {
     console.info(chalk.yellowBright.bold(' WARNING'), ...args)
   }
 
-  hardWarning(...args: any[]) {
+  hardWarning(...args: unknown[]): void {
     console.info('', chalk.bgRed.bold('WARNING'), ...args)
   }
 
-  success(...args: any[]) {
+  success(...args: unknown[]): void {
     console.log(`\n${chalk.greenBright.bold('SUCCESS')}`, ...args)
   }
 
-  error(...args: any[]) {
-    throw new Error(...args)
+  error(...args: unknown[]): void {
+    if (args[0] instanceof Error) {
+      throw args[0]
+    }
+
+    throw new Error(
+      ...args.map((a) => (typeof a !== 'undefined' ? a.toString() : a))
+    )
   }
 
-  askForReport() {
+  askForReport(): void {
     console.info(
       'The following error is a bug. Please open an issue on the melon issue structure with a link to your repository and the output from this command.'
     )

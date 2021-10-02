@@ -1,10 +1,10 @@
 import execa from 'execa'
 import { log } from '..'
 
-const handle = (data: any, killOnError?: boolean) => {
+const handle = (data: string | Error, killOnError?: boolean) => {
   const d = data.toString()
 
-  d.split('\n').forEach((line: any) => {
+  d.split('\n').forEach((line: string) => {
     if (line.length !== 0) log.info(line.replace(/\s\d{1,5}:\d\d\.\d\d /g, ''))
   })
 
@@ -16,16 +16,16 @@ const handle = (data: any, killOnError?: boolean) => {
 
 export const dispatch = (
   cmd: string,
-  args?: any[],
+  args?: string[],
   cwd?: string,
   noLog?: boolean,
   killOnError?: boolean
-) => {
-  return new Promise((resolve, reject) => {
+): Promise<boolean> =>
+  new Promise((resolve) => {
     process.env.MACH_USE_SYSTEM_PYTHON = 'true'
 
     const proc = execa(cmd, args, {
-      cwd: cwd ? cwd : process.cwd(),
+      cwd: cwd || process.cwd(),
       env: process.env,
     })
 
@@ -39,4 +39,3 @@ export const dispatch = (
       resolve(true)
     })
   })
-}

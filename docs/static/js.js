@@ -1,14 +1,14 @@
 // search script, borrowed from book theme
 
 function debounce(func, wait) {
-    var timeout;
+    let timeout;
   
     return function () {
-      var context = this;
-      var args = arguments;
+      const context = this;
+      const args = arguments;
       clearTimeout(timeout);
   
-      timeout = setTimeout(function () {
+      timeout = setTimeout(() => {
         timeout = null;
         func.apply(context, args);
       }, wait);
@@ -26,30 +26,28 @@ function debounce(func, wait) {
   // maximum sum. If there are multiple maximas, then get the last one.
   // Enclose the terms in <b>.
   function makeTeaser(body, terms) {
-    var TERM_WEIGHT = 40;
-    var NORMAL_WORD_WEIGHT = 2;
-    var FIRST_WORD_WEIGHT = 8;
-    var TEASER_MAX_WORDS = 30;
+    const TERM_WEIGHT = 40;
+    const NORMAL_WORD_WEIGHT = 2;
+    const FIRST_WORD_WEIGHT = 8;
+    const TEASER_MAX_WORDS = 30;
   
-    var stemmedTerms = terms.map(function (w) {
-      return elasticlunr.stemmer(w.toLowerCase());
-    });
-    var termFound = false;
-    var index = 0;
-    var weighted = []; // contains elements of ["word", weight, index_in_document]
+    const stemmedTerms = terms.map((w) => elasticlunr.stemmer(w.toLowerCase()));
+    let termFound = false;
+    let index = 0;
+    const weighted = []; // contains elements of ["word", weight, index_in_document]
   
     // split in sentences, then words
-    var sentences = body.toLowerCase().split(". ");
+    const sentences = body.toLowerCase().split(". ");
   
     for (var i in sentences) {
-      var words = sentences[i].split(" ");
-      var value = FIRST_WORD_WEIGHT;
+      const words = sentences[i].split(" ");
+      let value = FIRST_WORD_WEIGHT;
   
-      for (var j in words) {
+      for (const j in words) {
         var word = words[j];
   
         if (word.length > 0) {
-          for (var k in stemmedTerms) {
+          for (const k in stemmedTerms) {
             if (elasticlunr.stemmer(word).startsWith(stemmedTerms[k])) {
               value = TERM_WEIGHT;
               termFound = true;
@@ -70,10 +68,10 @@ function debounce(func, wait) {
       return body;
     }
   
-    var windowWeights = [];
-    var windowSize = Math.min(weighted.length, TEASER_MAX_WORDS);
+    const windowWeights = [];
+    const windowSize = Math.min(weighted.length, TEASER_MAX_WORDS);
     // We add a window with all the weights first
-    var curSum = 0;
+    let curSum = 0;
     for (var i = 0; i < windowSize; i++) {
       curSum += weighted[i][1];
     }
@@ -86,9 +84,9 @@ function debounce(func, wait) {
     }
   
     // If we didn't find the term, just pick the first window
-    var maxSumIndex = 0;
+    let maxSumIndex = 0;
     if (termFound) {
-      var maxFound = 0;
+      let maxFound = 0;
       // backwards
       for (var i = windowWeights.length - 1; i >= 0; i--) {
         if (windowWeights[i] > maxFound) {
@@ -98,8 +96,8 @@ function debounce(func, wait) {
       }
     }
   
-    var teaser = [];
-    var startIndex = weighted[maxSumIndex][2];
+    const teaser = [];
+    let startIndex = weighted[maxSumIndex][2];
     for (var i = maxSumIndex; i < maxSumIndex + windowSize; i++) {
       var word = weighted[i];
       if (startIndex < word[2]) {
@@ -124,7 +122,7 @@ function debounce(func, wait) {
   }
   
   function formatSearchResultItem(item, terms) {
-    var li = document.createElement("li");
+    const li = document.createElement("li");
     li.classList.add("search-results__item");
     li.innerHTML = `<a href="${item.ref}">${item.doc.title}</a>`;
     li.innerHTML += `<div class="search-results__teaser">${makeTeaser(item.doc.body, terms)}</div>`;
@@ -133,9 +131,9 @@ function debounce(func, wait) {
   
   // Go from the book view to the search view
   function toggleSearchMode() {
-    var $wrapContent = document.querySelector("#wrap");
-    var $searchIcon = document.querySelector("#search-ico");
-    var $searchContainer = document.querySelector(".search-container");
+    const $wrapContent = document.querySelector("#wrap");
+    const $searchIcon = document.querySelector("#search-ico");
+    const $searchContainer = document.querySelector(".search-container");
     if ($searchContainer.classList.contains("search-container--is-visible")) {
       $searchContainer.classList.remove("search-container--is-visible");
       $wrapContent.style.display = "";
@@ -149,30 +147,30 @@ function debounce(func, wait) {
   }
   
   function initSearch() {
-    var $searchInput = document.getElementById("search");
+    const $searchInput = document.getElementById("search");
     if (!$searchInput) {
       return;
     }
-    var $searchIcon = document.querySelector("#search-ico");
+    const $searchIcon = document.querySelector("#search-ico");
     $searchIcon.addEventListener("click", toggleSearchMode);
   
-    var $searchResults = document.querySelector(".search-results");
-    var $searchResultsHeader = document.querySelector(".search-results__header");
-    var $searchResultsItems = document.querySelector(".search-results__items");
-    var MAX_ITEMS = 100;
+    const $searchResults = document.querySelector(".search-results");
+    const $searchResultsHeader = document.querySelector(".search-results__header");
+    const $searchResultsItems = document.querySelector(".search-results__items");
+    const MAX_ITEMS = 100;
   
-    var options = {
+    const options = {
       bool: "AND",
       fields: {
         title: {boost: 2},
         body: {boost: 1},
       }
     };
-    var currentTerm = "";
-    var index = elasticlunr.Index.load(window.searchIndex);
+    let currentTerm = "";
+    const index = elasticlunr.Index.load(window.searchIndex);
   
-    $searchInput.addEventListener("keyup", debounce(function() {
-      var term = $searchInput.value.trim();
+    $searchInput.addEventListener("keyup", debounce(() => {
+      const term = $searchInput.value.trim();
       if (term === currentTerm || !index) {
         return;
       }
@@ -182,9 +180,7 @@ function debounce(func, wait) {
         return;
       }
   
-      var results = index.search(term, options).filter(function (r) {
-        return r.doc.body !== "";
-      });
+      const results = index.search(term, options).filter((r) => r.doc.body !== "");
       if (results.length === 0) {
         $searchResultsHeader.innerText = `Nothing like «${term}»`;
         return;
@@ -192,7 +188,7 @@ function debounce(func, wait) {
   
       currentTerm = term;
         $searchResultsHeader.innerText = `${results.length} found for «${term}»:`;
-      for (var i = 0; i < Math.min(results.length, MAX_ITEMS); i++) {
+      for (let i = 0; i < Math.min(results.length, MAX_ITEMS); i++) {
         if (!results[i].doc.body) {
           continue;
         }
@@ -215,8 +211,8 @@ function debounce(func, wait) {
 // mobile 
 
   function burger() {
-    let x = document.querySelector("#trees");
-    let y = document.querySelector("#mobile");
+    const x = document.querySelector("#trees");
+    const y = document.querySelector("#mobile");
 
     if (x.style.display === "block") {
       x.style.display = "none";
@@ -277,7 +273,7 @@ function copyCodeBlockExecCommand(codeToCopy, highlightDiv) {
 function codeWasCopied(button) {
   button.blur();
   button.innerHTML = "&#xE74E;";
-  setTimeout(function () {
+  setTimeout(() => {
     button.innerHTML = "&#xE8C8;";
   }, 2000);
 }

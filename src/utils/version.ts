@@ -12,7 +12,7 @@ const firefoxTargets = JSON.parse(`{
 
 export const getLatestFF = async (
   product: SupportedProducts = SupportedProducts.Firefox
-) => {
+): Promise<string> => {
   const { data } = await axios.get(
     'https://product-details.mozilla.org/1.0/firefox_versions.json'
   )

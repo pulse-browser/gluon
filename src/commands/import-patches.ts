@@ -19,11 +19,11 @@ const importManual = async (minimal?: boolean, noIgnore?: boolean) => {
   if (!minimal) console.log()
 
   return new Promise(async (res, rej) => {
-    var total = 0
+    const total = 0
 
-    var i = 0
+    let i = 0
 
-    for await (let { name, action, src } of manualPatches) {
+    for await (const { name, action, src } of manualPatches) {
       ++i
 
       const patch = new ManualPatch(
@@ -69,7 +69,7 @@ const importPatchFiles = async (minimal?: boolean, noIgnore?: boolean) => {
 
   await delay(100)
 
-  var i = 0
+  let i = 0
 
   for await (const patchName of patches) {
     ++i
@@ -108,7 +108,7 @@ const importMelonPatches = async (minimal?: boolean, noIgnore?: boolean) => {
 
   await delay(100)
 
-  var i = 0
+  let i = 0
 
   for await (const patch of patches) {
     ++i

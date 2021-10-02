@@ -29,10 +29,10 @@ export const exportFile = async (file: string) => {
     }
   )
   const name =
-    file
+    `${file
       .split('/')
-      [file.replace(/\./g, '-').split('/').length - 1].replace(/\./g, '-') +
-    '.patch'
+      [file.replace(/\./g, '-').split('/').length - 1].replace(/\./g, '-') 
+    }.patch`
 
   const patchPath = file.replace(/\./g, '-').split('/').slice(0, -1)
 

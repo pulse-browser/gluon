@@ -20,7 +20,7 @@ export const downloadArtifacts = async () => {
   let home = homedir().split(sep).join(posix.sep)
 
   if (process.platform == 'win32') {
-    home = '/' + home.replace(/\:/, '').replace(/\\/g, '/').toLowerCase()
+    home = `/${  home.replace(/\:/, '').replace(/\\/g, '/').toLowerCase()}`
   }
 
   log.info(`Downloading Windows artifacts...`)
@@ -38,10 +38,10 @@ export const downloadArtifacts = async () => {
   data.on('data', (chunk: any) => {
     receivedBytes += chunk.length
 
-    let rand = Math.floor(Math.random() * 1000 + 1)
+    const rand = Math.floor(Math.random() * 1000 + 1)
 
     if (rand > 999.5) {
-      let percentCompleted = parseInt(
+      const percentCompleted = parseInt(
         Math.round((receivedBytes * 100) / length).toFixed(0)
       )
       if (percentCompleted % 2 == 0 || percentCompleted >= 100) return

@@ -19,9 +19,9 @@ export const licenseCheck = async () => {
     return data.split('diff --git a/')[1].split(' b/')[0]
   })
 
-  let passed: string[] = []
-  let failed: string[] = []
-  let ignored: string[] = []
+  const passed: string[] = []
+  const failed: string[] = []
+  const ignored: string[] = []
 
   originalPaths.forEach((p) => {
     const data = readFileSync(resolve(ENGINE_DIR, p), 'utf-8')
@@ -32,7 +32,7 @@ export const licenseCheck = async () => {
       headerRegion.includes('This Source Code Form') &&
       headerRegion.includes('copy of the MPL')
 
-    const isIgnored = ignoredExt.find((i) => p.endsWith(i)) ? true : false
+    const isIgnored = !!ignoredExt.find((i) => p.endsWith(i))
     isIgnored && ignored.push(p)
 
     if (!isIgnored) {
@@ -41,7 +41,7 @@ export const licenseCheck = async () => {
     }
   })
 
-  let maxPassed = 5
+  const maxPassed = 5
   let i = 0
 
   for (const p of passed) {

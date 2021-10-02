@@ -1,26 +1,25 @@
-import Log from './log'
-
-// The logger must be initialized before the config generator, otherwise reference
-// errors occur
-export let log = new Log()
-
 import chalk from 'chalk'
 import commander, { Command } from 'commander'
 import { existsSync, readFileSync } from 'fs'
 import { resolve } from 'path'
+import Log from './log'
 import { errorHandler, getConfig } from './utils'
 import { commands } from './cmds'
 import { ENGINE_DIR } from './constants'
 import { shaCheck } from './middleware/sha-check'
 import { updateCheck } from './middleware/update-check'
 
+import { version as melon } from '../package.json'
+
+// The logger must be initialized before the config generator, otherwise reference
+// errors occur
+export const log = new Log()
+
 export const config = getConfig()
 
 const program = new Command()
 
 program.storeOptionsAsProperties(false).passCommandToAction(false)
-
-const { version: melon } = require('../package.json')
 
 let reportedFFVersion
 
@@ -74,7 +73,7 @@ commands.forEach((command) => {
     _cmd.option(opt.arg, opt.description)
   })
 
-  _cmd.action(async (...args: any) => {
+  _cmd.action(async (...args: unknown[]) => {
     await shaCheck(command.cmd)
     await updateCheck()
 

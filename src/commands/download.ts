@@ -28,7 +28,7 @@ const onData = (data: any) => {
 
   d.split('\n').forEach((line: any) => {
     if (line.trim().length !== 0) {
-      let t = line.split(' ')
+      const t = line.split(' ')
       t.shift()
       initProgressText = t.join(' ')
     }
@@ -58,7 +58,7 @@ const unpack = async (name: string, version: string) => {
   } catch (e) {}
   ensureDirSync(ENGINE_DIR)
 
-  let tarProc = execa('tar', [
+  const tarProc = execa('tar', [
     '--transform',
     `s,firefox-${gFFVersion},engine,`,
     `--show-transformed`,
@@ -161,7 +161,7 @@ export const download = async (firefoxVersion?: string) => {
       )
     ) ||
     fs.existsSync(
-      resolve(process.cwd(), 'firefox', 'firefox-' + version.split('b')[0])
+      resolve(process.cwd(), 'firefox', `firefox-${  version.split('b')[0]}`)
     )
   )
     log.error(
@@ -187,10 +187,10 @@ export const download = async (firefoxVersion?: string) => {
   data.on('data', (chunk: any) => {
     receivedBytes += chunk.length
 
-    let rand = Math.floor(Math.random() * 1000 + 1)
+    const rand = Math.floor(Math.random() * 1000 + 1)
 
     if (rand > 999.5) {
-      let percentCompleted = parseInt(
+      const percentCompleted = parseInt(
         Math.round((receivedBytes * 100) / length).toFixed(0)
       )
       if (percentCompleted % 2 == 0 || percentCompleted >= 100) return

@@ -1,7 +1,7 @@
 import axios from 'axios'
-import { config, log } from '../'
+import { config, log } from '..'
 
-export const updateCheck = async () => {
+export const updateCheck = async (): Promise<void> => {
   const firefoxVersion = config.version.version
 
   try {
@@ -11,12 +11,16 @@ export const updateCheck = async () => {
     )
 
     if (data) {
-      let version = Object.keys(data)[Object.keys(data).length - 1]
+      const version = Object.keys(data)[Object.keys(data).length - 1]
 
       if (firefoxVersion && version !== firefoxVersion)
         log.warning(
           `Latest version of Firefox (${version}) does not match frozen version (${firefoxVersion}).`
         )
     }
-  } catch (e) {}
+  } catch (e) {
+    log.warning(`Failed to check for updates.`)
+    log.warning(e)
+    log.askForReport()
+  }
 }

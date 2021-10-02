@@ -9,7 +9,7 @@ import { walkDirectory } from '../utils'
 
 export const patchCountFile = resolve(process.cwd(), '.dotbuild', 'patchCount')
 
-export const patchCheck = async () => {
+export const patchCheck = async (): Promise<void> => {
   const fileList = await walkDirectory(resolve(process.cwd(), 'src'))
   const patchCount = fileList.length
 

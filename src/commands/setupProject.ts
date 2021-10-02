@@ -61,7 +61,7 @@ export async function setupProject() {
       ],
     })
 
-    if (typeof product == 'undefined') return
+    if (typeof product === 'undefined') return
 
     const productVersion = await getLatestFF(product)
 

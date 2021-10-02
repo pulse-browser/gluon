@@ -39,7 +39,7 @@ export const discard = async (file: string, options: Options) => {
 
     const patchFile = resolve(
       PATCHES_DIR,
-      file.replace(/\//g, '-').replace(/\./g, '-') + '.patch'
+      `${file.replace(/\//g, '-').replace(/\./g, '-')  }.patch`
     )
 
     if (!existsSync(patchFile))

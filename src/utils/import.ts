@@ -6,13 +6,12 @@ import {
 } from 'fs-extra'
 import { resolve } from 'path'
 import rimraf from 'rimraf'
+import { log } from '..'
 import { ENGINE_DIR, SRC_DIR } from '../constants'
 
-const getChunked = (location: string) => {
-  return location.replace(/\\/g, '/').split('/')
-}
+const getChunked = (location: string) => location.replace(/\\/g, '/').split('/')
 
-export const copyManual = (name: string, noIgnore?: boolean) => {
+export const copyManual = (name: string, noIgnore?: boolean): void => {
   try {
     try {
       if (
@@ -20,7 +19,9 @@ export const copyManual = (name: string, noIgnore?: boolean) => {
       ) {
         rimraf.sync(resolve(ENGINE_DIR, ...getChunked(name)))
       }
-    } catch (e) {}
+    } catch (e) {
+      log.error(e)
+    }
 
     ensureSymlink(
       resolve(SRC_DIR, ...getChunked(name)),
@@ -41,6 +42,5 @@ export const copyManual = (name: string, noIgnore?: boolean) => {
   } catch (e) {
     console.log(e)
     process.exit(0)
-    // return e;
   }
 }

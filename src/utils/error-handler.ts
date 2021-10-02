@@ -3,7 +3,7 @@ import { readFileSync } from 'fs-extra'
 import { resolve } from 'path'
 import { log } from '..'
 
-export const errorHandler = (err: Error, isUnhandledRej: boolean) => {
+export const errorHandler = (err: Error, isUnhandledRej: boolean): void => {
   let cc = readFileSync(resolve(process.cwd(), '.dotbuild', 'command'), 'utf-8')
   cc = cc.replace(/(\r\n|\n|\r)/gm, '')
 
@@ -21,7 +21,10 @@ export const errorHandler = (err: Error, isUnhandledRej: boolean) => {
       : err.message.replace(/\n/g, '\n\t ')
   )
   if (err.stack || isUnhandledRej) {
-    const stack: any = err.stack?.split('\n')
+    const stack: string[] | undefined = err.stack?.split('\n')
+
+    if (!stack) return
+
     stack.shift()
     stack.shift()
     console.log(
@@ -29,7 +32,7 @@ export const errorHandler = (err: Error, isUnhandledRej: boolean) => {
       stack
         .join('\n')
         .replace(/(\r\n|\n|\r)/gm, '')
-        .replace(/    at /g, '\n\t • ')
+        .replace(/ {4}at /g, '\n\t • ')
     )
   }
 

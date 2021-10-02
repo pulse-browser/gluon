@@ -25,7 +25,7 @@ export const reset = async () => {
             const { src, action } = patch
 
             if (action == 'copy') {
-              if (typeof src == 'string') {
+              if (typeof src === 'string') {
                 const path = resolve(ENGINE_DIR, src)
 
                 if (path !== ENGINE_DIR) {
@@ -51,7 +51,7 @@ export const reset = async () => {
             }
           })
 
-          let leftovers = new Set()
+          const leftovers = new Set()
 
           const { stdout: origFiles } = await execa(
             'git',

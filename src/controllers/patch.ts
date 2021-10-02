@@ -14,7 +14,7 @@ import { dirname, join, resolve } from 'path'
 import readline from 'readline'
 import sharp from 'sharp'
 import { log } from '..'
-import { CONFIGS_DIR, ENGINE_DIR, PATCH_ARGS, SRC_DIR } from '../constants'
+import { CONFIGS_DIR, ENGINE_DIR, PATCH_ARGS } from '../constants'
 import { copyManual, walkDirectory } from '../utils'
 
 export interface IPatchApplier {
@@ -24,13 +24,16 @@ export interface IPatchApplier {
 
 export class PatchBase {
   protected name: string
+
   protected status: number[]
+
   protected options: {
     minimal?: boolean
     noIgnore?: boolean
   }
 
   private _done = false
+
   protected error: Error | unknown
 
   constructor(
@@ -46,11 +49,11 @@ export class PatchBase {
     this.options = options
   }
 
-  protected get done() {
+  protected get done(): boolean {
     return this._done
   }
 
-  protected set done(_: any) {
+  protected set done(_: boolean) {
     this._done = _
 
     if (this.options.minimal) return
@@ -74,7 +77,7 @@ export class PatchBase {
     }
   }
 
-  protected start() {
+  protected start(): void {
     if (this.options.minimal) return
 
     log.info(
@@ -86,13 +89,14 @@ export class PatchBase {
 
   public async applyWithStatus(status: [number, number]): Promise<void> {
     this.status = status
-    if (!(this as any).apply) return
-    await (this as any as IPatchApplier).apply()
+    if (!(this as unknown as IPatchApplier).apply) return
+    await (this as unknown as IPatchApplier).apply()
   }
 }
 
 export class ManualPatch extends PatchBase implements IPatchApplier {
   private action: 'copy' | 'delete'
+
   private src: string | string[]
 
   constructor(
@@ -199,7 +203,7 @@ export class PatchFile extends PatchBase implements IPatchApplier {
 
     try {
       try {
-        await execa('git', ['apply', '-R', ...PATCH_ARGS, this.src as any], {
+        await execa('git', ['apply', '-R', ...PATCH_ARGS, this.src], {
           cwd: ENGINE_DIR,
         })
       } catch (e) {
@@ -208,7 +212,7 @@ export class PatchFile extends PatchBase implements IPatchApplier {
 
       const { stdout, exitCode } = await execa(
         'git',
-        ['apply', ...PATCH_ARGS, this.src as any],
+        ['apply', ...PATCH_ARGS, this.src],
         { cwd: ENGINE_DIR }
       )
 

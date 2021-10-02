@@ -1,10 +1,9 @@
 import execa from 'execa'
 import { writeFileSync } from 'fs-extra'
 import { resolve } from 'path'
+import { config } from '..'
 
-const pjson = require('../../package.json')
-
-export const writeMetadata = async () => {
+export const writeMetadata = async (): Promise<void> => {
   const { stdout: sha } = await execa('git', ['rev-parse', 'HEAD'])
   const { stdout: branch } = await execa('git', ['branch', '--show-current'])
 
@@ -14,7 +13,7 @@ export const writeMetadata = async () => {
       sha,
       branch,
       birth: Date.now(),
-      versions: pjson.versions,
+      versions: config.version,
     })
   )
 }
