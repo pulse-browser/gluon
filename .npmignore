@@ -9,3 +9,5 @@ site/
 melon.json
 tsconfig.json
 yarn.lock
+.eslintignore
+.eslintrc.json
