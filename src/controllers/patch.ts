@@ -227,6 +227,7 @@ export class PatchFile extends PatchBase implements IPatchApplier {
 }
 
 const BRANDING_DIR = join(CONFIGS_DIR, 'branding')
+const BRANDING_FF = join(ENGINE_DIR, 'browser', 'branding', 'unofficial')
 
 export class BrandingPatch extends PatchBase implements IPatchApplier {
   constructor(minimal?: boolean) {
@@ -258,25 +259,27 @@ export class BrandingPatch extends PatchBase implements IPatchApplier {
         .filter((file) => file.includes('default.png'))
         .forEach((file) => rmSync(file, { force: true }))
 
-      const branding = readFileSync(join(BRANDING_DIR, 'logo.png'), 'base64')
-
       for (const size of [16, 22, 24, 32, 48, 64, 128, 256]) {
-        await sharp(branding)
+        await sharp(join(BRANDING_DIR, 'logo.png'))
           .resize(size, size)
-          .toFile(join(dest, `${size}default.png`))
+          .toFile(join(dest, `default${size}.png`))
       }
 
-      await sharp(branding).resize(512, 512).toFile(join(dest, 'firefox.ico'))
-      await sharp(branding).resize(64, 64).toFile(join(dest, 'firefox64.ico'))
+      await sharp(join(BRANDING_DIR, 'logo.png'))
+        .resize(512, 512)
+        .toFile(join(dest, 'firefox.ico'))
+      await sharp(join(BRANDING_DIR, 'logo.png'))
+        .resize(64, 64)
+        .toFile(join(dest, 'firefox64.ico'))
 
       // Copy everything else from the default firefox branding directory
-      ;(await walkDirectory(join(ENGINE_DIR, 'branding', 'unofficial')))
+      ;(await walkDirectory(BRANDING_FF))
         .filter(
-          (file) => !existsSync(join(dest, file.replace(BRANDING_DIR, '')))
+          (file) => !existsSync(join(dest, file.replace(BRANDING_FF, '')))
         )
         .forEach((file) => {
-          mkdirpSync(dirname(join(dest, file.replace(BRANDING_DIR, ''))))
-          copyFileSync(file, join(dest, file.replace(BRANDING_DIR, '')))
+          mkdirpSync(dirname(join(dest, file.replace(BRANDING_FF, ''))))
+          copyFileSync(file, join(dest, file.replace(BRANDING_FF, '')))
         })
 
       this.done = true
