@@ -47,7 +47,9 @@ class Log {
     }
 
     throw new Error(
-      ...args.map((a) => (typeof a !== 'undefined' ? a.toString() : a))
+      ...args.map((a) =>
+        typeof a !== 'undefined' ? (a as object).toString() : a
+      )
     )
   }
 
