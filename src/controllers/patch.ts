@@ -1,15 +1,25 @@
-import { throws } from 'assert'
 import chalk from 'chalk'
+import { info } from 'console'
 import execa from 'execa'
-import { existsSync, rmdirSync, rmSync, statSync } from 'fs-extra'
-import { resolve } from 'path'
+import { copyFileSync } from 'fs'
+import {
+  existsSync,
+  mkdirpSync,
+  readFileSync,
+  rmdirSync,
+  rmSync,
+  statSync,
+} from 'fs-extra'
+import { join, resolve } from 'path'
 import readline from 'readline'
+import sharp from 'sharp'
 import { log } from '..'
-import { ENGINE_DIR, PATCH_ARGS, SRC_DIR } from '../constants'
-import { copyManual } from '../utils'
+import { CONFIGS_DIR, ENGINE_DIR, PATCH_ARGS, SRC_DIR } from '../constants'
+import { copyManual, walkDirectory } from '../utils'
 
 export interface IPatchApplier {
   apply: () => Promise<void>
+  applyWithStatus: (status: [number, number]) => Promise<void>
 }
 
 export class PatchBase {
@@ -72,6 +82,12 @@ export class PatchBase {
         this.name
       }...`
     )
+  }
+
+  public async applyWithStatus(status: [number, number]): Promise<void> {
+    this.status = status
+    if (!(this as any).apply) return
+    await (this as any as IPatchApplier).apply()
   }
 }
 
@@ -197,6 +213,66 @@ export class PatchFile extends PatchBase implements IPatchApplier {
       )
 
       if (exitCode != 0) throw stdout
+
+      this.done = true
+    } catch (e) {
+      this.error = e
+      this.done = false
+    }
+  }
+}
+
+const BRANDING_DIR = join(CONFIGS_DIR, 'branding')
+
+export class BrandingPatch extends PatchBase implements IPatchApplier {
+  constructor(minimal?: boolean) {
+    super('Browser branding', [1, 1], { minimal })
+  }
+
+  async apply(): Promise<void> {
+    this.start()
+
+    if (!existsSync(BRANDING_DIR)) {
+      this.done = true
+
+      info("No branding specified. Using firefox's default")
+      return
+    }
+
+    try {
+      if (!existsSync(join(BRANDING_DIR, 'logo.png'))) {
+        throw new Error(`Please provide a "logo.png" file inside of "${BRANDING_DIR}" if you wish to use branding
+\n\nAlternatively, you can delete "${BRANDING_DIR}" to use firefox's trademarkless branding`)
+      }
+
+      // Ensure the destination directory structure exists
+      const dest = join(ENGINE_DIR, 'branding', 'melon')
+      mkdirpSync(dest)
+
+      // Delete the old branding
+      ;(await walkDirectory(dest))
+        .filter((file) => file.includes('default.png'))
+        .forEach((file) => rmSync(file, { force: true }))
+
+      const branding = readFileSync(join(BRANDING_DIR, 'logo.png'), 'base64')
+
+      for (const size of [16, 22, 24, 32, 48, 64, 128, 256]) {
+        await sharp(branding)
+          .resize(size, size)
+          .toFile(join(dest, `${size}default.png`))
+      }
+
+      await sharp(branding).resize(512, 512).toFile(join(dest, 'firefox.ico'))
+      await sharp(branding).resize(64, 64).toFile(join(dest, 'firefox64.ico'))
+
+      // Copy everything else from the default firefox branding directory
+      ;(await walkDirectory(BRANDING_DIR))
+        .filter(
+          (file) => !existsSync(join(dest, file.replace(BRANDING_DIR, '')))
+        )
+        .forEach((file) =>
+          copyFileSync(file, join(dest, file.replace(BRANDING_DIR, '')))
+        )
 
       this.done = true
     } catch (e) {

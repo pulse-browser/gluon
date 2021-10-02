@@ -1,9 +1,14 @@
 import { writeFileSync } from 'fs'
 import { sync } from 'glob'
-import { resolve } from 'path'
+import path, { resolve } from 'path'
 import { log } from '..'
 import { SRC_DIR } from '../constants'
-import { ManualPatch, PatchFile } from '../controllers/patch'
+import {
+  BrandingPatch,
+  IPatchApplier,
+  ManualPatch,
+  PatchFile,
+} from '../controllers/patch'
 import manualPatches from '../manual-patches'
 import { patchCountFile } from '../middleware/patch-check'
 import { delay, walkDirectory } from '../utils'
@@ -62,7 +67,7 @@ const importPatchFiles = async (minimal?: boolean, noIgnore?: boolean) => {
 
   if (!minimal) console.log()
 
-  await delay(500)
+  await delay(100)
 
   var i = 0
 
@@ -92,6 +97,30 @@ const importPatchFiles = async (minimal?: boolean, noIgnore?: boolean) => {
   // )
 
   log.success(`Successfully imported ${patches.length} patch files!`)
+}
+
+const importMelonPatches = async (minimal?: boolean, noIgnore?: boolean) => {
+  const patches: IPatchApplier[] = [new BrandingPatch(minimal)]
+
+  log.info(`Applying ${patches.length} melon patches...`)
+
+  if (!minimal) console.log()
+
+  await delay(100)
+
+  var i = 0
+
+  for await (const patch of patches) {
+    ++i
+
+    await delay(10)
+
+    await patch.applyWithStatus([i, patches.length])
+  }
+
+  console.log()
+
+  log.success(`Successfully imported ${patches.length} melon patches!`)
 }
 
 interface Args {

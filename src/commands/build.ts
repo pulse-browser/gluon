@@ -29,6 +29,9 @@ const applyConfig = async (os: string, arch: string) => {
     name: config.name,
     vendor: config.name,
     appId: config.appId,
+    brandingDir: existsSync(join(ENGINE_DIR, 'branding', 'melon'))
+      ? 'branding/melon'
+      : 'branding/unofficial',
   })
 
   const changesetPrefix = commonConfig
