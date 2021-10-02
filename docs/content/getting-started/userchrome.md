@@ -5,7 +5,7 @@ weight = 10
 
 This page will explain the process for applying custom css (or userchrome) to your new browser. I expect you to have already setup melon as described in the overview and have something that looks like the following on your screen.
 
-![Firefox build without branding](./css-basic.png)
+![Firefox build without branding](https://cdn.statically.io/img/dothq.github.io/f=auto/melon/images/userchrome/css-basic.png)
 
 The firefox window shown above is constructed from (x)html, styled with css and made dynamic with javascript. This means that the entire browser can be styled with custom css, called userchrome.
 
@@ -13,7 +13,7 @@ If you selected the userchrome option when setting up the project, melon will ha
 
 Additionally, firefox has an equivalent to "inspect element", but for the browser. Click on the hamburger menu, select "More tools", then "Browser toolbox" to open it.
 
-![Browser toolbox](./browser-toolbox.png)
+![Browser toolbox](https://cdn.statically.io/img/dothq.github.io/f=auto/melon/images/userchrome/browser-toolbox.png)
 
 ## A touch of design
 
@@ -45,7 +45,7 @@ Firefox uses css variables for a lot of its properties, meaning we can make the 
 
 Rebuilding the browser, the tabs are now slightly closer to how we want them.
 
-![Squared tabs](./css-square-tabs.png)
+![Squared tabs](https://cdn.statically.io/img/dothq.github.io/f=auto/melon/images/userchrome/css-square-tabs.png)
 
 There is this weird padding to the left of the active tab. This is caused by the following css:
 
@@ -66,7 +66,7 @@ As mozilla are using `!important` here, we have to use [css priority](https://ma
 
 Now, I want to remove the "Nightly" pill in the search bar, along with the background of it. Using the browser toolbox, we can figure out that we have to hide `#identity-icon-box`, remove the border on `#urlbar-background` and set `--toolbar-field-background-color` to the value of `--toolbar-bgcolor`.
 
-![Final browser](./css-final.png)
+![Final browser](https://cdn.statically.io/img/dothq.github.io/f=auto/melon/images/userchrome/css-final.png)
 
 I encourage you to experiment and customize your browser to fit what you want your browser to be.
 
