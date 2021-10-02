@@ -9,7 +9,10 @@ import { ENGINE_DIR } from './constants'
 import { shaCheck } from './middleware/sha-check'
 import { updateCheck } from './middleware/update-check'
 
-import { version as melon } from '../package.json'
+// We have to use a dynamic require here, otherwise the typescript compiler
+// mucks up the directory structure
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { version: melon } = require('../package.json')
 
 // The logger must be initialized before the config generator, otherwise reference
 // errors occur
