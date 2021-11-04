@@ -1,10 +1,11 @@
 /// <reference path="./linus.d.ts"/>
 
 import distro from 'linus'
-import { bin_name , log } from '..'
+import { bin_name, log } from '..'
 import { ENGINE_DIR } from '../constants'
 import { dispatch } from '../utils'
 import { pacmanInstall } from './bootstrap/arch'
+import { aptInstall } from './bootstrap/debian'
 
 export const bootstrap = async () => {
   if (process.platform == 'win32')
@@ -70,6 +71,29 @@ async function linuxBootstrap() {
           'xorg-server-xvfb',
           'gst-libav',
           'gst-plugins-good'
+        )
+      )
+      break
+
+    case 'Debian':
+    case 'Ubuntu':
+    case 'Pop':
+      console.log(
+        await aptInstall(
+          'python3-distutils',
+          'libssl-dev',
+          'build-essential',
+          'libpulse-dev',
+          'clang',
+          'nasm',
+          'libpango1.0-dev',
+          'libx11-dev',
+          'libx11-xcb-dev',
+          'libgtk-3-dev',
+          'm4',
+          'libgtk2.0-dev',
+          'libdbus-glib-1-dev',
+          'libxt-dev'
         )
       )
       break
