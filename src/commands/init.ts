@@ -4,7 +4,7 @@ import { resolve } from 'path'
 import { bin_name, log } from '..'
 import { dispatch } from '../utils'
 
-export const init = async (directory: Command) => {
+export const init = async (directory: Command): Promise<void> => {
   if (process.platform == 'win32') {
     // Because Windows cannot handle paths correctly, we're just calling a script as the workaround.
     log.info(
@@ -41,9 +41,10 @@ export const init = async (directory: Command) => {
 
   version = version.trim().replace(/\\n/g, '')
 
+  log.info('Initializing git, this may take some time')
   await dispatch('git', ['init'], dir as string)
   await dispatch('git', ['checkout', '--orphan', version], dir as string)
-  await dispatch('git', ['add', '-v', '-f', '.'], dir as string)
+  await dispatch('git', ['add', '-f', '.'], dir as string)
   await dispatch(
     'git',
     ['commit', '-am', `"Firefox ${version}"`],

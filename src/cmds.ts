@@ -103,8 +103,8 @@ export const commands: Cmd[] = [
     controller: importPatches,
   },
   {
-    cmd: 'init <source>',
-    aliases: ['initialise', 'initialize'],
+    cmd: 'ff-init <source>',
+    aliases: ['ff-initialise', 'ff-initialize'],
     description: 'Initialise the Firefox directory.',
     controller: init,
   },

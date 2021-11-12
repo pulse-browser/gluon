@@ -1,11 +1,10 @@
-import axios from 'axios'
 import execa from 'execa'
-import fs from 'fs'
 import { homedir } from 'os'
 import { posix, resolve, sep } from 'path'
 import { log } from '..'
+import { downloadFileToLocation } from '../utils/download'
 
-export const downloadArtifacts = async () => {
+export const downloadArtifacts = async (): Promise<void> => {
   if (process.platform !== 'win32')
     return log.error(
       'This is not a Windows machine, will not download artifacts.'
@@ -20,42 +19,16 @@ export const downloadArtifacts = async () => {
   let home = homedir().split(sep).join(posix.sep)
 
   if (process.platform == 'win32') {
-    home = `/${  home.replace(/\:/, '').replace(/\\/g, '/').toLowerCase()}`
+    home = `/${home.replace(/\:/, '').replace(/\\/g, '/').toLowerCase()}`
   }
 
   log.info(`Downloading Windows artifacts...`)
 
-  const { data, headers } = await axios.get(url, {
-    responseType: 'stream',
-  })
+  await downloadFileToLocation(url, resolve(process.cwd(), filename))
 
-  const length = headers['content-length']
+  log.info('Unpacking mozbuild...')
 
-  const writer = fs.createWriteStream(resolve(process.cwd(), filename))
+  await execa('tar', ['-xvf', filename, '-C', home])
 
-  let receivedBytes = 0
-
-  data.on('data', (chunk: any) => {
-    receivedBytes += chunk.length
-
-    const rand = Math.floor(Math.random() * 1000 + 1)
-
-    if (rand > 999.5) {
-      const percentCompleted = parseInt(
-        Math.round((receivedBytes * 100) / length).toFixed(0)
-      )
-      if (percentCompleted % 2 == 0 || percentCompleted >= 100) return
-      log.info(`\t${filename}\t${percentCompleted}%...`)
-    }
-  })
-
-  data.pipe(writer)
-
-  data.on('end', async () => {
-    log.info('Unpacking mozbuild...')
-
-    await execa('tar', ['-xvf', filename, '-C', home])
-
-    log.info('Done extracting mozbuild artifacts.')
-  })
+  log.info('Done extracting mozbuild artifacts.')
 }

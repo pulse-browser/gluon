@@ -1,14 +1,14 @@
-import axios from 'axios'
 import chalk from 'chalk'
 import execa from 'execa'
-import fs, { existsSync, rmdirSync, writeFileSync } from 'fs'
+import fs, { existsSync, rmdirSync } from 'fs'
 import { ensureDirSync, removeSync } from 'fs-extra'
 import ora from 'ora'
 import { homedir } from 'os'
 import { posix, resolve, sep } from 'path'
-import { bin_name, config, log } from '..'
+import { bin_name, log } from '..'
 import { ENGINE_DIR } from '../constants'
 import { getConfig, getLatestFF, writeMetadata } from '../utils'
+import { downloadFileToLocation } from '../utils/download'
 import { downloadArtifacts } from './download-artifacts'
 
 const gFFVersion = getConfig().version.version
@@ -22,6 +22,78 @@ let initProgress: any = ora({
   },
   indent: 0,
 })
+
+export const download = async () => {
+  const version = gFFVersion
+
+  // If gFFVersion isn't specified, provide legible error
+  if (!version) {
+    log.error(
+      'You have not specified a version of firefox in your config file. This is required to build a firefox fork'
+    )
+    process.exit(1)
+  }
+
+  // The location to download the firefox source code from the web
+  const base = `https://archive.mozilla.org/pub/firefox/releases/${version}/source/`
+  const filename = `firefox-${version}.source.tar.xz`
+
+  const url = base + filename
+
+  log.info(`Locating Firefox release ${version}...`)
+
+  ensureDirSync(resolve(process.cwd(), `.dotbuild`, `engines`))
+
+  if (
+    existsSync(
+      resolve(
+        process.cwd(),
+        `.dotbuild`,
+        `engines`,
+        `firefox-${version.split('b')[0]}`
+      )
+    )
+  ) {
+    log.error(
+      `Cannot download version ${
+        version.split('b')[0]
+      } as it already exists at "${resolve(
+        process.cwd(),
+        `firefox-${version.split('b')[0]}`
+      )}"`
+    )
+  }
+
+  if (version.includes('b'))
+    log.warning(
+      'Version includes non-numeric characters. This is probably a beta.'
+    )
+
+  // Do not re-download if there is already an existing workspace present
+  if (existsSync(ENGINE_DIR)) {
+    log.error(
+      `Workspace already exists.\nRemove that workspace and run |${bin_name} download ${version}| again.`
+    )
+  }
+
+  log.info(`Downloading Firefox release ${version}...`)
+
+  await downloadFileToLocation(
+    url,
+    resolve(process.cwd(), `.dotbuild`, `engines`, filename)
+  )
+
+  await unpack(filename, version)
+
+  if (process.platform === 'win32') {
+    if (existsSync(resolve(homedir(), '.mozbuild'))) {
+      log.info('Mozbuild directory already exists, not redownloading')
+    } else {
+      log.info('Mozbuild not found, downloading artifacts.')
+      await downloadArtifacts()
+    }
+  }
+}
 
 const onData = (data: any) => {
   const d = data.toString()
@@ -72,7 +144,7 @@ const unpack = async (name: string, version: string) => {
   tarProc.on('exit', () => {
     if (process.env.CI_SKIP_INIT) return log.info('Skipping initialisation.')
 
-    const initProc = execa('npx', ['melon', 'init', 'engine'])
+    const initProc = execa('npx', ['melon', 'ff-init', 'engine'])
 
     ;(initProc.stdout as any).on('data', onData)
     ;(initProc.stdout as any).on('error', onData)
@@ -81,8 +153,6 @@ const unpack = async (name: string, version: string) => {
       initProgressText = ''
       initProgress.stop()
       initProgress = null
-
-      await new Promise((resolve) => setTimeout(resolve, 5000))
 
       log.success(
         `You should be ready to make changes to Dot Browser.\n\n\t   You should import the patches next, run |${bin_name} import|.\n\t   To begin building Dot, run |${bin_name} build|.`
@@ -95,121 +165,5 @@ const unpack = async (name: string, version: string) => {
 
       process.exit(0)
     })
-  })
-}
-
-export const download = async (firefoxVersion?: string) => {
-  if (firefoxVersion)
-    log.warning(
-      `A custom Firefox version is being used. Some features of Dot may not work as expected.`
-    )
-
-  if (!firefoxVersion) {
-    firefoxVersion = gFFVersion
-  }
-
-  let version = await getLatestFF()
-
-  if (firefoxVersion) {
-    version = firefoxVersion
-  }
-
-  const base = `https://archive.mozilla.org/pub/firefox/releases/${version}/source/`
-  const filename = `firefox-${version}.source.tar.xz`
-
-  const url = `${base}${filename}`
-
-  log.info(`Locating Firefox release ${version}...`)
-
-  ensureDirSync(resolve(process.cwd(), `.dotbuild`, `engines`))
-
-  if (
-    existsSync(
-      resolve(
-        process.cwd(),
-        `.dotbuild`,
-        `engines`,
-        `firefox-${version.split('b')[0]}`
-      )
-    )
-  ) {
-    log.error(
-      `Cannot download version ${
-        version.split('b')[0]
-      } as it already exists at "${resolve(
-        process.cwd(),
-        `firefox-${version.split('b')[0]}`
-      )}"`
-    )
-  }
-
-  if (version == firefoxVersion)
-    log.info(`Version is frozen at ${firefoxVersion}!`)
-  if (version.includes('b'))
-    log.warning(
-      'Version includes non-numeric characters. This is probably a beta.'
-    )
-
-  if (
-    fs.existsSync(
-      resolve(
-        process.cwd(),
-        `.dotbuild`,
-        `engines`,
-        'firefox',
-        version.split('b')[0]
-      )
-    ) ||
-    fs.existsSync(
-      resolve(process.cwd(), 'firefox', `firefox-${  version.split('b')[0]}`)
-    )
-  )
-    log.error(
-      `Workspace with version "${
-        version.split('b')[0]
-      }" already exists.\nRemove that workspace and run |${bin_name} download ${version}| again.`
-    )
-
-  log.info(`Downloading Firefox release ${version}...`)
-
-  const { data, headers } = await axios.get(url, {
-    responseType: 'stream',
-  })
-
-  const length = headers['content-length']
-
-  const writer = fs.createWriteStream(
-    resolve(process.cwd(), `.dotbuild`, `engines`, filename)
-  )
-
-  let receivedBytes = 0
-
-  data.on('data', (chunk: any) => {
-    receivedBytes += chunk.length
-
-    const rand = Math.floor(Math.random() * 1000 + 1)
-
-    if (rand > 999.5) {
-      const percentCompleted = parseInt(
-        Math.round((receivedBytes * 100) / length).toFixed(0)
-      )
-      if (percentCompleted % 2 == 0 || percentCompleted >= 100) return
-      log.info(`\t${filename}\t${percentCompleted}%...`)
-    }
-  })
-
-  data.pipe(writer)
-
-  data.on('end', async () => {
-    await unpack(filename, version)
-
-    if (process.platform === 'win32') {
-      if (existsSync(resolve(homedir(), '.mozbuild'))) {
-        log.info('Mozbuild directory already exists, not redownloading')
-      } else {
-        log.info('Mozbuild not found, downloading artifacts.')
-        await downloadArtifacts()
-      }
-    }
   })
 }
