@@ -76,6 +76,8 @@ export interface Config {
      * if we ever provide support for those platforms.
      */
     artifactBuilds: boolean
+
+    generateBranding: boolean
   }
 }
 
@@ -89,6 +91,7 @@ const defaultConfig: Config = {
   },
   buildOptions: {
     artifactBuilds: false,
+    generateBranding: true,
   },
 }
 

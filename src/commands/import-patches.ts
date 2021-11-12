@@ -1,7 +1,7 @@
 import { writeFileSync } from 'fs'
 import { sync } from 'glob'
 import path, { resolve } from 'path'
-import { log } from '..'
+import { config, log } from '..'
 import { SRC_DIR } from '../constants'
 import {
   BrandingPatch,
@@ -100,7 +100,9 @@ const importPatchFiles = async (minimal?: boolean, noIgnore?: boolean) => {
 }
 
 const importMelonPatches = async (minimal?: boolean, noIgnore?: boolean) => {
-  const patches: IPatchApplier[] = [new BrandingPatch(minimal)]
+  const patches: IPatchApplier[] = []
+
+  if (config.buildOptions.generateBranding) new BrandingPatch(minimal)
 
   log.info(`Applying ${patches.length} melon patches...`)
 
