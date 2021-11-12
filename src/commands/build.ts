@@ -71,6 +71,7 @@ const applyConfig = async (os: string, arch: string) => {
     appId: config.appId,
   })
 
+  // TODO: Disable optimization when running artifact builds, as they are not compatible
   const internalConfig = `# Internally defined by melon\n${
     config.buildOptions.artifactBuilds
       ? '# Artifact builds (buildOptions.artifactBuilds) \nac_add_options --enable-artifact-builds\nmk_add_options MOZ_OBJDIR=./objdir-frontend'

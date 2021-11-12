@@ -7,7 +7,6 @@ import {
 } from 'fs-extra'
 import { resolve } from 'path'
 import rimraf from 'rimraf'
-import { log } from '..'
 import { ENGINE_DIR, SRC_DIR } from '../constants'
 
 const getChunked = (location: string) => location.replace(/\\/g, '/').split('/')
