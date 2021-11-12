@@ -1,4 +1,5 @@
 import execa from 'execa'
+import { existsSync } from 'fs'
 import { resolve } from 'path'
 import { log } from '..'
 
@@ -18,18 +19,22 @@ export const PATCHES_DIR = resolve(process.cwd(), 'patches')
 export const COMMON_DIR = resolve(process.cwd(), 'common')
 export const CONFIGS_DIR = resolve(process.cwd(), 'configs')
 
-export let CONFIG_GUESS: string
+export let CONFIG_GUESS: string = ''
 
-try {
-  CONFIG_GUESS = execa.commandSync('./build/autoconf/config.guess', {
-    cwd: ENGINE_DIR,
-  }).stdout
-} catch (e) {
-  log.warning('An error occurred running engine/build/autoconf/config.guess')
-  log.warning(e)
-  log.askForReport()
+// We should only try and generate this config file if the engine directory has
+// been created
+if (existsSync(ENGINE_DIR)) {
+  try {
+    CONFIG_GUESS = execa.commandSync('./build/autoconf/config.guess', {
+      cwd: ENGINE_DIR,
+    }).stdout
+  } catch (e) {
+    log.warning('An error occurred running engine/build/autoconf/config.guess')
+    log.warning(e)
+    log.askForReport()
 
-  process.exit(1)
+    process.exit(1)
+  }
 }
 
 export const OBJ_DIR = resolve(ENGINE_DIR, `obj-${CONFIG_GUESS}`)

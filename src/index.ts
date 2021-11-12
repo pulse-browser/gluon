@@ -1,8 +1,12 @@
+// Init the logger before literally anything else to stop really obscure error
+// messages from occurring
+import Log from './log'
+export const log = new Log()
+
 import chalk from 'chalk'
 import commander, { Command } from 'commander'
 import { existsSync, readFileSync } from 'fs'
 import { resolve } from 'path'
-import Log from './log'
 import { errorHandler, getConfig } from './utils'
 import { commands } from './cmds'
 import { ENGINE_DIR } from './constants'
@@ -13,10 +17,6 @@ import { updateCheck } from './middleware/update-check'
 // mucks up the directory structure
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version: melon } = require('../package.json')
-
-// The logger must be initialized before the config generator, otherwise reference
-// errors occur
-export const log = new Log()
 
 export const config = getConfig()
 
