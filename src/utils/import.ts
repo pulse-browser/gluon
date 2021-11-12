@@ -1,3 +1,4 @@
+import { existsSync } from 'fs'
 import {
   appendFileSync,
   ensureSymlink,
@@ -13,16 +14,16 @@ const getChunked = (location: string) => location.replace(/\\/g, '/').split('/')
 
 export const copyManual = (name: string, noIgnore?: boolean): void => {
   try {
-    try {
-      if (
-        !lstatSync(resolve(ENGINE_DIR, ...getChunked(name))).isSymbolicLink()
-      ) {
-        rimraf.sync(resolve(ENGINE_DIR, ...getChunked(name)))
-      }
-    } catch (e) {
-      log.error(e)
+    // If the file exists and is not a symlink, we want to replace it with a
+    // symlink to our file, so remove it
+    if (
+      existsSync(resolve(ENGINE_DIR, ...getChunked(name))) &&
+      !lstatSync(resolve(ENGINE_DIR, ...getChunked(name))).isSymbolicLink()
+    ) {
+      rimraf.sync(resolve(ENGINE_DIR, ...getChunked(name)))
     }
 
+    // Create the symlink
     ensureSymlink(
       resolve(SRC_DIR, ...getChunked(name)),
       resolve(ENGINE_DIR, ...getChunked(name))

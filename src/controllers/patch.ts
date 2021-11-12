@@ -2,14 +2,7 @@ import chalk from 'chalk'
 import { info } from 'console'
 import execa from 'execa'
 import { copyFileSync } from 'fs'
-import {
-  existsSync,
-  mkdirpSync,
-  readFileSync,
-  rmdirSync,
-  rmSync,
-  statSync,
-} from 'fs-extra'
+import { existsSync, mkdirpSync, rmdirSync, rmSync, statSync } from 'fs-extra'
 import { dirname, join, resolve } from 'path'
 import readline from 'readline'
 import sharp from 'sharp'
