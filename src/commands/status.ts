@@ -17,7 +17,7 @@ export const status = async (): Promise<void> => {
 
   if (engineExists) {
     log.info("The following changes have been made to firefox's source code")
-    await dispatch('git', ['status'], ENGINE_DIR, true)
+    await dispatch('git', ['diff'], ENGINE_DIR, true)
 
     return
   } else {
