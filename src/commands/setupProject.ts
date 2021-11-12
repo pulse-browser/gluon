@@ -1,6 +1,6 @@
 import { writeFileSync, existsSync, mkdirSync, readFileSync } from 'fs'
-import { readdir, stat, copyFile } from 'fs/promises'
-import { join, isAbsolute, dirname } from 'path'
+import { copyFile } from 'fs/promises'
+import { join, dirname } from 'path'
 
 import prompts from 'prompts'
 
@@ -17,7 +17,7 @@ import {
 // =============================================================================
 // User interaction portion
 
-export async function setupProject() {
+export async function setupProject(): Promise<void> {
   try {
     if (existsSync(configPath)) {
       log.warning('There is already a config file. This will overwrite it!')
@@ -118,6 +118,9 @@ export async function setupProject() {
       vendor,
       appId,
       version: { product, version, displayVersion: '1.0.0' },
+      buildOptions: {
+        artifactBuilds: ui === 'uc',
+      },
     }
 
     await copyRequired()
