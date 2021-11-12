@@ -30,13 +30,7 @@ class Log {
   }
 
   warning(...args: unknown[]): void {
-    console.warn(
-      ...args
-        .toString()
-        .split('\n')
-        .map((a) => chalk.yellowBright.bold(' WARNING') + ' ' + a)
-        .join('\n')
-    )
+    console.warn(chalk.yellowBright.bold(' WARNING'), ...args)
   }
 
   hardWarning(...args: unknown[]): void {
