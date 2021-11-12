@@ -10,6 +10,8 @@ import { log } from '..'
 export const projectDir = process.cwd()
 export const configPath = join(projectDir, 'melon.json')
 
+let hasWarnedAboutConfig = false
+
 export enum SupportedProducts {
   Firefox = 'firefox',
   FirefoxESR = 'firefox-esr',
@@ -84,9 +86,12 @@ export function getConfig(): Config {
   let fileParsed: Config
 
   if (!configExists) {
-    log.warning(
-      `Config file not found at ${configPath}. It is recommended to create one by running |melon setup-project|`
-    )
+    if (!hasWarnedAboutConfig) {
+      log.warning(
+        `Config file not found at ${configPath}. It is recommended to create one by running |melon setup-project|`
+      )
+      hasWarnedAboutConfig = true
+    }
   } else {
     fileContents = readFileSync(configPath).toString()
   }
