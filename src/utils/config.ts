@@ -54,7 +54,7 @@ export interface Config {
     /**
      * The version of the selected product you are forking
      */
-    version: string
+    version?: string
     /**
      * The version of your output product. E.g. 1.3.5
      * This is in relation to the product you are building. For example, for
@@ -70,7 +70,6 @@ const defaultConfig: Config = {
   appId: 'unknown.appid',
   version: {
     product: SupportedProducts.Firefox,
-    version: '92.0',
     displayVersion: '1.0.0',
   },
 }
