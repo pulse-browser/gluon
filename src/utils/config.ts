@@ -73,8 +73,12 @@ const defaultConfig: Config = {
   },
 }
 
+export function hasConfig(): boolean {
+  return existsSync(configPath)
+}
+
 export function getConfig(): Config {
-  const configExists = existsSync(configPath)
+  const configExists = hasConfig()
 
   let fileContents = '{}'
   let fileParsed: Config
