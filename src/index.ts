@@ -73,11 +73,19 @@ commands.forEach((command) => {
     _cmd.alias(alias)
   })
 
+  _cmd.option(
+    '-v, --verbose',
+    'Outputs extra debugging messages to the console',
+    false
+  )
+
   command?.options?.forEach((opt) => {
     _cmd.option(opt.arg, opt.description)
   })
 
-  _cmd.action(async (...args: unknown[]) => {
+  _cmd.action(async (verbose: boolean, ...args: unknown[]) => {
+    log.isDebug = verbose
+
     registerCommand(command.cmd)
 
     await shaCheck(command.cmd)

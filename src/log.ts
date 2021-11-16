@@ -3,6 +3,8 @@ import chalk from 'chalk'
 class Log {
   private startTime: number
 
+  isDebug = false
+
   constructor() {
     const d = new Date()
 
@@ -23,6 +25,10 @@ class Log {
     const format = (r: number) => (r.toString().length == 1 ? `0${r}` : r)
 
     return `${format(hours)}:${format(mins)}:${format(secs)}`
+  }
+
+  debug(...args: unknown[]): void {
+    if (this.isDebug) console.debug(...args)
   }
 
   info(...args: unknown[]): void {
