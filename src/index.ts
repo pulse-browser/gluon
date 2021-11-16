@@ -12,6 +12,7 @@ import { commands } from './cmds'
 import { ENGINE_DIR } from './constants'
 import { shaCheck } from './middleware/sha-check'
 import { updateCheck } from './middleware/update-check'
+import { registerCommand } from './middleware/registerCommand'
 
 // We have to use a dynamic require here, otherwise the typescript compiler
 // mucks up the directory structure
@@ -77,6 +78,8 @@ commands.forEach((command) => {
   })
 
   _cmd.action(async (...args: unknown[]) => {
+    registerCommand(command.cmd)
+
     await shaCheck(command.cmd)
     await updateCheck()
 
