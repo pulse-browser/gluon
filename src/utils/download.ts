@@ -33,7 +33,7 @@ export async function downloadFileToLocation(
         500
       )
 
-      data.on('end', async () => {
+      data.on('end', () => {
         clearInterval(progressInterval)
         progressBar.stop()
         resolve()

@@ -55,6 +55,11 @@ then switched to another branch.`
 `)
 program.name(bin_name)
 
+program.option(
+  '-v, --verbose',
+  'Outputs extra debugging messages to the console'
+)
+
 commands.forEach((command) => {
   if (command.flags) {
     if (
@@ -73,18 +78,12 @@ commands.forEach((command) => {
     _cmd.alias(alias)
   })
 
-  _cmd.option(
-    '-v, --verbose',
-    'Outputs extra debugging messages to the console',
-    false
-  )
-
   command?.options?.forEach((opt) => {
     _cmd.option(opt.arg, opt.description)
   })
 
-  _cmd.action(async (verbose: boolean, ...args: unknown[]) => {
-    log.isDebug = verbose
+  _cmd.action(async (...args: unknown[]) => {
+    log.isDebug = program.opts().verbose
 
     registerCommand(command.cmd)
 
