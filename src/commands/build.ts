@@ -162,8 +162,6 @@ export const build = async (tier: string, options: Options) => {
 
     applyConfig(prettyHost, options.arch)
 
-    setTimeout(async () => {
-      await genericBuild(prettyHost, tier).then((_) => success(d))
-    }, 2500)
+    await genericBuild(prettyHost, tier).then((_) => success(d))
   }
 }
