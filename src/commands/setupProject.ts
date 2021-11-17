@@ -8,6 +8,7 @@ import { log } from '..'
 import {
   Config,
   configPath,
+  delay,
   getLatestFF,
   projectDir,
   SupportedProducts,
@@ -21,7 +22,7 @@ export async function setupProject(): Promise<void> {
   try {
     if (existsSync(configPath)) {
       log.warning('There is already a config file. This will overwrite it!')
-      await sleep(1000)
+      await delay(1000)
     }
 
     if (configPath.includes('.optional')) {
@@ -194,8 +195,3 @@ async function copyRequired() {
       })
   )
 }
-
-// =============================================================================
-// Utility functions
-
-const sleep = (time: number) => new Promise<void>((r) => setTimeout(r, time))

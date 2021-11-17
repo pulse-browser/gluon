@@ -1,6 +1,6 @@
 import { writeFileSync } from 'fs'
 import { sync } from 'glob'
-import path, { resolve } from 'path'
+import { resolve } from 'path'
 import { config, log } from '..'
 import { SRC_DIR } from '../constants'
 import {
@@ -11,46 +11,42 @@ import {
 } from '../controllers/patch'
 import manualPatches from '../manual-patches'
 import { patchCountFile } from '../middleware/patch-check'
-import { delay, walkDirectory } from '../utils'
+import { walkDirectory } from '../utils'
 
 const importManual = async (minimal?: boolean, noIgnore?: boolean) => {
   log.info(`Applying ${manualPatches.length} manual patches...`)
 
   if (!minimal) console.log()
 
-  return new Promise(async (res, rej) => {
-    const total = 0
+  const total = 0
 
-    let i = 0
+  let i = 0
 
-    for await (const { name, action, src } of manualPatches) {
-      ++i
+  for await (const { name, action, src } of manualPatches) {
+    ++i
 
-      const patch = new ManualPatch(
-        name,
-        [i, manualPatches.length],
-        { minimal, noIgnore },
-        action,
-        src
-      )
+    const patch = new ManualPatch(
+      name,
+      [i, manualPatches.length],
+      { minimal, noIgnore },
+      action,
+      src
+    )
 
-      await delay(10)
+    await patch.apply()
+  }
 
-      await patch.apply()
-    }
+  log.success(`Successfully imported ${manualPatches.length} manual patches!`)
+  console.log()
 
-    log.success(`Successfully imported ${manualPatches.length} manual patches!`)
-    console.log()
+  log.info('Storing patch count...')
 
-    log.info('Storing patch count...')
+  const fileList = await walkDirectory(resolve(process.cwd(), 'src'))
+  const fileCount = fileList.length
 
-    const fileList = await walkDirectory(resolve(process.cwd(), 'src'))
-    const fileCount = fileList.length
+  writeFileSync(patchCountFile, fileCount.toString())
 
-    writeFileSync(patchCountFile, fileCount.toString())
-
-    res(total)
-  })
+  return total
 }
 
 const importPatchFiles = async (minimal?: boolean, noIgnore?: boolean) => {
@@ -67,8 +63,6 @@ const importPatchFiles = async (minimal?: boolean, noIgnore?: boolean) => {
 
   if (!minimal) console.log()
 
-  await delay(100)
-
   let i = 0
 
   for await (const patchName of patches) {
@@ -80,8 +74,6 @@ const importPatchFiles = async (minimal?: boolean, noIgnore?: boolean) => {
       { minimal, noIgnore },
       resolve(SRC_DIR, patchName)
     )
-
-    await delay(10)
 
     await patch.apply()
   }
@@ -108,14 +100,10 @@ const importMelonPatches = async (minimal?: boolean, noIgnore?: boolean) => {
 
   if (!minimal) console.log()
 
-  await delay(100)
-
   let i = 0
 
   for await (const patch of patches) {
     ++i
-
-    await delay(10)
 
     await patch.applyWithStatus([i, patches.length])
   }
