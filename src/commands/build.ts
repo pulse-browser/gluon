@@ -20,19 +20,22 @@ const platform: any = {
 const applyConfig = async (os: string, arch: string) => {
   log.info('Applying mozconfig...')
 
-  let commonConfig = readFileSync(
-    resolve(CONFIGS_DIR, 'common', 'mozconfig'),
-    'utf-8'
-  )
-
-  commonConfig = stringTemplate(commonConfig, {
+  const templateOptions = {
     name: config.name,
     vendor: config.name,
     appId: config.appId,
     brandingDir: existsSync(join(ENGINE_DIR, 'branding', 'melon'))
       ? 'branding/melon'
       : 'branding/unofficial',
-  })
+    binName: config.binaryName,
+  }
+
+  let commonConfig = readFileSync(
+    resolve(CONFIGS_DIR, 'common', 'mozconfig'),
+    'utf-8'
+  )
+
+  commonConfig = stringTemplate(commonConfig, templateOptions)
 
   const changesetPrefix = commonConfig
     .split('\n')
@@ -53,11 +56,7 @@ const applyConfig = async (os: string, arch: string) => {
     'utf-8'
   )
 
-  osConfig = stringTemplate(osConfig, {
-    name: config.name,
-    vendor: config.name,
-    appId: config.appId,
-  })
+  osConfig = stringTemplate(osConfig, templateOptions)
 
   // Allow a custom config to be placed in /mozconfig. This will not be committed
   // to origin
@@ -65,11 +64,7 @@ const applyConfig = async (os: string, arch: string) => {
     ? readFileSync(join(process.cwd(), 'mozconfig')).toString()
     : ''
 
-  customConfig = stringTemplate(customConfig, {
-    name: config.name,
-    vendor: config.name,
-    appId: config.appId,
-  })
+  customConfig = stringTemplate(customConfig, templateOptions)
 
   // TODO: Disable optimization when running artifact builds, as they are not compatible
   const internalConfig = `# Internally defined by melon\n${
@@ -110,13 +105,13 @@ const genericBuild = async (os: string, tier: string) => {
     `If you get any dependency errors, try running |${bin_name} bootstrap|.`
   )
 
-  await dispatch(
-    `./mach`,
-    ['build', config.buildOptions.artifactBuilds ? 'faster' : ''].concat(
-      tier ? [tier] : []
-    ),
-    ENGINE_DIR
-  )
+  const buildOptions = ['build']
+
+  if (config.buildOptions.artifactBuilds) {
+    buildOptions.push('faster')
+  }
+
+  await dispatch(`./mach`, buildOptions, ENGINE_DIR)
 }
 
 const parseDate = (d: number) => {

@@ -43,6 +43,7 @@ export interface Config {
    * e.g. co.dothq.melon
    */
   appId: string
+  binaryName: string
   version: {
     /**
      * What branch of firefox you are forking. e.g. stable ('firefox'), dev ('firefox-dev')
@@ -85,6 +86,7 @@ const defaultConfig: Config = {
   name: 'Unknown melon build',
   vendor: 'Unknown',
   appId: 'unknown.appid',
+  binaryName: 'firefox',
   version: {
     product: SupportedProducts.Firefox,
     displayVersion: '1.0.0',

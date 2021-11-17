@@ -2,11 +2,11 @@
 ac_add_options --enable-update-channel=release
 
 ac_add_options --with-branding=${brandingDir}
-ac_add_options --with-app-name=dot
+ac_add_options --with-app-name=${binName}
 export MOZ_USER_DIR="${name}"
 export MOZ_APP_VENDOR="${vendor}"
 export MOZ_APP_BASENAME=Dot
-export MOZ_APP_PROFILE=dot
+export MOZ_APP_PROFILE=${binName}
 export MOZ_APP_DISPLAYNAME="${name}"
 export MOZ_BRANDING_DIRECTORY=${brandingDir}
 export MOZ_OFFICIAL_BRANDING_DIRECTORY=${brandingDir}

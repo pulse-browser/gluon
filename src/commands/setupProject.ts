@@ -113,7 +113,7 @@ export async function setupProject(): Promise<void> {
       },
     ])
 
-    const config: Config = {
+    const config: Partial<Config> = {
       name,
       vendor,
       appId,
