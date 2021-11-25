@@ -6,7 +6,6 @@ import {
   downloadArtifacts,
   execute,
   exportFile,
-  exportPatches,
   fixLineEndings,
   importPatches,
   init,
@@ -15,10 +14,10 @@ import {
   reset,
   run,
   setBranch,
+  setupProject,
   status,
   test,
 } from './commands'
-import { setupProject } from './commands/setupProject'
 import { Cmd } from './types'
 
 export const commands: Cmd[] = [
@@ -76,14 +75,9 @@ export const commands: Cmd[] = [
   },
   {
     cmd: 'export-file <file>',
+    aliases: ['export'],
     description: 'Export a changed file as a patch.',
     controller: exportFile,
-  },
-  {
-    cmd: 'export',
-    aliases: ['export-patches'],
-    description: 'Export the changed files as patches.',
-    controller: exportPatches,
   },
   {
     cmd: 'lfify',
