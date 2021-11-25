@@ -37,6 +37,11 @@ export const commands: Cmd[] = [
         arg: '--a, --arch <architecture>',
         description: 'Specify architecture for build',
       },
+      {
+        arg: '--u, --ui',
+        description:
+          'Only builds the ui. Faster but not as powerful as a regular build.',
+      },
     ],
     controller: build,
   },

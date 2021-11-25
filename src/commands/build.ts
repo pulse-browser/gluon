@@ -98,7 +98,7 @@ const applyConfig = async (os: string, arch: string) => {
   })
 }
 
-const genericBuild = async (os: string, tier: string) => {
+const genericBuild = async (os: string, tier: string, fast = false) => {
   log.info(`Building for "${os}"...`)
 
   log.warning(
@@ -107,7 +107,7 @@ const genericBuild = async (os: string, tier: string) => {
 
   const buildOptions = ['build']
 
-  if (config.buildOptions.artifactBuilds) {
+  if (config.buildOptions.artifactBuilds || fast) {
     buildOptions.push('faster')
   }
 
@@ -134,6 +134,7 @@ const success = (date: number) => {
 
 interface Options {
   arch: string
+  ui: boolean
 }
 
 export const build = async (tier: string, options: Options) => {
@@ -162,6 +163,6 @@ export const build = async (tier: string, options: Options) => {
 
     applyConfig(prettyHost, options.arch)
 
-    await genericBuild(prettyHost, tier).then((_) => success(d))
+    await genericBuild(prettyHost, tier, options.ui).then((_) => success(d))
   }
 }
