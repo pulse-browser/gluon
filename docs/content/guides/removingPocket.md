@@ -47,7 +47,7 @@ melon export-file browser/app/profile/firefox.js
 
 ## Removing pocket icon from toolbar
 
-Whilst the steps above will have disabled pocket. The pocket icon will still be visible in the toolbar. Instead you must remove it from the CustomizableUI layout. Open `engine/browser/components/customizableui/CustomizableUI.jsm` and find the array that looks like this:
+Whilst the steps above will have disabled pocket. The pocket icon will still be visible in the toolbar. Instead you must remove it from the CustomizableUI layout. Open `engine/browser/components/customizableui/CustomizableUI.jsm` and find the array that looks like this (around line 240):
 
 ```js
 let navbarPlacements = [
