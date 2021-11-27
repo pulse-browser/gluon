@@ -2,12 +2,7 @@ import execa from 'execa'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { join, resolve } from 'path'
 import { bin_name, config, log } from '..'
-import {
-  ARCHITECTURE,
-  BUILD_TARGETS,
-  CONFIGS_DIR,
-  ENGINE_DIR,
-} from '../constants'
+import { BUILD_TARGETS, CONFIGS_DIR, ENGINE_DIR } from '../constants'
 import { patchCheck } from '../middleware/patch-check'
 import { dispatch, stringTemplate } from '../utils'
 
@@ -93,7 +88,7 @@ const applyConfig = async (os: string, arch: string) => {
   })
 }
 
-const genericBuild = async (os: string, tier: string, fast = false) => {
+const genericBuild = async (os: string, fast = false) => {
   log.info(`Building for "${os}"...`)
 
   log.warning(
@@ -132,7 +127,7 @@ interface Options {
   ui: boolean
 }
 
-export const build = async (tier: string, options: Options) => {
+export const build = async (tier: string, options: Options): Promise<void> => {
   const d = Date.now()
 
   // Host build
@@ -140,24 +135,10 @@ export const build = async (tier: string, options: Options) => {
   const prettyHost = platform[process.platform as any]
 
   if (BUILD_TARGETS.includes(prettyHost)) {
-    let arch = '64bit'
-
-    if (options.arch) {
-      if (!ARCHITECTURE.includes(options.arch))
-        return log.error(
-          `We do not support "${
-            options.arch
-          }" build right now.\nWe only currently support ${JSON.stringify(
-            ARCHITECTURE
-          )}.`
-        )
-      arch = options.arch
-    }
-
     await patchCheck()
 
     applyConfig(prettyHost, options.arch)
 
-    await genericBuild(prettyHost, tier, options.ui).then((_) => success(d))
+    await genericBuild(prettyHost, options.ui).then((_) => success(d))
   }
 }
