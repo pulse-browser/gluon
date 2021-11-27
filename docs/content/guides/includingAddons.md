@@ -18,3 +18,7 @@ Melon provides an automated system for including extensions in your project. The
   }
 }
 ```
+
+## Specifying location in customizable ui
+
+TODO: Docs: Specifying location in customizable ui
