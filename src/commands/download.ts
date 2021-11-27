@@ -192,8 +192,6 @@ const includeAddon = (
       task: async (ctx, task) => {
         const files = await walkDirectoryTree(outPath)
 
-        writeFileSync('out.json', JSON.stringify(files, null, 2))
-
         function runTree(tree: any, parent: string): string {
           if (Array.isArray(tree)) {
             return tree
