@@ -1,16 +1,23 @@
-import { existsSync, rmdirSync } from 'fs'
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  rmdirSync,
+  writeFileSync,
+} from 'fs'
 import { homedir } from 'os'
-import { posix, resolve, sep } from 'path'
+import { basename, join, posix, resolve, sep } from 'path'
 
 import execa from 'execa'
 import { ensureDirSync, removeSync } from 'fs-extra'
 import Listr from 'listr'
 
 import { bin_name, config, log } from '..'
-import { ENGINE_DIR } from '../constants'
-import { getConfig, writeMetadata } from '../utils'
+import { ENGINE_DIR, MELON_TMP_DIR } from '../constants'
+import { getConfig, walkDirectory, writeMetadata } from '../utils'
 import { downloadFileToLocation } from '../utils/download'
 import { downloadArtifacts } from './download-artifacts'
+import { discard } from '.'
 
 const gFFVersion = getConfig().version.version
 
@@ -24,6 +31,11 @@ export const download = async (): Promise<void> => {
     )
     process.exit(1)
   }
+
+  const addons = Object.keys(config.addons).map((addon) => ({
+    name: addon,
+    ...config.addons[addon],
+  }))
 
   await new Listr([
     {
@@ -68,6 +80,28 @@ export const download = async (): Promise<void> => {
         initProc.stdout?.on('data', (data: string) => (task.output = data))
       },
     },
+    ...addons
+      .map((addon) => includeAddon(addon.name, addon.url, addon.id))
+      .reduce((acc, cur) => [...acc, ...cur], []),
+    {
+      title: 'Add addons to mozbuild',
+      task: async (ctx, task) => {
+        // Discard the file to make sure it has no changes
+        await discard('browser/extensions/moz.build', {})
+
+        const path = join(ENGINE_DIR, 'browser', 'extensions', 'moz.build')
+
+        // Append all the files to the bottom
+        writeFileSync(
+          path,
+          `${readFileSync(path, 'utf8')}\nDIRS += [${addons
+            .map((addon) => addon.name)
+            .sort()
+            .map((addon) => `"${addon}"`)
+            .join(',')}]`
+        )
+      },
+    },
     {
       title: 'Write metadata',
       task: async () => {
@@ -94,6 +128,108 @@ export const download = async (): Promise<void> => {
     `You should be ready to make changes to ${config.name}.\n\n\t   You should import the patches next, run |${bin_name} import|.\n\t   To begin building ${config.name}, run |${bin_name} build|.`
   )
   console.log()
+}
+
+const includeAddon = (
+  name: string,
+  downloadURL: string,
+  id: string
+): Listr.ListrTask<any>[] => {
+  const tempFile = join(MELON_TMP_DIR, name + '.xpi')
+  const outPath = join(ENGINE_DIR, 'browser', 'extensions', name)
+
+  return [
+    {
+      title: `Download addon from ${downloadURL}`,
+      skip: () => {
+        if (existsSync(outPath)) {
+          return `${downloadURL} has already been loaded to ${name}`
+        }
+      },
+      task: async (ctx, task) => {
+        await downloadFileToLocation(downloadURL, tempFile)
+        ctx[name] = tempFile
+      },
+    },
+    {
+      title: `Unpack to ${name}`,
+      enabled: (ctx) => typeof ctx[name] !== 'undefined',
+      task: (ctx, task) => {
+        const onData = (data: any) => {
+          const d = data.toString()
+
+          d.split('\n').forEach((line: any) => {
+            if (line.trim().length !== 0) {
+              const t = line.split(' ')
+              t.shift()
+              task.output = t.join(' ')
+            }
+          })
+        }
+
+        task.output = `Unpacking extension...`
+
+        return new Promise<void>((res) => {
+          mkdirSync(outPath, {
+            recursive: true,
+          })
+
+          const tarProc = execa('unzip', [ctx[name], '-d', outPath])
+
+          tarProc.stdout?.on('data', onData)
+          tarProc.stdout?.on('error', (data) => {
+            throw data
+          })
+
+          tarProc.on('exit', () => {
+            task.output = ''
+            res()
+          })
+        })
+      },
+    },
+    {
+      title: 'Generate mozbuild',
+      enabled: (ctx) => typeof ctx[name] !== 'undefined',
+      task: async (ctx, task) => {
+        const files = (await walkDirectory(outPath)).map((file) =>
+          file.replace(outPath + '/', '').replace(outPath, '')
+        )
+
+        const icons = files.filter((f) => f.endsWith('.svg'))
+        const fonts = files.filter(
+          (f) =>
+            f.endsWith('.ttf') || f.endsWith('.woff') || f.endsWith('.woff2')
+        )
+
+        const everythingElse = files.filter(
+          (f) => !(icons.includes(f) || fonts.includes(f))
+        )
+
+        writeFileSync(
+          join(outPath, 'moz.build'),
+          `
+DEFINES["MOZ_APP_VERSION"] = CONFIG["MOZ_APP_VERSION"]
+DEFINES["MOZ_APP_MAXVERSION"] = CONFIG["MOZ_APP_MAXVERSION"]
+
+FINAL_TARGET_FILES.features["${id}"] += [${everythingElse
+            .sort()
+            .map((f) => `"${f}"`)
+            .join(', ')}]
+
+FINAL_TARGET_FILES.features["${id}"].font += [${fonts
+            .sort()
+            .map((f) => `"${f}"`)
+            .join(', ')}]
+
+FINAL_TARGET_FILES.features["shield@privacy.dothq.co"].icons += [${icons
+            .sort()
+            .map((f) => `"${f}"`)
+            .join(',')}]`
+        )
+      },
+    },
+  ]
 }
 
 const unpackFirefoxSource = (
@@ -142,6 +278,24 @@ const unpackFirefoxSource = (
       res()
     })
   })
+}
+
+async function downloadAddon(
+  path: string,
+  url: string,
+  task: Listr.ListrTaskWrapper<any>
+): Promise<string> {
+  const outFileName = path.replace(/\//g, '-') + basename(url)
+
+  ensureDirSync(resolve(process.cwd(), `.dotbuild`, `engines`))
+
+  task.output = `Downloading ${url}`
+  await downloadFileToLocation(
+    url,
+    resolve(process.cwd(), `.dotbuild`, `engines`, outFileName)
+  )
+
+  return join(process.cwd(), `.dotbuild`, `engines`, outFileName)
 }
 
 async function downloadFirefoxSource(

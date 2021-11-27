@@ -1,5 +1,5 @@
 import execa from 'execa'
-import { existsSync } from 'fs'
+import { existsSync, mkdirSync } from 'fs'
 import { resolve } from 'path'
 import { log } from '..'
 
@@ -18,6 +18,10 @@ export const SRC_DIR = resolve(process.cwd(), 'src')
 export const PATCHES_DIR = resolve(process.cwd(), 'patches')
 export const COMMON_DIR = resolve(process.cwd(), 'common')
 export const CONFIGS_DIR = resolve(process.cwd(), 'configs')
+export const MELON_DIR = resolve(process.cwd(), '.dotbuild')
+export const MELON_TMP_DIR = resolve(process.cwd(), '.dotbuild', 'engine')
+
+mkdirSync(MELON_TMP_DIR, { recursive: true })
 
 export let CONFIG_GUESS: string = ''
 

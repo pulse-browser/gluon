@@ -63,7 +63,10 @@ export interface Config {
      */
     displayVersion: string
   }
-  buildOptions: { generateBranding: boolean }
+  buildOptions: {
+    generateBranding: boolean
+  }
+  addons: Record<string, { id: string; url: string }>
 }
 
 const defaultConfig: Config = {
@@ -78,6 +81,7 @@ const defaultConfig: Config = {
   buildOptions: {
     generateBranding: true,
   },
+  addons: {},
 }
 
 export function hasConfig(): boolean {
