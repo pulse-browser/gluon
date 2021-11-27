@@ -44,7 +44,7 @@
     "fs-extra": "^9.0.1",
     "glob": "^7.1.7",
     "linus": "^0.0.6",
-    "ora": "^5.4.1",
+    "listr": "^0.14.3",
     "prompts": "^2.4.1",
     "rimraf": "^3.0.2",
     "sharp": "^0.29.1"
@@ -52,6 +52,7 @@
   "devDependencies": {
     "@types/cli-progress": "^3.9.2",
     "@types/fs-extra": "^9.0.6",
+    "@types/listr": "^0.14.4",
     "@types/node": "^14.14.16",
     "@types/prompts": "^2.0.14",
     "@types/rimraf": "^3.0.0",
