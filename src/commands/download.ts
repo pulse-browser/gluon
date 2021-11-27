@@ -14,7 +14,7 @@ import Listr from 'listr'
 
 import { bin_name, config, log } from '..'
 import { ENGINE_DIR, MELON_TMP_DIR } from '../constants'
-import { getConfig, walkDirectory, writeMetadata } from '../utils'
+import { getConfig, walkDirectoryTree, writeMetadata } from '../utils'
 import { downloadFileToLocation } from '../utils/download'
 import { downloadArtifacts } from './download-artifacts'
 import { discard } from '.'
@@ -104,9 +104,7 @@ export const download = async (): Promise<void> => {
     },
     {
       title: 'Write metadata',
-      task: async () => {
-        writeMetadata()
-      },
+      task: () => writeMetadata(),
     },
     {
       title: 'Cleanup',
@@ -192,19 +190,41 @@ const includeAddon = (
       title: 'Generate mozbuild',
       enabled: (ctx) => typeof ctx[name] !== 'undefined',
       task: async (ctx, task) => {
-        const files = (await walkDirectory(outPath)).map((file) =>
-          file.replace(outPath + '/', '').replace(outPath, '')
-        )
+        const files = await walkDirectoryTree(outPath)
 
-        const icons = files.filter((f) => f.endsWith('.svg'))
-        const fonts = files.filter(
-          (f) =>
-            f.endsWith('.ttf') || f.endsWith('.woff') || f.endsWith('.woff2')
-        )
+        writeFileSync('out.json', JSON.stringify(files, null, 2))
 
-        const everythingElse = files.filter(
-          (f) => !(icons.includes(f) || fonts.includes(f))
-        )
+        function runTree(tree: any, parent: string): string {
+          if (Array.isArray(tree)) {
+            return tree
+              .sort()
+              .map(
+                (file) =>
+                  `FINAL_TARGET_FILES.features["${id}"]${parent} += ["${file
+                    .replace(outPath + '/', '')
+                    .replace(outPath, '')}"]`
+              )
+              .join('\n')
+          }
+
+          const current = (tree['.'] as string[])
+            .sort()
+            .map(
+              (f) =>
+                `FINAL_TARGET_FILES.features["${id}"]${parent} += ["${f
+                  .replace(outPath + '/', '')
+                  .replace(outPath, '')}"]`
+            )
+            .join('\n')
+
+          const children = Object.keys(tree)
+            .filter((folder) => folder !== '.')
+            .filter((folder) => typeof tree[folder] !== 'undefined')
+            .map((folder) => runTree(tree[folder], `${parent}["${folder}"]`))
+            .join('\n')
+
+          return `${current}\n${children}`
+        }
 
         writeFileSync(
           join(outPath, 'moz.build'),
@@ -212,20 +232,7 @@ const includeAddon = (
 DEFINES["MOZ_APP_VERSION"] = CONFIG["MOZ_APP_VERSION"]
 DEFINES["MOZ_APP_MAXVERSION"] = CONFIG["MOZ_APP_MAXVERSION"]
 
-FINAL_TARGET_FILES.features["${id}"] += [${everythingElse
-            .sort()
-            .map((f) => `"${f}"`)
-            .join(', ')}]
-
-FINAL_TARGET_FILES.features["${id}"].font += [${fonts
-            .sort()
-            .map((f) => `"${f}"`)
-            .join(', ')}]
-
-FINAL_TARGET_FILES.features["shield@privacy.dothq.co"].icons += [${icons
-            .sort()
-            .map((f) => `"${f}"`)
-            .join(',')}]`
+${runTree(files, '')}`
         )
       },
     },
