@@ -6,7 +6,7 @@ import execa from 'execa'
 import { ensureDirSync, removeSync } from 'fs-extra'
 import Listr from 'listr'
 
-import { bin_name, log } from '..'
+import { bin_name, config, log } from '..'
 import { ENGINE_DIR } from '../constants'
 import { getConfig, writeMetadata } from '../utils'
 import { downloadFileToLocation } from '../utils/download'
@@ -29,7 +29,10 @@ export const download = async (): Promise<void> => {
     {
       title: 'Downloading firefox source',
       skip: () => {
-        if (existsSync(ENGINE_DIR)) {
+        if (
+          existsSync(ENGINE_DIR) &&
+          existsSync(resolve(ENGINE_DIR, 'toolkit', 'moz.build'))
+        ) {
           return 'Firefox has already been downloaded, unpacked and inited'
         }
       },
@@ -88,7 +91,7 @@ export const download = async (): Promise<void> => {
   ]).run()
 
   log.success(
-    `You should be ready to make changes to Dot Browser.\n\n\t   You should import the patches next, run |${bin_name} import|.\n\t   To begin building Dot, run |${bin_name} build|.`
+    `You should be ready to make changes to ${config.name}.\n\n\t   You should import the patches next, run |${bin_name} import|.\n\t   To begin building ${config.name}, run |${bin_name} build|.`
   )
   console.log()
 }
