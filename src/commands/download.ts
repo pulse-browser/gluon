@@ -73,14 +73,16 @@ export const download = async (): Promise<void> => {
     },
     {
       title: 'Cleanup',
-      task: () => {
+      task: (ctx) => {
         let cwd = process.cwd().split(sep).join(posix.sep)
 
         if (process.platform == 'win32') {
           cwd = './'
         }
 
-        removeSync(resolve(cwd, '.dotbuild', 'engines', sourceFileName))
+        if (ctx.firefoxSourceTar) {
+          removeSync(resolve(cwd, '.dotbuild', 'engines', ctx.firefoxSourceTar))
+        }
       },
     },
   ]).run()
