@@ -27,7 +27,7 @@ export const commands: Cmd[] = [
     controller: bootstrap,
   },
   {
-    cmd: 'build [os]',
+    cmd: 'build',
     aliases: ['b'],
     description:
       'Build the melon app. Specify the OS param for cross-platform builds.',
