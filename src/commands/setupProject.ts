@@ -120,7 +120,6 @@ export async function setupProject(): Promise<void> {
       appId,
       version: { product, version, displayVersion: '1.0.0' },
       buildOptions: {
-        artifactBuilds: ui === 'uc',
         generateBranding: false,
       },
     }

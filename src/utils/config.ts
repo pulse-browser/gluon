@@ -63,23 +63,7 @@ export interface Config {
      */
     displayVersion: string
   }
-  buildOptions: {
-    /**
-     * Artifact builds are faster builds that only work when modifying a limited
-     * subset of firefox's source code. They download a majority of the source
-     * code from mozilla's servers and build the ui locally. Artifact builds work
-     * with ui changes, however do not work with:
-     *  - C, C++, Rust or other machine code
-     *  - Telemetry histogram definitions
-     *  - Some build system definitions
-     *
-     * Additionally, this will not work for other mozilla products like thunderbird
-     * if we ever provide support for those platforms.
-     */
-    artifactBuilds: boolean
-
-    generateBranding: boolean
-  }
+  buildOptions: { generateBranding: boolean }
 }
 
 const defaultConfig: Config = {
@@ -92,7 +76,6 @@ const defaultConfig: Config = {
     displayVersion: '1.0.0',
   },
   buildOptions: {
-    artifactBuilds: false,
     generateBranding: true,
   },
 }

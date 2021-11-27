@@ -39,7 +39,7 @@ function getMozPlatformIdentifier() {
   return platform
 }
 
-export const download = async () => {
+export const download = async (): Promise<void> => {
   setInterval(() => {
     if (initProgress) {
       initProgress.text = initProgressText
@@ -59,10 +59,6 @@ export const download = async () => {
 
   // The location to download the firefox source code from the web
   const sourceFileName = await downloadFirefoxSource(version)
-
-  const [artifactFileName, artifactID] = (await downloadArtifactBinary(
-    version
-  )) || [undefined, undefined]
 
   await unpackFirefoxSource(sourceFileName)
 
@@ -85,10 +81,6 @@ export const download = async () => {
   ;(initProc.stdout as any).on('error', (data: string) => log.warning(data))
 
   initProc.on('exit', async () => {
-    if (artifactFileName && artifactID) {
-      await unpackArtifact(artifactFileName, artifactID)
-    }
-
     log.success(
       `You should be ready to make changes to Dot Browser.\n\n\t   You should import the patches next, run |${bin_name} import|.\n\t   To begin building Dot, run |${bin_name} build|.`
     )
@@ -155,141 +147,6 @@ const unpackFirefoxSource = (name: string): Promise<void> => {
       res()
     })
   })
-}
-async function unpackArtifact(artifactFileName: string, artifactID: string) {
-  log.info('Unpacking artifact...')
-
-  await execa('tar', [
-    '--transform',
-    `s,${artifactID}/firefox,artifact-extracted,`,
-    '-xf',
-    resolve(process.cwd(), `.dotbuild`, `engines`, artifactFileName),
-  ])
-
-  log.info('Copying artifact...')
-
-  const artifactRoot = join(process.cwd(), 'firefox')
-  const items = await walkDirectory(artifactRoot)
-  const mozDistDir = join(ENGINE_DIR, 'obj-x86_64-pc-linux-gnu', 'dist', 'bin')
-
-  log.warning(
-    'Artifact unpack is assuming linux, which may cause issues later...'
-  )
-  log.warning(
-    'Please file an issue or pull request if you need this on another platform'
-  )
-
-  for (const item of items) {
-    const dest = join(mozDistDir, item.replace(artifactRoot, ''))
-    const destFolder = dirname(dest)
-
-    log.debug(`Copying ${item} from artifact to ${dest}`)
-
-    if (!existsSync(destFolder)) {
-      mkdirSync(destFolder, { recursive: true })
-    }
-
-    if (!existsSync(dest)) {
-      await execa('cp', [resolve('./firefox', item), dest])
-    }
-  }
-
-  rmdirSync('./firefox', { recursive: true })
-
-  log.success('Artifact unpacked successfully.')
-}
-
-async function downloadArtifactBinary(
-  version: string
-): Promise<[string, string] | undefined> {
-  if (config.buildOptions.artifactBuilds) {
-    if (config.version.product !== SupportedProducts.Firefox) {
-      log.error(
-        `'${config.version.product}' is not supported by the artifact build system currently. Either switch to firefox stable, disable artifact builds or submit a pull request to fix this...`
-      )
-      process.exit(-1)
-    }
-
-    const tag = `FIREFOX_${version.replace(/\./g, '_')}_RELEASE`
-
-    log.info(`Retrieving information for the tag ${tag}`)
-
-    const tagInfo = await (
-      await fetch(`https://moz-release-api.vercel.app/api/release?tag=${tag}`)
-    ).json()
-
-    if (tagInfo == {}) {
-      log.error(
-        `There doesn't appear to be any info for the tag '${tag}'. The release may not exist`
-      )
-      process.exit(-1)
-    }
-
-    const { treeherder } = tagInfo
-    const [repo, revision] = treeherder.split(' ')[0].split('@')
-
-    const pushList = await (
-      await fetch(
-        `https://treeherder.mozilla.org/api/project/${repo}/push/?full=true&count=1&revision=${revision}`
-      )
-    ).json()
-
-    const [pushInfo] = pushList.results
-
-    const { results } = await (
-      await fetch(
-        `https://treeherder.mozilla.org/api/jobs/?push_id=${pushInfo.id}`,
-        {
-          headers: {
-            'User-Agent':
-              'Mozilla/5.0 (X11; Linux x86_64; rv:94.0) Gecko/20100101 Firefox/94.0',
-            Accept: '*/*',
-            'Accept-Language': 'en-US,en;q=0.5',
-            'Sec-Fetch-Dest': 'empty',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Site': 'same-origin',
-            Pragma: 'no-cache',
-            'Cache-Control': 'no-cache',
-          },
-          method: 'GET',
-        }
-      )
-    ).json()
-
-    const possibleBinaries = results.filter(
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      ([_1, _2, _3, _4, _5, jobLetter]: (string | number)[]) =>
-        jobLetter === 'B'
-    )
-
-    const target = `build-${getMozPlatformIdentifier()}/debug`
-
-    const targetInfo = (possibleBinaries as (string | number)[][]).find(
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      ([_1, _2, _3, _4, targetId]) => targetId === target
-    )
-
-    if (!targetInfo) {
-      log.error("There doesn't appear to be a target for " + target)
-      process.exit(1)
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, runID] =
-      targetInfo
-
-    const primaryDownload = `https://firefox-ci-tc.services.mozilla.com/api/queue/v1/task/${runID}/runs/0/artifacts/public%2Fbuild%2Ftarget.tar.bz2`
-    const artifactFileName = `${runID}-target.tar.bz2`
-
-    log.info(`Downloading artifact ${runID}...`)
-
-    await downloadFileToLocation(
-      primaryDownload,
-      resolve(process.cwd(), `.dotbuild`, `engines`, artifactFileName)
-    )
-
-    return [artifactFileName, `${runID}-target`]
-  }
 }
 
 async function downloadFirefoxSource(version: string) {
