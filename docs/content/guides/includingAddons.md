@@ -19,6 +19,70 @@ Melon provides an automated system for including extensions in your project. The
 }
 ```
 
+Note that the `id` is the gecko application id specified in the `manifest.json`.
+
+```json
+{
+  // ...
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "uBlock0@raymondhill.net",
+      "strict_min_version": "60.0"
+    }
+  }
+
+  // ...
+}
+```
+
 ## Specifying location in customizable ui
 
-TODO: Docs: Specifying location in customizable ui
+By default, when an addon with a toolbar button, it will placed next to the hamburger menu. However, you may want to place it somewhere else. To do this, you must change the customizable ui in a similar way to how you would to remove pocket.
+
+You are going to want to open `engine/browser/components/customizableui/CustomizableUI.jsm`. At the top, you want to import the `ExtensionCommon` module.
+
+```js
+const { makeWidgetId } = ChromeUtils.import(
+  'resource://gre/modules/ExtensionCommon.jsm'
+).ExtensionCommon
+```
+
+Then, at the top add a constant with the id of the addon at the top of the file, for example:
+
+```js
+const kUBlockOriginID = 'uBlock0@raymondhill.net'
+```
+
+Now, you can go down to the `navbarPlacements` array (around line 240) and add
+
+```js
+`${makeWidgetId(kUBlockOriginID)}-browser-action`,
+```
+
+To the array where you want the icon to appear, for example:
+
+```js
+let navbarPlacements = [
+  'back-button',
+  'forward-button',
+  'stop-reload-button',
+  Services.policies.isAllowed('removeHomeButtonByDefault')
+    ? null
+    : 'home-button',
+  'spring',
+  `${makeWidgetId(kUBlockOriginID)}-browser-action`,
+  'urlbar-container',
+  'spring',
+  'save-to-pocket-button',
+  'downloads-button',
+  AppConstants.MOZ_DEV_EDITION ? 'developer-button' : null,
+  'fxa-toolbar-menu-button',
+].filter((name) => name)
+```
+
+Finally, export the changes you have made:
+
+```sh
+melon export-file browser/components/customizableui/CustomizableUI.jsm
+```
