@@ -10,12 +10,7 @@ import { log } from '..'
 import { CONFIGS_DIR, ENGINE_DIR, PATCH_ARGS } from '../constants'
 import { copyManual, walkDirectory } from '../utils'
 
-export interface IPatchApplier {
-  apply: () => Promise<void>
-  applyWithStatus: (status: [number, number]) => Promise<void>
-}
-
-export class PatchBase {
+export abstract class PatchBase {
   protected name: string
 
   protected status: number[]
@@ -80,14 +75,15 @@ export class PatchBase {
     )
   }
 
-  public async applyWithStatus(status: [number, number]): Promise<void> {
+  public applyWithStatus(status: [number, number]): Promise<void> {
     this.status = status
-    if (!(this as unknown as IPatchApplier).apply) return
-    await (this as unknown as IPatchApplier).apply()
+    return this.apply()
   }
+
+  abstract apply(): Promise<void>
 }
 
-export class ManualPatch extends PatchBase implements IPatchApplier {
+export class ManualPatch extends PatchBase {
   private action: 'copy' | 'delete'
 
   private src: string | string[]
@@ -175,7 +171,7 @@ export class ManualPatch extends PatchBase implements IPatchApplier {
   }
 }
 
-export class PatchFile extends PatchBase implements IPatchApplier {
+export class PatchFile extends PatchBase {
   private src: string
 
   constructor(
@@ -210,70 +206,6 @@ export class PatchFile extends PatchBase implements IPatchApplier {
       )
 
       if (exitCode != 0) throw stdout
-
-      this.done = true
-    } catch (e) {
-      this.error = e
-      this.done = false
-    }
-  }
-}
-
-const BRANDING_DIR = join(CONFIGS_DIR, 'branding')
-const BRANDING_FF = join(ENGINE_DIR, 'browser', 'branding', 'unofficial')
-
-export class BrandingPatch extends PatchBase implements IPatchApplier {
-  constructor(minimal?: boolean) {
-    super('Browser branding', [1, 1], { minimal })
-  }
-
-  async apply(): Promise<void> {
-    this.start()
-
-    if (!existsSync(BRANDING_DIR)) {
-      this.done = true
-
-      info("No branding specified. Using firefox's default")
-      return
-    }
-
-    try {
-      if (!existsSync(join(BRANDING_DIR, 'logo.png'))) {
-        throw new Error(`Please provide a "logo.png" file inside of "${BRANDING_DIR}" if you wish to use branding
-\n\nAlternatively, you can delete "${BRANDING_DIR}" to use firefox's trademarkless branding`)
-      }
-
-      // Ensure the destination directory structure exists
-      const dest = join(ENGINE_DIR, 'branding', 'melon')
-      mkdirpSync(dest)
-
-      // Delete the old branding
-      ;(await walkDirectory(dest))
-        .filter((file) => file.includes('default.png'))
-        .forEach((file) => rmSync(file, { force: true }))
-
-      for (const size of [16, 22, 24, 32, 48, 64, 128, 256]) {
-        await sharp(join(BRANDING_DIR, 'logo.png'))
-          .resize(size, size)
-          .toFile(join(dest, `default${size}.png`))
-      }
-
-      await sharp(join(BRANDING_DIR, 'logo.png'))
-        .resize(512, 512)
-        .toFile(join(dest, 'firefox.ico'))
-      await sharp(join(BRANDING_DIR, 'logo.png'))
-        .resize(64, 64)
-        .toFile(join(dest, 'firefox64.ico'))
-
-      // Copy everything else from the default firefox branding directory
-      ;(await walkDirectory(BRANDING_FF))
-        .filter(
-          (file) => !existsSync(join(dest, file.replace(BRANDING_FF, '')))
-        )
-        .forEach((file) => {
-          mkdirpSync(dirname(join(dest, file.replace(BRANDING_FF, ''))))
-          copyFileSync(file, join(dest, file.replace(BRANDING_FF, '')))
-        })
 
       this.done = true
     } catch (e) {
