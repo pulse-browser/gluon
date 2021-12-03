@@ -1,30 +1,24 @@
-import { writeFileSync } from 'fs'
+import { lstatSync, readdirSync, writeFileSync } from 'fs'
 import { sync } from 'glob'
-import { resolve } from 'path'
+import { join, resolve } from 'path'
 import { config, log } from '..'
 import { SRC_DIR } from '../constants'
-import {
-  BrandingPatch,
-  IPatchApplier,
-  ManualPatch,
-  PatchFile,
-} from '../controllers/patch'
+import { BrandingPatch, BRANDING_DIR } from '../controllers/brandingPatch'
+import { ManualPatch, PatchBase, PatchFile } from '../controllers/patch'
 import manualPatches from '../manual-patches'
 import { patchCountFile } from '../middleware/patch-check'
 import { walkDirectory } from '../utils'
+
+function enumerate<T>(array: T[]): [T, number][] {
+  return array.map<[T, number]>((item, i) => [item, i])
+}
 
 const importManual = async (minimal?: boolean, noIgnore?: boolean) => {
   log.info(`Applying ${manualPatches.length} manual patches...`)
 
   if (!minimal) console.log()
 
-  const total = 0
-
-  let i = 0
-
-  for await (const { name, action, src } of manualPatches) {
-    ++i
-
+  for await (const [{ name, action, src }, i] of enumerate(manualPatches)) {
     const patch = new ManualPatch(
       name,
       [i, manualPatches.length],
@@ -45,8 +39,6 @@ const importManual = async (minimal?: boolean, noIgnore?: boolean) => {
   const fileCount = fileList.length
 
   writeFileSync(patchCountFile, fileCount.toString())
-
-  return total
 }
 
 const importPatchFiles = async (minimal?: boolean, noIgnore?: boolean) => {
@@ -63,11 +55,7 @@ const importPatchFiles = async (minimal?: boolean, noIgnore?: boolean) => {
 
   if (!minimal) console.log()
 
-  let i = 0
-
-  for await (const patchName of patches) {
-    ++i
-
+  for await (const [patchName, i] of enumerate(patches)) {
     const patch = new PatchFile(
       patchName,
       [i, patches.length],
@@ -91,20 +79,23 @@ const importPatchFiles = async (minimal?: boolean, noIgnore?: boolean) => {
   log.success(`Successfully imported ${patches.length} patch files!`)
 }
 
-const importMelonPatches = async (minimal?: boolean, noIgnore?: boolean) => {
-  const patches: IPatchApplier[] = []
-
-  if (config.buildOptions.generateBranding) new BrandingPatch(minimal)
+const importMelonPatches = async (minimal?: boolean) => {
+  const patches: PatchBase[] = []
 
   log.info(`Applying ${patches.length} melon patches...`)
 
+  if (config.buildOptions.generateBranding) {
+    for (const brandingStyle of readdirSync(BRANDING_DIR).filter((file) =>
+      lstatSync(join(BRANDING_DIR, file)).isDirectory()
+    )) {
+      console.log(brandingStyle)
+      patches.push(new BrandingPatch(brandingStyle, minimal))
+    }
+  }
+
   if (!minimal) console.log()
 
-  let i = 0
-
-  for await (const patch of patches) {
-    ++i
-
+  for await (const [patch, i] of enumerate(patches)) {
     await patch.applyWithStatus([i, patches.length])
   }
 
@@ -126,7 +117,7 @@ export const importPatches = async (
     if (type == 'manual') await importManual(args.minimal)
     else if (type == 'file') await importPatchFiles(args.minimal)
   } else {
-    await importMelonPatches(args.minimal, args.noignore)
+    await importMelonPatches(args.minimal)
     await importManual(args.minimal, args.noignore)
     await importPatchFiles(args.minimal, args.noignore)
   }

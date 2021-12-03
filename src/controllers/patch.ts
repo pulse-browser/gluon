@@ -80,6 +80,10 @@ export abstract class PatchBase {
     return this.apply()
   }
 
+  protected filesExist(files: string[]): boolean {
+    return files.every((file) => existsSync(file))
+  }
+
   abstract apply(): Promise<void>
 }
 
