@@ -67,6 +67,9 @@ export interface Config {
     generateBranding: boolean
   }
   addons: Record<string, { id: string; url: string }>
+  branding: {
+    backgroundColor: string
+  }
 }
 
 const defaultConfig: Config = {
@@ -82,6 +85,9 @@ const defaultConfig: Config = {
     generateBranding: true,
   },
   addons: {},
+  branding: {
+    backgroundColor: '#2B2A33',
+  },
 }
 
 export function hasConfig(): boolean {

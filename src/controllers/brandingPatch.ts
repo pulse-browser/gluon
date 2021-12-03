@@ -1,8 +1,16 @@
-import { copyFileSync, existsSync, mkdirSync, rmdirSync, rmSync } from 'fs'
+import {
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  rmdirSync,
+  rmSync,
+  writeFileSync,
+} from 'fs'
 import { mkdirpSync } from 'fs-extra'
-import { dirname, join } from 'path'
+import { dirname, extname, join } from 'path'
 import sharp from 'sharp'
-import { log } from '..'
+import { config, log } from '..'
 
 import { CONFIGS_DIR, ENGINE_DIR } from '../constants'
 import { walkDirectory } from '../utils'
@@ -11,6 +19,11 @@ import { PatchBase } from './patch'
 export const BRANDING_DIR = join(CONFIGS_DIR, 'branding')
 const BRANDING_STORE = join(ENGINE_DIR, 'browser', 'branding')
 const BRANDING_FF = join(BRANDING_STORE, 'unofficial')
+
+const CSS_REPLACE_REGEX = new RegExp(
+  '#130829|hsla\\(235, 43%, 10%, .5\\)',
+  'gm'
+)
 
 export class BrandingPatch extends PatchBase {
   name: string
@@ -89,21 +102,37 @@ export class BrandingPatch extends PatchBase {
 
       log.debug(`Copying files from ${BRANDING_FF}`)
 
-      // Copy everything else from the default firefox branding directory
-      ;(await walkDirectory(BRANDING_FF))
-        .filter(
-          (file) =>
-            !existsSync(join(this.outputPath, file.replace(BRANDING_FF, '')))
-        )
-        .forEach((file) => {
-          mkdirpSync(
-            dirname(join(this.outputPath, file.replace(BRANDING_FF, '')))
-          )
-          copyFileSync(
-            file,
-            join(this.outputPath, file.replace(BRANDING_FF, ''))
-          )
+      const files = (await walkDirectory(BRANDING_FF)).filter(
+        (file) =>
+          !existsSync(join(this.outputPath, file.replace(BRANDING_FF, '')))
+      )
+
+      const css = files.filter((file) => extname(file).includes('css'))
+
+      const everythingElse = files.filter((file) => !css.includes(file))
+
+      css
+        .map((filePath) => [
+          readFileSync(filePath, 'utf-8'),
+          join(this.outputPath, filePath.replace(BRANDING_FF, '')),
+        ])
+        .map(([contents, path]) => [
+          contents.replace(CSS_REPLACE_REGEX, 'var(--theme-bg)') +
+            `:root { --theme-bg: ${config.branding.backgroundColor} }`,
+          path,
+        ])
+        .forEach(([contents, path]) => {
+          mkdirSync(dirname(path), { recursive: true })
+          writeFileSync(path, contents)
         })
+
+      // Copy everything else from the default firefox branding directory
+      everythingElse.forEach((file) => {
+        mkdirpSync(
+          dirname(join(this.outputPath, file.replace(BRANDING_FF, '')))
+        )
+        copyFileSync(file, join(this.outputPath, file.replace(BRANDING_FF, '')))
+      })
 
       this.done = true
     } catch (e) {
