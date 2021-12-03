@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\"",
-    "build": "rm -rf dist/ && tsc && echo \"#!/bin/node\"|cat - ./dist/index.js > /tmp/out && mv /tmp/out ./dist/index.js && chmod +x ./dist/index.js",
+    "build": "rm -rf dist/ && tsc && echo \"#!/usr/bin/env node\"|cat - ./dist/index.js > /tmp/out && mv /tmp/out ./dist/index.js && chmod +x ./dist/index.js",
     "format": "prettier . -w",
     "lint": "eslint .",
     "app": "ts-node ./src/index",
