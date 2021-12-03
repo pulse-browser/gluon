@@ -3,18 +3,23 @@ import {
   mkdirSync,
   readFileSync,
   rmdirSync,
+  unlinkSync,
   writeFileSync,
 } from 'fs'
 import { homedir } from 'os'
 import { basename, join, posix, resolve, sep } from 'path'
 
 import execa from 'execa'
-import { ensureDirSync, removeSync } from 'fs-extra'
 import Listr from 'listr'
 
 import { bin_name, config, log } from '..'
 import { ENGINE_DIR, MELON_TMP_DIR } from '../constants'
-import { getConfig, walkDirectoryTree, writeMetadata } from '../utils'
+import {
+  ensureDir,
+  getConfig,
+  walkDirectoryTree,
+  writeMetadata,
+} from '../utils'
 import { downloadFileToLocation } from '../utils/download'
 import { downloadArtifacts } from './download-artifacts'
 import { discard } from '.'
@@ -116,7 +121,7 @@ export const download = async (): Promise<void> => {
         }
 
         if (ctx.firefoxSourceTar) {
-          removeSync(resolve(cwd, '.dotbuild', 'engines', ctx.firefoxSourceTar))
+          unlinkSync(resolve(cwd, '.dotbuild', 'engines', ctx.firefoxSourceTar))
         }
       },
     },
@@ -262,10 +267,8 @@ const unpackFirefoxSource = (
 
     task.output = `Unpacking Firefox...`
 
-    try {
-      rmdirSync(ENGINE_DIR)
-    } catch (e) {}
-    ensureDirSync(ENGINE_DIR)
+    if (existsSync(ENGINE_DIR)) rmdirSync(ENGINE_DIR)
+    mkdirSync(ENGINE_DIR)
 
     const tarProc = execa('tar', [
       '--transform',
@@ -292,7 +295,7 @@ async function downloadAddon(
 ): Promise<string> {
   const outFileName = path.replace(/\//g, '-') + basename(url)
 
-  ensureDirSync(resolve(process.cwd(), `.dotbuild`, `engines`))
+  await ensureDir(resolve(process.cwd(), `.dotbuild`, `engines`))
 
   task.output = `Downloading ${url}`
   await downloadFileToLocation(
@@ -314,7 +317,7 @@ async function downloadFirefoxSource(
 
   task.output = `Locating Firefox release ${version}...`
 
-  ensureDirSync(resolve(process.cwd(), `.dotbuild`, `engines`))
+  await ensureDir(resolve(process.cwd(), `.dotbuild`, `engines`))
 
   if (
     existsSync(

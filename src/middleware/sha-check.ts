@@ -1,5 +1,5 @@
 import execa from 'execa'
-import { existsSync, readFileSync } from 'fs-extra'
+import { existsSync, readFileSync } from 'fs'
 import { resolve } from 'path'
 import { bin_name, log } from '..'
 

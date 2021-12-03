@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import { readFileSync } from 'fs-extra'
+import { readFileSync } from 'fs'
 import { resolve } from 'path'
 import { log } from '..'
 

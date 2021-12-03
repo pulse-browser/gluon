@@ -1,5 +1,5 @@
 import execa from 'execa'
-import { existsSync } from 'fs-extra'
+import { existsSync } from 'fs'
 import { resolve } from 'path'
 import prompts from 'prompts'
 import rimraf from 'rimraf'

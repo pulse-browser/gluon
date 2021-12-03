@@ -7,14 +7,18 @@ import {
   rmdirSync,
   writeFileSync,
 } from 'fs'
-import { mkdirpSync } from 'fs-extra'
 import { dirname, extname, join } from 'path'
 import sharp from 'sharp'
 import { config, log } from '..'
 import { templateDir } from '../commands'
 
 import { CONFIGS_DIR, ENGINE_DIR } from '../constants'
-import { defaultBrandsConfig, stringTemplate, walkDirectory } from '../utils'
+import {
+  defaultBrandsConfig,
+  mkdirpSync,
+  stringTemplate,
+  walkDirectory,
+} from '../utils'
 import { PatchBase } from './patch'
 
 export const BRANDING_DIR = join(CONFIGS_DIR, 'branding')

@@ -1,12 +1,11 @@
 import execa from 'execa'
 import { existsSync, writeFileSync } from 'fs'
-import { ensureDirSync } from 'fs-extra'
 import { resolve } from 'path'
 import { log } from '..'
 import { ENGINE_DIR, SRC_DIR } from '../constants'
-import { delay } from '../utils'
+import { delay, ensureDir } from '../utils'
 
-export const exportFile = async (file: string) => {
+export const exportFile = async (file: string): Promise<void> => {
   log.info(`Exporting ${file}...`)
 
   if (!existsSync(resolve(ENGINE_DIR, file)))
@@ -28,15 +27,13 @@ export const exportFile = async (file: string) => {
       stripFinalNewline: false,
     }
   )
-  const name =
-    `${file
-      .split('/')
-      [file.replace(/\./g, '-').split('/').length - 1].replace(/\./g, '-') 
-    }.patch`
+  const name = `${file
+    .split('/')
+    [file.replace(/\./g, '-').split('/').length - 1].replace(/\./g, '-')}.patch`
 
   const patchPath = file.replace(/\./g, '-').split('/').slice(0, -1)
 
-  ensureDirSync(resolve(SRC_DIR, ...patchPath))
+  await ensureDir(resolve(SRC_DIR, ...patchPath))
 
   if (proc.stdout.length >= 8000) {
     log.warning('')

@@ -1,17 +1,16 @@
 import { existsSync } from 'fs'
-import {
-  appendFileSync,
-  ensureSymlink,
-  lstatSync,
-  readFileSync,
-} from 'fs-extra'
+import { lstatSync, readFileSync } from 'fs'
 import { resolve } from 'path'
 import rimraf from 'rimraf'
+import { appendToFileSync, createSymlink } from '.'
 import { ENGINE_DIR, SRC_DIR } from '../constants'
 
 const getChunked = (location: string) => location.replace(/\\/g, '/').split('/')
 
-export const copyManual = (name: string, noIgnore?: boolean): void => {
+export const copyManual = async (
+  name: string,
+  noIgnore?: boolean
+): Promise<void> => {
   try {
     // If the file exists and is not a symlink, we want to replace it with a
     // symlink to our file, so remove it
@@ -23,7 +22,7 @@ export const copyManual = (name: string, noIgnore?: boolean): void => {
     }
 
     // Create the symlink
-    ensureSymlink(
+    await createSymlink(
       resolve(SRC_DIR, ...getChunked(name)),
       resolve(ENGINE_DIR, ...getChunked(name))
     )
@@ -32,7 +31,7 @@ export const copyManual = (name: string, noIgnore?: boolean): void => {
       const gitignore = readFileSync(resolve(ENGINE_DIR, '.gitignore'), 'utf-8')
 
       if (!gitignore.includes(getChunked(name).join('/')))
-        appendFileSync(
+        appendToFileSync(
           resolve(ENGINE_DIR, '.gitignore'),
           `\n${getChunked(name).join('/')}`
         )

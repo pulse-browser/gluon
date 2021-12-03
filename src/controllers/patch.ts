@@ -1,14 +1,11 @@
 import chalk from 'chalk'
-import { info } from 'console'
 import execa from 'execa'
-import { copyFileSync } from 'fs'
-import { existsSync, mkdirpSync, rmdirSync, rmSync, statSync } from 'fs-extra'
-import { dirname, join, resolve } from 'path'
+import { existsSync, rmdirSync, rmSync, statSync } from 'fs'
+import { resolve } from 'path'
 import readline from 'readline'
-import sharp from 'sharp'
 import { log } from '..'
-import { CONFIGS_DIR, ENGINE_DIR, PATCH_ARGS } from '../constants'
-import { copyManual, walkDirectory } from '../utils'
+import { ENGINE_DIR, PATCH_ARGS } from '../constants'
+import { copyManual } from '../utils'
 
 export abstract class PatchBase {
   protected name: string
@@ -135,10 +132,10 @@ export class ManualPatch extends PatchBase {
       switch (this.action) {
         case 'copy':
           if (typeof this.src === 'string') {
-            copyManual(this.src, this.options.noIgnore)
+            await copyManual(this.src, this.options.noIgnore)
           } else if (Array.isArray(this.src)) {
             for (const item of this.src) {
-              copyManual(item, this.options.noIgnore)
+              await copyManual(item, this.options.noIgnore)
             }
           } else {
             throw new Error(

@@ -1,5 +1,6 @@
-import { readdir, stat } from 'fs/promises'
-import { join, isAbsolute } from 'path'
+import { closeSync, existsSync, mkdirSync, openSync, writeSync } from 'fs'
+import { mkdir, readdir, stat, symlink } from 'fs/promises'
+import { join, isAbsolute, dirname, relative } from 'path'
 
 import { log } from '..'
 
@@ -69,4 +70,76 @@ export async function walkDirectoryTree(
   }
 
   return output
+}
+
+export async function ensureDir(dirName: string): Promise<void> {
+  if (!existsSync(dirName)) {
+    await mkdirp(dirName)
+  }
+}
+
+export function mkdirp(dirName: string): Promise<string | undefined> {
+  return mkdir(dirName, { recursive: true })
+}
+
+export function mkdirpSync(dirName: string): string | undefined {
+  return mkdirSync(dirName, { recursive: true })
+}
+
+export function appendToFileSync(fileName: string, content: string): void {
+  const file = openSync(fileName, 'a')
+  writeSync(file, content)
+  closeSync(file)
+}
+
+export async function createSymlink(
+  srcPath: string,
+  destPath: string,
+  type?: string
+): Promise<void> {
+  if (existsSync(destPath)) return
+
+  const { toDest: src } = symlinkPaths(srcPath, destPath)
+
+  const dir = dirname(destPath)
+  const exists = existsSync(dir)
+  if (exists) return await symlink(src, destPath, type)
+  await mkdirp(dir)
+  return await symlink(src, destPath, type)
+}
+
+/**
+ * Adapted from fs-extra
+ * @param srcPath
+ * @param destPath
+ * @returns
+ */
+export function symlinkPaths(
+  srcPath: string,
+  destPath: string
+): { toCwd: string; toDest: string } {
+  if (isAbsolute(srcPath)) {
+    if (!existsSync(srcPath)) throw new Error('absolute srcpath does not exist')
+
+    return {
+      toCwd: srcPath,
+      toDest: srcPath,
+    }
+  } else {
+    const dstdir = dirname(destPath)
+    const relativeToDst = join(dstdir, srcPath)
+    if (existsSync(relativeToDst))
+      return {
+        toCwd: relativeToDst,
+        toDest: srcPath,
+      }
+    else {
+      if (!existsSync(srcPath))
+        throw new Error('relative srcpath does not exist')
+      return {
+        toCwd: srcPath,
+        toDest: relative(dstdir, srcPath),
+      }
+    }
+  }
 }

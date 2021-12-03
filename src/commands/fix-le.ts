@@ -1,10 +1,10 @@
-import { existsSync, readdirSync, readFileSync } from 'fs-extra'
+import { existsSync, readdirSync, readFileSync } from 'fs'
 import { resolve } from 'path'
 import { log } from '..'
 import { ENGINE_DIR, PATCHES_DIR } from '../constants'
 import { dispatch } from '../utils'
 
-export const fixLineEndings = async () => {
+export const fixLineEndings = async (): Promise<void> => {
   let patches = readdirSync(PATCHES_DIR)
 
   patches = patches.filter((p) => p !== '.index')

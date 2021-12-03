@@ -1,5 +1,5 @@
 import execa from 'execa'
-import { writeFileSync } from 'fs-extra'
+import { writeFileSync } from 'fs'
 import { resolve } from 'path'
 import { config } from '..'
 

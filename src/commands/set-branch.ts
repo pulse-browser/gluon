@@ -1,9 +1,9 @@
 import execa from 'execa'
-import { existsSync, readFileSync, writeFileSync } from 'fs-extra'
+import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { resolve } from 'path'
 import { log } from '..'
 
-export const setBranch = async (branch: string) => {
+export const setBranch = async (branch: string): Promise<void> => {
   if (!existsSync(resolve(process.cwd(), '.dotbuild', 'metadata'))) {
     return log.error('Cannot find metadata, aborting...')
   }
