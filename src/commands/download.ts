@@ -60,8 +60,9 @@ export const download = async (): Promise<void> => {
     {
       title: 'Unpack firefox source',
       enabled: (ctx) => ctx.firefoxSourceTar,
-      task: async (ctx, task) =>
-        await unpackFirefoxSource(ctx.firefoxSourceTar, task),
+      task: async (ctx, task) => {
+        await unpackFirefoxSource(ctx.firefoxSourceTar, task)
+      },
     },
     {
       title: 'Install windows artifacts',
@@ -78,7 +79,7 @@ export const download = async (): Promise<void> => {
     {
       title: 'Init firefox',
       enabled: (ctx) => ctx.firefoxSourceTar && !process.env.CI_SKIP_INIT,
-      task: async () => await init('engine'),
+      task: async () => await init(ENGINE_DIR),
     },
     ...addons
       .map((addon) => includeAddon(addon.name, addon.url, addon.id))
@@ -144,7 +145,7 @@ const includeAddon = (
           return `${downloadURL} has already been loaded to ${name}`
         }
       },
-      task: async (ctx, task) => {
+      task: async (ctx) => {
         await downloadFileToLocation(downloadURL, tempFile)
         ctx[name] = tempFile
       },
@@ -237,10 +238,10 @@ ${runTree(files, '')}`
   ]
 }
 
-const unpackFirefoxSource = (
+async function unpackFirefoxSource(
   name: string,
   task: Listr.ListrTaskWrapper<any>
-): Promise<void> => {
+): Promise<void> {
   const onData = (data: any) => {
     const d = data.toString()
 
@@ -253,52 +254,33 @@ const unpackFirefoxSource = (
     })
   }
 
-  return new Promise((res) => {
-    let cwd = process.cwd().split(sep).join(posix.sep)
+  let cwd = process.cwd().split(sep).join(posix.sep)
 
-    if (process.platform == 'win32') {
-      cwd = './'
-    }
+  if (process.platform == 'win32') {
+    cwd = './'
+  }
 
-    task.output = `Unpacking Firefox...`
+  task.output = `Unpacking Firefox...`
 
-    if (existsSync(ENGINE_DIR)) rmdirSync(ENGINE_DIR)
-    mkdirSync(ENGINE_DIR)
+  if (existsSync(ENGINE_DIR)) rmdirSync(ENGINE_DIR)
+  mkdirSync(ENGINE_DIR)
 
-    const tarProc = execa('tar', [
+  try {
+    await execa('tar', [
       '--transform',
       `s,firefox-${gFFVersion},engine,`,
       `--show-transformed`,
       '-xf',
       resolve(cwd, '.dotbuild', 'engines', name),
     ])
+  } catch (e) {
+    let error = e as unknown as Error
+    error.message = `\nThe following error may have been caused because you are using bsdtar.
+For MacOS users, please run |brew install gnu-tar| if the error includes "--transform is not supported"
+${error.message}`
 
-    tarProc.stdout?.on('data', onData)
-    tarProc.stdout?.on('error', onData)
-
-    tarProc.on('exit', () => {
-      task.output = ''
-      res()
-    })
-  })
-}
-
-async function downloadAddon(
-  path: string,
-  url: string,
-  task: Listr.ListrTaskWrapper<any>
-): Promise<string> {
-  const outFileName = path.replace(/\//g, '-') + basename(url)
-
-  await ensureDir(resolve(process.cwd(), `.dotbuild`, `engines`))
-
-  task.output = `Downloading ${url}`
-  await downloadFileToLocation(
-    url,
-    resolve(process.cwd(), `.dotbuild`, `engines`, outFileName)
-  )
-
-  return join(process.cwd(), `.dotbuild`, `engines`, outFileName)
+    throw e
+  }
 }
 
 async function downloadFirefoxSource(
