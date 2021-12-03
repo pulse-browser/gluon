@@ -4,7 +4,7 @@ import { resolve } from 'path'
 import { bin_name, log } from '..'
 import { dispatch } from '../utils'
 
-export const init = async (directory: Command): Promise<void> => {
+export const init = async (directory: Command | string): Promise<void> => {
   if (process.platform == 'win32') {
     // Because Windows cannot handle paths correctly, we're just calling a script as the workaround.
     log.info(

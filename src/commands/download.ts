@@ -22,7 +22,7 @@ import {
 } from '../utils'
 import { downloadFileToLocation } from '../utils/download'
 import { downloadArtifacts } from './download-artifacts'
-import { discard } from '.'
+import { discard, init } from '.'
 
 const gFFVersion = getConfig().version.version
 
@@ -60,9 +60,8 @@ export const download = async (): Promise<void> => {
     {
       title: 'Unpack firefox source',
       enabled: (ctx) => ctx.firefoxSourceTar,
-      task: async (ctx, task) => {
-        await unpackFirefoxSource(ctx.firefoxSourceTar, task)
-      },
+      task: async (ctx, task) =>
+        await unpackFirefoxSource(ctx.firefoxSourceTar, task),
     },
     {
       title: 'Install windows artifacts',
@@ -79,11 +78,7 @@ export const download = async (): Promise<void> => {
     {
       title: 'Init firefox',
       enabled: (ctx) => ctx.firefoxSourceTar && !process.env.CI_SKIP_INIT,
-      // TODO: Call init as a function rather than using npx
-      task: async (_ctx, task) => {
-        const initProc = execa('npx', ['melon', 'ff-init', 'engine'])
-        initProc.stdout?.on('data', (data: string) => (task.output = data))
-      },
+      task: async () => await init('engine'),
     },
     ...addons
       .map((addon) => includeAddon(addon.name, addon.url, addon.id))
