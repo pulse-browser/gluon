@@ -1,10 +1,22 @@
 import { Command } from 'commander'
 import { existsSync, readFileSync } from 'fs'
+import Listr from 'listr'
 import { resolve } from 'path'
 import { bin_name, log } from '..'
 import { dispatch } from '../utils'
 
-export const init = async (directory: Command | string): Promise<void> => {
+export const init = async (
+  directory: Command | string,
+  task?: Listr.ListrTaskWrapper<any>
+): Promise<void> => {
+  function logInfo(data: string) {
+    if (task) {
+      task.output = data
+    } else {
+      log.info(data)
+    }
+  }
+
   if (process.platform == 'win32') {
     // Because Windows cannot handle paths correctly, we're just calling a script as the workaround.
     log.info(
@@ -41,14 +53,28 @@ export const init = async (directory: Command | string): Promise<void> => {
 
   version = version.trim().replace(/\\n/g, '')
 
-  log.info('Initializing git, this may take some time')
-  await dispatch('git', ['init'], dir as string)
-  await dispatch('git', ['checkout', '--orphan', version], dir as string)
-  await dispatch('git', ['add', '-f', '.'], dir as string)
+  logInfo('Initializing git, this may take some time')
+  await dispatch('git', ['init'], dir as string, false, logInfo)
+  await dispatch(
+    'git',
+    ['checkout', '--orphan', version],
+    dir as string,
+    false,
+    logInfo
+  )
+  await dispatch('git', ['add', '-f', '.'], dir as string, false, logInfo)
   await dispatch(
     'git',
     ['commit', '-am', `"Firefox ${version}"`],
-    dir as string
+    dir as string,
+    false,
+    logInfo
   )
-  await dispatch('git', ['checkout', '-b', 'dot'], dir as string)
+  await dispatch(
+    'git',
+    ['checkout', '-b', 'dot'],
+    dir as string,
+    false,
+    logInfo
+  )
 }

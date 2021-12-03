@@ -19,7 +19,6 @@ export const run = async (chrome?: string) => {
       './mach',
       ['run'].concat(chrome ? ['-chrome', chrome] : []),
       ENGINE_DIR,
-      true,
       true
     )
   } else {

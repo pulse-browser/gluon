@@ -17,7 +17,7 @@ export const execute = async (_: any, cmd: any[]) => {
         ' '
       )}\` in \`src\`...`
     )
-    dispatch(bin, args, ENGINE_DIR, true)
+    dispatch(bin, args, ENGINE_DIR)
   } else {
     log.error(`Unable to locate src directory.`)
   }

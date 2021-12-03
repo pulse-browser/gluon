@@ -79,7 +79,7 @@ export const download = async (): Promise<void> => {
     {
       title: 'Init firefox',
       enabled: (ctx) => ctx.firefoxSourceTar && !process.env.CI_SKIP_INIT,
-      task: async () => await init(ENGINE_DIR),
+      task: async (_ctx, task) => await init(ENGINE_DIR, task),
     },
     ...addons
       .map((addon) => includeAddon(addon.name, addon.url, addon.id))
@@ -242,18 +242,6 @@ async function unpackFirefoxSource(
   name: string,
   task: Listr.ListrTaskWrapper<any>
 ): Promise<void> {
-  const onData = (data: any) => {
-    const d = data.toString()
-
-    d.split('\n').forEach((line: any) => {
-      if (line.trim().length !== 0) {
-        const t = line.split(' ')
-        t.shift()
-        task.output = t.join(' ')
-      }
-    })
-  }
-
   let cwd = process.cwd().split(sep).join(posix.sep)
 
   if (process.platform == 'win32') {
