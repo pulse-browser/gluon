@@ -2,6 +2,7 @@ import {
   copyFileSync,
   existsSync,
   mkdirSync,
+  readdirSync,
   readFileSync,
   rmdirSync,
   rmSync,
@@ -11,9 +12,10 @@ import { mkdirpSync } from 'fs-extra'
 import { dirname, extname, join } from 'path'
 import sharp from 'sharp'
 import { config, log } from '..'
+import { templateDir } from '../commands'
 
 import { CONFIGS_DIR, ENGINE_DIR } from '../constants'
-import { walkDirectory } from '../utils'
+import { defaultBrandsConfig, stringTemplate, walkDirectory } from '../utils'
 import { PatchBase } from './patch'
 
 export const BRANDING_DIR = join(CONFIGS_DIR, 'branding')
@@ -66,6 +68,11 @@ export class BrandingPatch extends PatchBase {
 
       this.checkForFaults()
 
+      const brandingConfig = {
+        ...(config.brands[this.name] || {}),
+        ...defaultBrandsConfig,
+      }
+
       log.debug(`Creating folder ${this.outputPath}`)
 
       if (existsSync(this.outputPath))
@@ -100,6 +107,18 @@ export class BrandingPatch extends PatchBase {
         .resize(1024, 1024)
         .toFile(join(this.outputPath, 'content', 'about-logo@2x.png'))
 
+      log.debug(`Setup locales`)
+
+      readdirSync(join(templateDir, 'branding.optional'))
+        .map((file) => [
+          readFileSync(join(templateDir, 'branding.optional', file), 'utf-8'),
+          join(this.outputPath, 'locales/en-US', file),
+        ])
+        .forEach(([contents, path]) => {
+          mkdirSync(dirname(path), { recursive: true })
+          writeFileSync(path, stringTemplate(contents, brandingConfig))
+        })
+
       log.debug(`Copying files from ${BRANDING_FF}`)
 
       const files = (await walkDirectory(BRANDING_FF)).filter(
@@ -118,7 +137,7 @@ export class BrandingPatch extends PatchBase {
         ])
         .map(([contents, path]) => [
           contents.replace(CSS_REPLACE_REGEX, 'var(--theme-bg)') +
-            `:root { --theme-bg: ${config.branding.backgroundColor} }`,
+            `:root { --theme-bg: ${brandingConfig.backgroundColor} }`,
           path,
         ])
         .forEach(([contents, path]) => {

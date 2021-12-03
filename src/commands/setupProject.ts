@@ -157,7 +157,7 @@ export async function setupProject(): Promise<void> {
 // =============================================================================
 // Filesystem templating
 
-const templateDir = join(__dirname, '../..', 'template')
+export const templateDir = join(__dirname, '../..', 'template')
 
 async function copyOptional(files: string[]) {
   await Promise.all(

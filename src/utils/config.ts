@@ -67,9 +67,15 @@ export interface Config {
     generateBranding: boolean
   }
   addons: Record<string, { id: string; url: string }>
-  branding: {
-    backgroundColor: string
-  }
+  brands: Record<
+    string,
+    {
+      backgroundColor: string
+      brandShorterName: string
+      brandShortName: string
+      brandFullName: string
+    }
+  >
 }
 
 const defaultConfig: Config = {
@@ -85,9 +91,14 @@ const defaultConfig: Config = {
     generateBranding: true,
   },
   addons: {},
-  branding: {
-    backgroundColor: '#2B2A33',
-  },
+  brands: {},
+}
+
+export const defaultBrandsConfig = {
+  backgroundColor: '#2B2A33',
+  brandShorterName: 'Nightly',
+  brandShortName: 'Nightly',
+  brandFullName: 'Nightly',
 }
 
 export function hasConfig(): boolean {
