@@ -28,16 +28,24 @@ export let CONFIG_GUESS: string = ''
 // We should only try and generate this config file if the engine directory has
 // been created
 if (existsSync(ENGINE_DIR)) {
-  try {
-    CONFIG_GUESS = execa.commandSync('./build/autoconf/config.guess', {
-      cwd: ENGINE_DIR,
-    }).stdout
-  } catch (e) {
-    log.warning('An error occurred running engine/build/autoconf/config.guess')
-    log.warning(e)
-    log.askForReport()
+  if (!existsSync(resolve(ENGINE_DIR, 'build/autoconf/config.guess'))) {
+    log.warning(
+      'The engine directory has been created, but has not been build properly.'
+    )
+  } else {
+    try {
+      CONFIG_GUESS = execa.commandSync('./build/autoconf/config.guess', {
+        cwd: ENGINE_DIR,
+      }).stdout
+    } catch (e) {
+      log.warning(
+        'An error occurred running engine/build/autoconf/config.guess'
+      )
+      log.warning(e)
+      log.askForReport()
 
-    process.exit(1)
+      process.exit(1)
+    }
   }
 }
 
