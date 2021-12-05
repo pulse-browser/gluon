@@ -145,8 +145,12 @@ const includeAddon = (
           return `${downloadURL} has already been loaded to ${name}`
         }
       },
-      task: async (ctx) => {
-        await downloadFileToLocation(downloadURL, tempFile)
+      task: async (ctx, task) => {
+        await downloadFileToLocation(
+          downloadURL,
+          tempFile,
+          (msg) => (task.output = msg)
+        )
         ctx[name] = tempFile
       },
     },
