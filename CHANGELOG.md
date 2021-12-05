@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-a.8]
+
+### Fixed
+
+- Windows tar compatibility
+- Make the progress bar be less flickery
+- `fs-extra` is being used for symlinks for cross-platform compatibility
+
+### Changed
+
+- Windows now uses the same init script as everyone else
+
 ## [1.0.0-a.7]
 
 ### Fixed
@@ -20,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Better error output when `bsdtar` causes errors
 
 ### Changed
+
 - The status command is now mildly more helpful
 - Removed unnecessary delays, improving performance
 - `export` is now an alias for `export-file`
@@ -35,6 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Addons can be included
 
 ### Removed
+
 - `fs-extra` is no longer a depenancy
 
 ## [1.0.0-a.6]
