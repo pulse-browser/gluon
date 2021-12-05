@@ -17,14 +17,6 @@ export const init = async (
     }
   }
 
-  if (process.platform == 'win32') {
-    // Because Windows cannot handle paths correctly, we're just calling a script as the workaround.
-    log.info(
-      'Successfully downloaded browser source. Please run |./windows-init.sh| to finish up.'
-    )
-    process.exit(0)
-  }
-
   const cwd = process.cwd()
 
   const dir = resolve(cwd as string, directory.toString())
