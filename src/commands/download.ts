@@ -259,10 +259,11 @@ async function unpackFirefoxSource(
       `s,firefox-${gFFVersion},engine,`,
       `--show-transformed`,
       '-xf',
+      '--force-local',
       resolve(cwd, '.dotbuild', 'engines', name),
     ])
   } catch (e) {
-    let error = e as unknown as Error
+    const error = e as unknown as Error
     error.message = `\nThe following error may have been caused because you are using bsdtar.
 For MacOS users, please run |brew install gnu-tar| if the error includes "--transform is not supported"
 ${error.message}`
