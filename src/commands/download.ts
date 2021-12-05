@@ -254,14 +254,17 @@ async function unpackFirefoxSource(
   mkdirSync(ENGINE_DIR)
 
   try {
-    await execa('tar', [
-      '--transform',
-      `s,firefox-${gFFVersion},engine,`,
-      `--show-transformed`,
-      '-xf',
-      '--force-local',
-      resolve(cwd, '.dotbuild', 'engines', name),
-    ])
+    await execa(
+      'tar',
+      [
+        '--transform',
+        `s,firefox-${gFFVersion},engine,`,
+        `--show-transformed`,
+        process.platform == 'win32' ? '--force-local' : null,
+        '-xf',
+        resolve(cwd, '.dotbuild', 'engines', name),
+      ].filter((x) => x) as string[]
+    )
   } catch (e) {
     const error = e as unknown as Error
     error.message = `\nThe following error may have been caused because you are using bsdtar.
