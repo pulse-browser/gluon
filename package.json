@@ -1,6 +1,6 @@
 {
   "name": "melon-build",
-  "version": "1.0.0-a.7",
+  "version": "1.0.0-a.8",
   "description": "🍉 Build Firefox-based browsers with ease",
   "main": "index.js",
   "reveal": true,
