@@ -65,6 +65,7 @@ export interface Config {
   }
   buildOptions: {
     generateBranding: boolean
+    windowsUseSymbolicLinks: boolean
   }
   addons: Record<string, { id: string; url: string }>
   brands: Record<
@@ -89,6 +90,7 @@ const defaultConfig: Config = {
   },
   buildOptions: {
     generateBranding: true,
+    windowsUseSymbolicLinks: false,
   },
   addons: {},
   brands: {},
