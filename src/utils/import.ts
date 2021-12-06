@@ -1,9 +1,11 @@
 import { existsSync } from 'fs'
 import { lstatSync, readFileSync } from 'fs'
 import { ensureSymlink } from 'fs-extra'
+import { copyFile } from 'fs/promises'
 import { resolve } from 'path'
 import rimraf from 'rimraf'
 import { appendToFileSync } from '.'
+import { config } from '..'
 import { ENGINE_DIR, SRC_DIR } from '../constants'
 
 const getChunked = (location: string) => location.replace(/\\/g, '/').split('/')
@@ -21,11 +23,23 @@ export const copyManual = async (
     rimraf.sync(resolve(ENGINE_DIR, ...getChunked(name)))
   }
 
-  // Create the symlink
-  await ensureSymlink(
-    resolve(SRC_DIR, ...getChunked(name)),
-    resolve(ENGINE_DIR, ...getChunked(name))
-  )
+  if (
+    process.platform == 'win32' &&
+    !config.buildOptions.windowsUseSymbolicLinks
+  ) {
+    // By default, windows users do not have access to the permissions to create
+    // symbolic links. As a work around, we will just copy the files instead
+    await copyFile(
+      resolve(ENGINE_DIR, ...getChunked(name)),
+      resolve(SRC_DIR, ...getChunked(name))
+    )
+  } else {
+    // Create the symlink
+    await ensureSymlink(
+      resolve(SRC_DIR, ...getChunked(name)),
+      resolve(ENGINE_DIR, ...getChunked(name))
+    )
+  }
 
   if (!noIgnore) {
     const gitignore = readFileSync(resolve(ENGINE_DIR, '.gitignore'), 'utf-8')
