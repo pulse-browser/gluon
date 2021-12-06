@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-a.11]
+
+### Fixed
+
+- Put the copy inputs around the right way
+
 ## [1.0.0-a.9]
 
 ### Fixed

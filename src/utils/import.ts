@@ -30,8 +30,8 @@ export const copyManual = async (
     // By default, windows users do not have access to the permissions to create
     // symbolic links. As a work around, we will just copy the files instead
     await copyFile(
-      resolve(ENGINE_DIR, ...getChunked(name)),
-      resolve(SRC_DIR, ...getChunked(name))
+      resolve(SRC_DIR, ...getChunked(name)),
+      resolve(ENGINE_DIR, ...getChunked(name))
     )
   } else {
     // Create the symlink
