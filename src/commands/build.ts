@@ -15,8 +15,24 @@ const platform: any = {
 const applyConfig = async (os: string, arch: string) => {
   log.info('Applying mozconfig...')
 
-  // Retrieve changeset
-  const { stdout: changeset } = await execa('git', ['rev-parse', 'HEAD'])
+  let changeset
+
+  try {
+    // Retrieve changeset
+    const { stdout } = await execa('git', ['rev-parse', 'HEAD'])
+    changeset = stdout.trim()
+  } catch (e) {
+    log.warning(
+      'Melon expects that you are building your browser with git as your version control'
+    )
+    log.warning(
+      'If you are using some other version control system, please migrate to git'
+    )
+    log.warning('Otherwise, you can setup git in this folder by running:')
+    log.warning('   |git init|')
+
+    throw e
+  }
 
   const templateOptions = {
     name: config.name,
