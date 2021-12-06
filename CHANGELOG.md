@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-a.9]
+
+### Fixed
+
+- Work around windows users not having the permissions to create symbolic links
+
 ## [1.0.0-a.8]
 
 ### Fixed
@@ -92,7 +98,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial beta release
 
-[unreleased]: https://github.com/dothq/melon/compare/v1.0.0-a.7...HEAD
+[unreleased]: https://github.com/dothq/melon/compare/v1.0.0-a.9...HEAD
+[1.0.0-a.9]: https://github.com/dothq/melon/compare/v1.0.0-a.8...v1.0.0-a.9
+[1.0.0-a.8]: https://github.com/dothq/melon/compare/v1.0.0-a.7...v1.0.0-a.8
 [1.0.0-a.7]: https://github.com/dothq/melon/compare/v1.0.0-a.6...v1.0.0-a.7
 [1.0.0-a.6]: https://github.com/dothq/melon/compare/v1.0.0-a.5...v1.0.0-a.6
 [1.0.0-a.5]: https://github.com/dothq/melon/compare/v1.0.0-a.4...v1.0.0-a.5
