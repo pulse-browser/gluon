@@ -110,6 +110,8 @@ const genericBuild = async (os: string, fast = false) => {
     buildOptions.push('faster')
   }
 
+  log.info(buildOptions.join(' '))
+
   await dispatch(`./mach`, buildOptions, ENGINE_DIR)
 }
 
@@ -147,6 +149,8 @@ export const build = async (options: Options): Promise<void> => {
     await patchCheck()
 
     applyConfig(prettyHost, options.arch)
+
+    log.info('Starting build...')
 
     await genericBuild(prettyHost, options.ui).then((_) => success(d))
   }
