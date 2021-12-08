@@ -70,7 +70,8 @@ async function linuxBootstrap() {
           'libpulse',
           'xorg-server-xvfb',
           'gst-libav',
-          'gst-plugins-good'
+          'gst-plugins-good',
+          'wasi-libc'
         )
       )
       break
