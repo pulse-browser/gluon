@@ -6,7 +6,7 @@ import { BUILD_TARGETS, CONFIGS_DIR, ENGINE_DIR } from '../constants'
 import { patchCheck } from '../middleware/patch-check'
 import { dispatch, stringTemplate } from '../utils'
 
-const platform: any = {
+const platform: Record<string, string> = {
   win32: 'windows',
   darwin: 'macos',
   linux: 'linux',
@@ -143,7 +143,7 @@ export const build = async (options: Options): Promise<void> => {
 
   // Host build
 
-  const prettyHost = platform[process.platform as any]
+  const prettyHost = platform[process.platform]
 
   if (BUILD_TARGETS.includes(prettyHost)) {
     await patchCheck()
