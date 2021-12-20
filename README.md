@@ -34,7 +34,7 @@ yarn global add melon-build
 
 ## Documentation
 
-Documentation is available on [Github pages](https://dothq.github.io/melon/) or in the docs folder of this repository.
+Documentation is available on [Github pages](https://focus-browser.github.io/build/) or in the docs folder of this repository.
 
 ## Licencing notes
 
