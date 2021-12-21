@@ -8,7 +8,7 @@ import { ENGINE_DIR, PATCH_ARGS } from '../constants'
 import { copyManual } from '../utils'
 
 export abstract class PatchBase {
-  protected name: string
+  public name: string
 
   protected status: number[]
 

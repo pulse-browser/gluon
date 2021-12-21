@@ -18,6 +18,7 @@ import {
   status,
   test,
 } from './commands'
+import { applyPatches } from './commands/patches'
 import { Cmd } from './types'
 
 export const commands: Cmd[] = [
@@ -86,20 +87,10 @@ export const commands: Cmd[] = [
     controller: fixLineEndings,
   },
   {
-    cmd: 'import [type]',
+    cmd: 'import',
     aliases: ['import-patches', 'i'],
     description: 'Import patches into the browser.',
-    options: [
-      {
-        arg: '-m, --minimal',
-        description: 'Import patches in minimal mode',
-      },
-      {
-        arg: '--noignore',
-        description: "Bypass .gitignore. You shouldn't really use this.",
-      },
-    ],
-    controller: importPatches,
+    controller: applyPatches,
   },
   {
     cmd: 'ff-init <source>',
