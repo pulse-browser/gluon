@@ -72,8 +72,8 @@ export class BrandingPatch extends PatchBase {
       this.checkForFaults()
 
       const brandingConfig = {
-        ...(config.brands[this.name] || {}),
         ...defaultBrandsConfig,
+        ...(config.brands[this.name] || {}),
       }
 
       log.debug(`Creating folder ${this.outputPath}`)
@@ -81,6 +81,8 @@ export class BrandingPatch extends PatchBase {
       if (existsSync(this.outputPath))
         rmdirSync(this.outputPath, { recursive: true })
       mkdirSync(this.outputPath, { recursive: true })
+
+      log.debug('Setup images')
 
       await this.setupImages()
 
