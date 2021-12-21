@@ -1,94 +1,96 @@
-import execa from 'execa'
-import { existsSync } from 'fs'
-import { resolve } from 'path'
-import prompts from 'prompts'
-import rimraf from 'rimraf'
-import { bin_name, log } from '..'
-import { ENGINE_DIR } from '../constants'
-import { IPatch } from '../interfaces/patch'
-import manualPatches from '../manual-patches'
+// import execa from 'execa'
+// import { existsSync } from 'fs'
+// import { resolve } from 'path'
+// import prompts from 'prompts'
+// import rimraf from 'rimraf'
+// import { bin_name, log } from '..'
+// import { ENGINE_DIR } from '../constants'
+// import { IPatch } from '../interfaces/patch'
+// import manualPatches from '../manual-patches'
 
 export const reset = async (): Promise<void> => {
-  try {
-    log.warning(
-      'This will clear all your unexported changes in the `src` directory!'
-    )
-    log.warning(`You can export your changes by running |${bin_name} export|.`)
+  throw new Error('TODO: needs to be implemented')
 
-    const { answer } = await prompts({
-      type: 'confirm',
-      name: 'answer',
-      message: 'Are you sure you want to continue?',
-    })
+  // try {
+  // //   log.warning(
+  // //     'This will clear all your unexported changes in the `src` directory!'
+  // //   )
+  // //   log.warning(`You can export your changes by running |${bin_name} export|.`)
 
-    if (answer) {
-      await execa('git', ['checkout', '.'], { cwd: ENGINE_DIR })
+  // //   const { answer } = await prompts({
+  // //     type: 'confirm',
+  // //     name: 'answer',
+  // //     message: 'Are you sure you want to continue?',
+  // //   })
 
-      manualPatches.forEach(async (patch: IPatch) => {
-        const { src, action } = patch
+  // //   if (answer) {
+  // //     await execa('git', ['checkout', '.'], { cwd: ENGINE_DIR })
 
-        if (action == 'copy') {
-          if (typeof src === 'string') {
-            const path = resolve(ENGINE_DIR, src)
+  // //     manualPatches.forEach(async (patch: IPatch) => {
+  // //       const { src, action } = patch
 
-            if (path !== ENGINE_DIR) {
-              log.info(`Deleting ${src}...`)
+  // //       if (action == 'copy') {
+  // //         if (typeof src === 'string') {
+  // //           const path = resolve(ENGINE_DIR, src)
 
-              if (existsSync(path)) rimraf.sync(path)
-            }
-          } else if (Array.isArray(src)) {
-            src.forEach((i) => {
-              const path = resolve(ENGINE_DIR, i)
+  // //           if (path !== ENGINE_DIR) {
+  // //             log.info(`Deleting ${src}...`)
 
-              if (path !== ENGINE_DIR) {
-                log.info(`Deleting ${i}...`)
+  // //             if (existsSync(path)) rimraf.sync(path)
+  // //           }
+  // //         } else if (Array.isArray(src)) {
+  // //           src.forEach((i) => {
+  // //             const path = resolve(ENGINE_DIR, i)
 
-                if (existsSync(path)) rimraf.sync(path)
-              }
-            })
-          }
-        } else {
-          log.warning(
-            'Resetting does not work on manual patches that have a `delete` action, skipping...'
-          )
-        }
-      })
+  // //             if (path !== ENGINE_DIR) {
+  // //               log.info(`Deleting ${i}...`)
 
-      const leftovers = new Set()
+  // //               if (existsSync(path)) rimraf.sync(path)
+  // //             }
+  // //           })
+  // //         }
+  // //       } else {
+  // //         log.warning(
+  // //           'Resetting does not work on manual patches that have a `delete` action, skipping...'
+  // //         )
+  // //       }
+  // //     })
 
-      const { stdout: origFiles } = await execa(
-        'git',
-        ['clean', '-e', "'!*.orig'", '--dry-run'],
-        { cwd: ENGINE_DIR }
-      )
+  // //     const leftovers = new Set()
 
-      const { stdout: rejFiles } = await execa(
-        'git',
-        ['clean', '-e', "'!*.rej'", '--dry-run'],
-        { cwd: ENGINE_DIR }
-      )
+  // //     const { stdout: origFiles } = await execa(
+  // //       'git',
+  // //       ['clean', '-e', "'!*.orig'", '--dry-run'],
+  // //       { cwd: ENGINE_DIR }
+  // //     )
 
-      origFiles
-        .split('\n')
-        .map((f) => leftovers.add(f.replace(/Would remove /, '')))
-      rejFiles
-        .split('\n')
-        .map((f) => leftovers.add(f.replace(/Would remove /, '')))
+  // //     const { stdout: rejFiles } = await execa(
+  // //       'git',
+  // //       ['clean', '-e', "'!*.rej'", '--dry-run'],
+  // //       { cwd: ENGINE_DIR }
+  // //     )
 
-      Array.from(leftovers).forEach((f: any) => {
-        const path = resolve(ENGINE_DIR, f)
+  // //     origFiles
+  // //       .split('\n')
+  // //       .map((f) => leftovers.add(f.replace(/Would remove /, '')))
+  // //     rejFiles
+  // //       .split('\n')
+  // //       .map((f) => leftovers.add(f.replace(/Would remove /, '')))
 
-        if (path !== ENGINE_DIR) {
-          log.info(`Deleting ${f}...`)
+  // //     Array.from(leftovers).forEach((f: any) => {
+  // //       const path = resolve(ENGINE_DIR, f)
 
-          rimraf.sync(resolve(ENGINE_DIR, f))
-        }
-      })
+  // //       if (path !== ENGINE_DIR) {
+  // //         log.info(`Deleting ${f}...`)
 
-      log.success('Reset successfully.')
-      log.info(
-        'Next time you build, it may need to recompile parts of the program because the cache was invalidated.'
-      )
-    }
-  } catch (e) {}
+  // //         rimraf.sync(resolve(ENGINE_DIR, f))
+  // //       }
+  // //     })
+
+  // //     log.success('Reset successfully.')
+  // //     log.info(
+  // //       'Next time you build, it may need to recompile parts of the program because the cache was invalidated.'
+  // //     )
+  // //   }
+  // // } catch (e) {}
 }

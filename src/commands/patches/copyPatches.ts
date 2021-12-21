@@ -1,12 +1,17 @@
+import { sync } from 'glob'
 import { existsSync } from 'fs'
 import { lstatSync, readFileSync } from 'fs'
 import { ensureSymlink } from 'fs-extra'
 import { copyFile } from 'fs/promises'
 import { resolve } from 'path'
 import rimraf from 'rimraf'
-import { appendToFileSync } from '.'
-import { config } from '..'
-import { ENGINE_DIR, SRC_DIR } from '../constants'
+
+import { appendToFileSync } from '../../utils'
+import { config } from '../..'
+import { ENGINE_DIR, SRC_DIR } from '../../constants'
+
+// =============================================================================
+// Utilities
 
 const getChunked = (location: string) => location.replace(/\\/g, '/').split('/')
 
@@ -45,4 +50,40 @@ export const copyManual = async (name: string): Promise<void> => {
       resolve(ENGINE_DIR, '.gitignore'),
       `\n${getChunked(name).join('/')}`
     )
+}
+
+// =============================================================================
+// Data types
+
+export interface ICopyPatch {
+  name: string
+  src: string[]
+}
+
+// =============================================================================
+// Exports
+
+export function get(): ICopyPatch[] {
+  const manualPatches: ICopyPatch[] = []
+
+  sync('**/*', {
+    nodir: true,
+    cwd: SRC_DIR,
+  })
+    .filter(
+      (f) => !(f.endsWith('.patch') || f.split('/').includes('node_modules'))
+    )
+    .map((folder) => folder.split('/')[0])
+    .forEach((name, _index, array) => {
+      if (manualPatches.find((patch) => patch.name == name)) return
+      manualPatches.push({ name, src: array.filter((patch) => patch == name) })
+    })
+
+  return manualPatches
+}
+
+export async function apply(src: string[]): Promise<void> {
+  for (const item of src) {
+    await copyManual(item)
+  }
 }

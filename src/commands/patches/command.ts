@@ -1,21 +1,20 @@
-import { lstatSync, readdirSync } from 'fs'
 import { sync } from 'glob'
 import Listr from 'listr'
-import { join, resolve } from 'path'
-import { config } from '../..'
 import { SRC_DIR } from '../../constants'
-import { BRANDING_DIR, BrandingPatch } from '../../controllers/brandingPatch'
-import { ManualPatch, PatchBase, PatchFile } from '../../controllers/patch'
-import manualPatches from '../../manual-patches'
+
+import * as gitPatch from './gitPatch'
+import * as copyPatch from './copyPatches'
+import * as brandingPatch from './brandingPatch'
 
 type ListrTaskGroup = {
   title: string
   task: () => Listr<any>
 }
 
-function patchMethod<T extends PatchBase>(
+function patchMethod<T>(
   name: string,
   patches: T[],
+  nameFn: (patch: T) => string,
   patchFn: (patch: T, index: number) => Promise<void>
 ): ListrTaskGroup {
   return {
@@ -23,44 +22,49 @@ function patchMethod<T extends PatchBase>(
     task: () =>
       new Listr(
         patches.map((patch, index) => ({
-          title: `Apply ${patch.name}`,
+          title: `Apply ${nameFn(patch)}`,
           task: () => patchFn(patch, index),
         }))
       ),
   }
 }
 
+interface IMelonPatch {
+  type: 'branding'
+  name: string
+  value: unknown
+}
+
 function importMelonPatches(): ListrTaskGroup {
-  const patches: PatchBase[] = []
-
-  if (config.buildOptions.generateBranding) {
-    for (const brandingStyle of readdirSync(BRANDING_DIR).filter((file) =>
-      lstatSync(join(BRANDING_DIR, file)).isDirectory()
-    )) {
-      patches.push(new BrandingPatch(brandingStyle))
-    }
-  }
-
-  return patchMethod('melon', patches, async (patch) => await patch.apply())
+  return patchMethod(
+    'melon',
+    [
+      ...(brandingPatch.get().map((name) => ({
+        type: 'branding',
+        name,
+        value: name,
+      })) as IMelonPatch[]),
+    ],
+    (patch) => patch.name,
+    async (patch) => await brandingPatch.apply(patch.value as string)
+  )
 }
 
 function importFolders(): ListrTaskGroup {
   return patchMethod(
     'folder',
-    manualPatches.map(
-      (patch) => new ManualPatch(patch.name, patch.action, patch.src)
-    ),
-    async (patch) => await patch.apply()
+    copyPatch.get(),
+    (patch) => patch.name,
+    async (patch) => await copyPatch.apply(patch.src)
   )
 }
 
 function importGitPatch(): ListrTaskGroup {
   return patchMethod(
     'git',
-    sync('**/*.patch', { nodir: true, cwd: SRC_DIR }).map(
-      (file) => new PatchFile(file, resolve(SRC_DIR, file))
-    ),
-    async (patch) => await patch.apply()
+    sync('**/*.patch', { nodir: true, cwd: SRC_DIR }),
+    (path) => path,
+    async (path) => await gitPatch.apply(path)
   )
 }
 

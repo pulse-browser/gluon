@@ -1,4 +1,11 @@
-import { closeSync, existsSync, mkdirSync, openSync, writeSync } from 'fs'
+import {
+  closeSync,
+  existsSync,
+  mkdirSync,
+  openSync,
+  rmdirSync,
+  writeSync,
+} from 'fs'
 import { mkdir, readdir, stat, symlink } from 'fs/promises'
 import { join, isAbsolute, dirname, relative } from 'path'
 
@@ -142,4 +149,16 @@ export function symlinkPaths(
       }
     }
   }
+}
+
+export function filesExist(files: string[]): boolean {
+  return files.every((file) => existsSync(file))
+}
+
+export function ensureEmpty(path: string) {
+  if (existsSync(path)) {
+    rmdirSync(path, { recursive: true })
+  }
+
+  mkdirSync(path, { recursive: true })
 }
