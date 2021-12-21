@@ -36,8 +36,8 @@ export class BrandingPatch extends PatchBase {
   outputPath: string
   configPath: string
 
-  constructor(name: string, minimal?: boolean) {
-    super(`Browser branding: ${name}`, [0, 0], { minimal })
+  constructor(name: string) {
+    super(`Browser branding: ${name}`)
     this.name = name
 
     this.outputPath = join(BRANDING_STORE, name)
@@ -64,44 +64,25 @@ export class BrandingPatch extends PatchBase {
   }
 
   async apply(): Promise<void> {
-    this.start()
+    this.checkForFaults()
 
-    try {
-      log.debug('Checking branding files')
+    const brandingConfig = {
+      brandingGenericName: config.name,
+      brandingVendor: config.vendor,
 
-      this.checkForFaults()
-
-      const brandingConfig = {
-        brandingGenericName: config.name,
-        brandingVendor: config.vendor,
-
-        ...defaultBrandsConfig,
-        ...(config.brands[this.name] || {}),
-      }
-
-      log.debug(`Creating folder ${this.outputPath}`)
-
-      if (existsSync(this.outputPath))
-        rmdirSync(this.outputPath, { recursive: true })
-      mkdirSync(this.outputPath, { recursive: true })
-
-      log.debug('Setup images')
-
-      await this.setupImages()
-
-      log.debug(`Setup locales`)
-
-      this.setupLocales(brandingConfig)
-
-      log.debug(`Copying files from ${BRANDING_FF}`)
-
-      await this.copyMozillaFiles(brandingConfig)
-
-      this.done = true
-    } catch (e) {
-      this.error = e
-      this.done = false
+      ...defaultBrandsConfig,
+      ...(config.brands[this.name] || {}),
     }
+
+    if (existsSync(this.outputPath))
+      rmdirSync(this.outputPath, { recursive: true })
+    mkdirSync(this.outputPath, { recursive: true })
+
+    await this.setupImages()
+
+    this.setupLocales(brandingConfig)
+
+    await this.copyMozillaFiles(brandingConfig)
   }
 
   private async copyMozillaFiles(brandingConfig: {
@@ -159,15 +140,11 @@ export class BrandingPatch extends PatchBase {
   }
 
   private async setupImages() {
-    log.debug('Creating default*.png files')
-
     for (const size of [16, 22, 24, 32, 48, 64, 128, 256]) {
       await sharp(join(this.configPath, 'logo.png'))
         .resize(size, size)
         .toFile(join(this.outputPath, `default${size}.png`))
     }
-
-    log.debug('Creating firefox*.ico')
 
     await sharp(join(this.configPath, 'logo.png'))
       .resize(512, 512)
@@ -175,8 +152,6 @@ export class BrandingPatch extends PatchBase {
     await sharp(join(this.configPath, 'logo.png'))
       .resize(64, 64)
       .toFile(join(this.outputPath, 'firefox64.ico'))
-
-    log.debug('Creating content/about-logo*.png')
 
     mkdirSync(join(this.outputPath, 'content'), { recursive: true })
 

@@ -37,29 +37,18 @@ function importMelonPatches(): ListrTaskGroup {
     for (const brandingStyle of readdirSync(BRANDING_DIR).filter((file) =>
       lstatSync(join(BRANDING_DIR, file)).isDirectory()
     )) {
-      patches.push(new BrandingPatch(brandingStyle, false))
+      patches.push(new BrandingPatch(brandingStyle))
     }
   }
 
-  return patchMethod(
-    'melon',
-    patches,
-    async (patch, i) => await patch.applyWithStatus([i, patches.length])
-  )
+  return patchMethod('melon', patches, async (patch) => await patch.apply())
 }
 
 function importFolders(): ListrTaskGroup {
   return patchMethod(
     'folder',
     manualPatches.map(
-      (patch, i) =>
-        new ManualPatch(
-          patch.name,
-          [i, manualPatches.length],
-          {},
-          patch.action,
-          patch.src
-        )
+      (patch) => new ManualPatch(patch.name, patch.action, patch.src)
     ),
     async (patch) => await patch.apply()
   )
@@ -68,9 +57,8 @@ function importFolders(): ListrTaskGroup {
 function importGitPatch(): ListrTaskGroup {
   return patchMethod(
     'git',
-    sync('**/*.patch').map(
-      (file, i, array) =>
-        new PatchFile(file, [i, array.length], {}, resolve(SRC_DIR, file))
+    sync('**/*.patch', { nodir: true, cwd: SRC_DIR }).map(
+      (file) => new PatchFile(file, resolve(SRC_DIR, file))
     ),
     async (patch) => await patch.apply()
   )

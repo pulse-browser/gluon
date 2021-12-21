@@ -10,10 +10,7 @@ import { ENGINE_DIR, SRC_DIR } from '../constants'
 
 const getChunked = (location: string) => location.replace(/\\/g, '/').split('/')
 
-export const copyManual = async (
-  name: string,
-  noIgnore?: boolean
-): Promise<void> => {
+export const copyManual = async (name: string): Promise<void> => {
   // If the file exists and is not a symlink, we want to replace it with a
   // symlink to our file, so remove it
   if (
@@ -41,13 +38,11 @@ export const copyManual = async (
     )
   }
 
-  if (!noIgnore) {
-    const gitignore = readFileSync(resolve(ENGINE_DIR, '.gitignore'), 'utf-8')
+  const gitignore = readFileSync(resolve(ENGINE_DIR, '.gitignore'), 'utf-8')
 
-    if (!gitignore.includes(getChunked(name).join('/')))
-      appendToFileSync(
-        resolve(ENGINE_DIR, '.gitignore'),
-        `\n${getChunked(name).join('/')}`
-      )
-  }
+  if (!gitignore.includes(getChunked(name).join('/')))
+    appendToFileSync(
+      resolve(ENGINE_DIR, '.gitignore'),
+      `\n${getChunked(name).join('/')}`
+    )
 }

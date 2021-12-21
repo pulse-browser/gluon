@@ -7,7 +7,6 @@ import {
   execute,
   exportFile,
   fixLineEndings,
-  importPatches,
   init,
   licenseCheck,
   melonPackage,
