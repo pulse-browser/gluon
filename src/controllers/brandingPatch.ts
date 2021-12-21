@@ -72,6 +72,9 @@ export class BrandingPatch extends PatchBase {
       this.checkForFaults()
 
       const brandingConfig = {
+        brandingGenericName: config.name,
+        brandingVendor: config.vendor,
+
         ...defaultBrandsConfig,
         ...(config.brands[this.name] || {}),
       }
