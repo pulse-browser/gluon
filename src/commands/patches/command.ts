@@ -5,6 +5,7 @@ import { SRC_DIR } from '../../constants'
 import * as gitPatch from './gitPatch'
 import * as copyPatch from './copyPatches'
 import * as brandingPatch from './brandingPatch'
+import { join } from 'path'
 
 type ListrTaskGroup = {
   title: string
@@ -62,7 +63,9 @@ function importFolders(): ListrTaskGroup {
 function importGitPatch(): ListrTaskGroup {
   return patchMethod(
     'git',
-    sync('**/*.patch', { nodir: true, cwd: SRC_DIR }),
+    sync('**/*.patch', { nodir: true, cwd: SRC_DIR }).map((path) =>
+      join(SRC_DIR, path)
+    ),
     (path) => path,
     async (path) => await gitPatch.apply(path)
   )
