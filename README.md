@@ -1,10 +1,10 @@
 <div align="center">
 
 <p align="center">
-  <img width="98" src="https://twemoji.maxcdn.com/v/13.0.1/svg/1f349.svg"/>
+  <img width="98" src="https://twemoji.maxcdn.com/v/13.0.1/svg/1f348.svg"/>
 </p>
 
-# Melon
+# Cantaloupe
 
 Build Firefox-based browsers with ease
 
@@ -54,7 +54,7 @@ This program downloads and modifies Firefox. [Follow their license](https://hg.m
 
 ### Tweemoji
 
-The melon icon is from tweemoji.
+The cantaloupe icon is from tweemoji.
 
 Copyright 2020 Twitter, Inc and other contributors
 Code licensed under the MIT License: http://opensource.org/licenses/MIT
