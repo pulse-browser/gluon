@@ -64,20 +64,25 @@ export interface ICopyPatch {
 // Exports
 
 export function get(): ICopyPatch[] {
-  const manualPatches: ICopyPatch[] = []
-
-  sync('**/*', {
+  const files = sync('**/*', {
     nodir: true,
     cwd: SRC_DIR,
+  }).filter(
+    (f) => !(f.endsWith('.patch') || f.split('/').includes('node_modules'))
+  )
+
+  const manualPatches: ICopyPatch[] = []
+
+  files.map((i) => {
+    const group = i.split('/')[0]
+
+    if (!manualPatches.find((m) => m.name == group)) {
+      manualPatches.push({
+        name: group,
+        src: files.filter((f) => f.split('/')[0] == group),
+      })
+    }
   })
-    .filter(
-      (f) => !(f.endsWith('.patch') || f.split('/').includes('node_modules'))
-    )
-    .map((folder) => folder.split('/')[0])
-    .forEach((name, _index, array) => {
-      if (manualPatches.find((patch) => patch.name == name)) return
-      manualPatches.push({ name, src: array.filter((patch) => patch == name) })
-    })
 
   return manualPatches
 }
