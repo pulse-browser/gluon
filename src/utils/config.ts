@@ -5,7 +5,7 @@
 import { existsSync, readFileSync } from 'fs'
 import { join } from 'path'
 
-import { log } from '..'
+import { log } from '../log'
 
 export const projectDir = process.cwd()
 export const configPath = join(projectDir, 'melon.json')
@@ -79,7 +79,7 @@ export interface Config {
   >
 }
 
-const defaultConfig: Config = {
+export const defaultConfig: Config = {
   name: 'Unknown melon build',
   vendor: 'Unknown',
   appId: 'unknown.appid',
@@ -107,22 +107,28 @@ export function hasConfig(): boolean {
   return existsSync(configPath)
 }
 
-export function getConfig(): Config {
+export function rawConfig(): string {
   const configExists = hasConfig()
 
-  let fileContents = '{}'
-  let fileParsed: Config
+  let contents = '{}'
 
-  if (!configExists) {
+  if (configExists) {
+    contents = readFileSync(configPath, 'utf8')
+  } else {
     if (!hasWarnedAboutConfig) {
       log.warning(
         `Config file not found at ${configPath}. It is recommended to create one by running |melon setup-project|`
       )
       hasWarnedAboutConfig = true
     }
-  } else {
-    fileContents = readFileSync(configPath).toString()
   }
+
+  return contents
+}
+
+export function getConfig(): Config {
+  const fileContents = rawConfig()
+  let fileParsed: Config
 
   try {
     // Try to parse the contents of the file. May not be valid JSON

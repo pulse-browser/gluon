@@ -1,7 +1,7 @@
 // Init the logger before literally anything else to stop really obscure error
 // messages from occurring
-import Log from './log'
-export const log = new Log()
+import { log as logInited } from './log'
+export const log = logInited
 
 import chalk from 'chalk'
 import commander, { Command } from 'commander'

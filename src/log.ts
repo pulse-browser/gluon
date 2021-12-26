@@ -69,4 +69,6 @@ class Log {
   }
 }
 
+export const log = new Log()
+
 export default Log
