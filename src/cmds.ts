@@ -17,6 +17,7 @@ import {
   status,
   test,
 } from './commands'
+import { getFFVersion } from './commands/ff-version'
 import { applyPatches } from './commands/patches'
 import { Cmd } from './types'
 
@@ -96,6 +97,11 @@ export const commands: Cmd[] = [
     aliases: ['ff-initialise', 'ff-initialize'],
     description: 'Initialise the Firefox directory.',
     controller: init,
+  },
+  {
+    cmd: 'ff-version',
+    description: 'Retrieves the version of firefox to build against',
+    controller: getFFVersion,
   },
   {
     cmd: 'license-check',
