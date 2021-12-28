@@ -7,7 +7,7 @@ import chalk from 'chalk'
 import commander, { Command } from 'commander'
 import { existsSync, readFileSync } from 'fs'
 import { resolve } from 'path'
-import { errorHandler, getConfig } from './utils'
+import { errorHandler, config as configInited } from './utils'
 import { commands } from './cmds'
 import { ENGINE_DIR } from './constants'
 import { shaCheck } from './middleware/sha-check'
@@ -19,7 +19,7 @@ import { registerCommand } from './middleware/registerCommand'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version: melon } = require('../package.json')
 
-export const config = getConfig()
+export const config = configInited
 
 const program = new Command()
 

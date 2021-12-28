@@ -107,7 +107,17 @@ export function hasConfig(): boolean {
   return existsSync(configPath)
 }
 
+let mockConfig = ''
+
+export function setMockRawConfig(config: string): void {
+  mockConfig = config
+}
+
 export function rawConfig(): string {
+  if (mockConfig != '') {
+    return mockConfig
+  }
+
   const configExists = hasConfig()
 
   let contents = '{}'
@@ -153,3 +163,5 @@ export function getConfig(): Config {
 
   return fileParsed
 }
+
+export const config = getConfig()

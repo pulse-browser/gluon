@@ -7,7 +7,7 @@ import {
   rawConfig,
 } from './config'
 
-function preserveExistingConfig() {
+export function preserveExistingConfig(): void {
   let configExists = false
   let configContents = ''
 

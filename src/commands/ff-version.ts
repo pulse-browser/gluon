@@ -1,5 +1,5 @@
-import { config } from '..'
+import { getConfig } from '../utils/config'
 
 export const getFFVersion = (): void => {
-  console.log(config.version.version)
+  console.log(getConfig().version.version || 'Not Specified')
 }
