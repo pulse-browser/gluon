@@ -7,7 +7,7 @@ import {
   writeFileSync,
 } from 'fs'
 import { homedir } from 'os'
-import { basename, join, posix, resolve, sep } from 'path'
+import { join, posix, resolve, sep } from 'path'
 
 import execa from 'execa'
 import Listr from 'listr'

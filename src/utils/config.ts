@@ -30,6 +30,26 @@ export const validProducts = [
   SupportedProducts.FirefoxNightly,
 ]
 
+export interface LicenseConfig {
+  /**
+   * What license you intend to put your project under. Currently MPL is the
+   * only one supported by the license checker, but if you want implement more
+   * please feel free to open a pull request.
+   *
+   * To disable the license checker, set this type to `unknown`
+   */
+  licenseType: 'MPL-2.0' | 'unknown'
+  /**
+   * Files to be ignored by the license checker. For default values see the
+   * `defaultConfig` variable in the config.ts file
+   *
+   * These should be rejex tests because compiled regex tests are **really**
+   * fast which will stop the license checker from becoming absurdly slow with
+   * larger projects
+   */
+  ignoredFiles: string[]
+}
+
 export interface Config {
   /**
    * The name of the product to build
@@ -44,6 +64,10 @@ export interface Config {
    */
   appId: string
   binaryName: string
+  /**
+   * The license check config
+   */
+  license: LicenseConfig
   version: {
     /**
      * What branch of firefox you are forking. e.g. stable ('firefox'), dev ('firefox-dev')
@@ -79,6 +103,18 @@ export interface Config {
   >
 }
 
+export const defaultBrandsConfig = {
+  backgroundColor: '#2B2A33',
+  brandShorterName: 'Nightly',
+  brandShortName: 'Nightly',
+  brandFullName: 'Nightly',
+}
+
+export const defaultLicenseConfig: LicenseConfig = {
+  ignoredFiles: ['.*\\.json'],
+  licenseType: 'MPL-2.0',
+}
+
 export const defaultConfig: Config = {
   name: 'Unknown melon build',
   vendor: 'Unknown',
@@ -94,13 +130,7 @@ export const defaultConfig: Config = {
   },
   addons: {},
   brands: {},
-}
-
-export const defaultBrandsConfig = {
-  backgroundColor: '#2B2A33',
-  brandShorterName: 'Nightly',
-  brandShortName: 'Nightly',
-  brandFullName: 'Nightly',
+  license: defaultLicenseConfig,
 }
 
 export function hasConfig(): boolean {
@@ -152,6 +182,8 @@ export function getConfig(): Config {
 
   // Merge the default config with the file parsed config
   fileParsed = { ...defaultConfig, ...fileParsed }
+
+  fileParsed.license = { ...defaultLicenseConfig, ...fileParsed.license }
 
   // ===========================================================================
   // Config Validation
