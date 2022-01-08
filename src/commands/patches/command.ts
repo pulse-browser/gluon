@@ -6,6 +6,8 @@ import * as gitPatch from './gitPatch'
 import * as copyPatch from './copyPatches'
 import * as brandingPatch from './brandingPatch'
 import { join } from 'path'
+import { writeFileSync } from 'fs'
+import { patchCountFile } from '../../middleware/patch-check'
 
 type ListrTaskGroup = {
   title: string
@@ -61,11 +63,15 @@ function importFolders(): ListrTaskGroup {
 }
 
 function importGitPatch(): ListrTaskGroup {
+  const patches = sync('**/*.patch', { nodir: true, cwd: SRC_DIR }).map(
+    (path) => join(SRC_DIR, path)
+  )
+
+  writeFileSync(patchCountFile, patches.length.toString())
+
   return patchMethod(
     'git',
-    sync('**/*.patch', { nodir: true, cwd: SRC_DIR }).map((path) =>
-      join(SRC_DIR, path)
-    ),
+    patches,
     (path) => path,
     async (path) => await gitPatch.apply(path)
   )
