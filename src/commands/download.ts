@@ -151,8 +151,6 @@ const includeAddon = (
 
           const extensionCache = readItem<{ url: string }>(name)
 
-          console.log(extensionCache)
-
           if (extensionCache.isNone()) {
             // We haven't stored it in the cache, therefore we need to redonwload
             // it
