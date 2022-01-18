@@ -23,6 +23,7 @@ import {
 import { downloadFileToLocation } from '../utils/download'
 import { downloadArtifacts } from './download-artifacts'
 import { discard, init } from '.'
+import { readItem } from '../utils/store'
 
 const gFFVersion = getConfig().version.version
 
@@ -142,7 +143,22 @@ const includeAddon = (
       title: `Download addon from ${downloadURL}`,
       skip: () => {
         if (existsSync(outPath)) {
-          return `${downloadURL} has already been loaded to ${name}`
+          // Now we need to do some tests. First, if there is no cache file,
+          // we must discard the existing folder and download the file again.
+          // If there is a cache file and the cache file points to the same path
+          // we can return and skip the download.
+
+          const extensionCache = readItem<{ url: string }>(name)
+
+          if (extensionCache.isNone()) {
+            // We haven't stored it in the cache, therefore we need to redonwload
+            // it
+          } else {
+            const cache = extensionCache.unwrap()
+            if (cache.url == downloadURL) {
+              return `${downloadURL} has already been loaded to ${name}`
+            }
+          }
         }
       },
       task: async (ctx, task) => {
@@ -173,6 +189,10 @@ const includeAddon = (
         task.output = `Unpacking extension...`
 
         return new Promise<void>((res) => {
+          if (existsSync(outPath)) {
+            rmdirSync(outPath, { recursive: true })
+          }
+
           mkdirSync(outPath, {
             recursive: true,
           })
