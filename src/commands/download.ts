@@ -15,6 +15,7 @@ import Listr from 'listr'
 import { bin_name, config, log } from '..'
 import { ENGINE_DIR, MELON_TMP_DIR } from '../constants'
 import {
+  delay,
   ensureDir,
   getConfig,
   walkDirectoryTree,
@@ -23,7 +24,7 @@ import {
 import { downloadFileToLocation } from '../utils/download'
 import { downloadArtifacts } from './download-artifacts'
 import { discard, init } from '.'
-import { readItem } from '../utils/store'
+import { readItem, writeItem } from '../utils/store'
 
 const gFFVersion = getConfig().version.version
 
@@ -150,6 +151,8 @@ const includeAddon = (
 
           const extensionCache = readItem<{ url: string }>(name)
 
+          console.log(extensionCache)
+
           if (extensionCache.isNone()) {
             // We haven't stored it in the cache, therefore we need to redonwload
             // it
@@ -170,14 +173,18 @@ const includeAddon = (
           (msg) => (task.output = msg)
         )
         ctx[name] = tempFile
+
+        // I do not know why, but this delay causes unzip to work reliably
+        await delay(200)
       },
     },
     {
       title: `Unpack to ${name}`,
       enabled: (ctx) => typeof ctx[name] !== 'undefined',
-      task: (ctx, task) => {
+      task: async (ctx, task) => {
         const onData = (data: any) => {
           const d = data.toString()
+          writeFileSync('./tmp.log', readFileSync('./tmp.log', 'utf-8') + d)
 
           d.split('\n').forEach((line: any) => {
             if (line.trim().length !== 0) {
@@ -190,7 +197,10 @@ const includeAddon = (
 
         task.output = `Unpacking extension...`
 
-        return new Promise<void>((res) => {
+        // I do not know why, but this delay causes unzip to work reliably
+        await delay(200)
+
+        return await new Promise<void>((res, reg) => {
           if (existsSync(outPath)) {
             rmdirSync(outPath, { recursive: true })
           }
@@ -203,11 +213,12 @@ const includeAddon = (
 
           tarProc.stdout?.on('data', onData)
           tarProc.stdout?.on('error', (data) => {
-            throw data
+            reg(data)
           })
 
-          tarProc.on('exit', () => {
+          tarProc.on('exit', async () => {
             task.output = ''
+            await writeItem(name, { url: downloadURL })
             res()
           })
         })
