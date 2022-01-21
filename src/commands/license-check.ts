@@ -7,7 +7,14 @@ import { walkDirectory } from '../utils'
 
 const ignoredFiles = new RegExp('.*\\.(json|patch|md)')
 const licenseIgnore = new RegExp('(//) Ignore license in this file', 'g')
-const fixableFiles = [{ regex: new RegExp('.*\\.js'), comment: '// ' }]
+const fixableFiles = [
+  { regex: new RegExp('.*\\.js'), comment: '// ' },
+  {
+    regex: new RegExp('.*(\\.inc)?\\.css'),
+    commentOpen: '/*\n',
+    commentClose: '\n*/',
+  },
+]
 
 export function checkFile(path: string, noFix: boolean): ListrTask<any> {
   return {
@@ -35,12 +42,15 @@ export function checkFile(path: string, noFix: boolean): ListrTask<any> {
             join(__dirname, 'license-check.txt'),
             'utf8'
           )
-          const { comment } = fixable
-
-          const header = mpl
+          const { comment, commentOpen, commentClose } = fixable
+          let header = mpl
             .split('\n')
-            .map((ln) => comment + ln)
+            .map((ln) => (comment || '') + ln)
             .join('\n')
+
+          if (commentOpen) {
+            header = commentOpen + header + commentClose
+          }
 
           await writeFile(path, header + '\n' + contents.join('\n'))
         }
