@@ -14,6 +14,15 @@ const fixableFiles = [
     commentOpen: '/*\n',
     commentClose: '\n*/',
   },
+  {
+    regex: new RegExp('.*\\.html'),
+    commentOpen: '<!--\n',
+    commentClose: '\n-->',
+  },
+  {
+    regex: new RegExp('.*\\.py|moz\\.build'),
+    comment: '# ',
+  },
 ]
 
 export function checkFile(path: string, noFix: boolean): ListrTask<any> {
@@ -23,7 +32,15 @@ export function checkFile(path: string, noFix: boolean): ListrTask<any> {
     task: async () => {
       const contents = (await readFile(path, 'utf8')).split('\n')
 
-      const lines = [contents[0], contents[1], contents[2]].join('\n')
+      // We need to grab the top 5 lines just in case there are newlines in the
+      // comment blocks
+      const lines = [
+        contents[0],
+        contents[1],
+        contents[2],
+        contents[3],
+        contents[4],
+      ].join('\n')
       const hasLicense =
         (lines.includes('the Mozilla Public') &&
           lines.includes('If a copy of the MPL was') &&
