@@ -1,69 +1,41 @@
-import chalk from 'chalk'
-import { readdirSync, readFileSync } from 'fs'
-import { resolve } from 'path'
-import { log } from '..'
-import { ENGINE_DIR, PATCHES_DIR } from '../constants'
+import { readFile } from 'fs/promises'
+import Listr, { ListrTask } from 'listr'
 
-const ignoredExt = ['.json', '.bundle.js']
+import { SRC_DIR } from '../constants'
+import { walkDirectory } from '../utils'
 
-export const licenseCheck = async () => {
-  log.info('Checking project...')
+const ignoredFiles = new RegExp('.*\\.json', 'g')
 
-  let patches = readdirSync(PATCHES_DIR).map((p) => p)
+function checkFile(path: string): ListrTask<any> {
+  return {
+    skip: () => ignoredFiles.test(path),
+    title: path.replace(SRC_DIR, ''),
+    task: async () => {
+      const contents = (await readFile(path, 'utf8')).split('\n')
 
-  patches = patches.filter((p) => p !== '.index')
+      const lines = [contents[0], contents[1], contents[2]].join('\n')
+      const hasLicense =
+        lines.includes('the Mozilla Public') &&
+        lines.includes('If a copy of the MPL was') &&
+        lines.includes('http://mozilla.org/MPL/2.0/')
 
-  const originalPaths = patches.map((p) => {
-    const data = readFileSync(resolve(PATCHES_DIR, p), 'utf-8')
-
-    return data.split('diff --git a/')[1].split(' b/')[0]
-  })
-
-  const passed: string[] = []
-  const failed: string[] = []
-  const ignored: string[] = []
-
-  originalPaths.forEach((p) => {
-    const data = readFileSync(resolve(ENGINE_DIR, p), 'utf-8')
-    const headerRegion = data.split('\n').slice(0, 32).join(' ')
-
-    const passes =
-      headerRegion.includes('http://mozilla.org/MPL/2.0') &&
-      headerRegion.includes('This Source Code Form') &&
-      headerRegion.includes('copy of the MPL')
-
-    const isIgnored = !!ignoredExt.find((i) => p.endsWith(i))
-    isIgnored && ignored.push(p)
-
-    if (!isIgnored) {
-      if (passes) passed.push(p)
-      else if (!passes) failed.push(p)
-    }
-  })
-
-  const maxPassed = 5
-  let i = 0
-
-  for (const p of passed) {
-    log.info(`${p}... ${chalk.green('✔ Pass - MPL-2.0')}`)
-
-    if (i >= maxPassed) {
-      log.info(
-        `${chalk.gray.italic(
-          `${passed.length - maxPassed} other files...`
-        )} ${chalk.green('✔ Pass - MPL-2.0')}`
-      )
-      break
-    }
-
-    ++i
+      if (!hasLicense) {
+        throw new Error(
+          `${path} does not have a license. Please add the source code header`
+        )
+      }
+    },
   }
+}
 
-  failed.forEach((p, i) => {
-    log.info(`${p}... ${chalk.red('❗ Failed')}`)
-  })
+export const licenseCheck = async (): Promise<void> => {
+  const files = await walkDirectory(SRC_DIR)
 
-  ignored.forEach((p, i) => {
-    log.info(`${p}... ${chalk.gray('➖ Ignored')}`)
-  })
+  await new Listr(
+    files.map((file) => checkFile(file)),
+    {
+      concurrent: true,
+      exitOnError: false,
+    }
+  ).run()
 }
