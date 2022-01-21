@@ -182,7 +182,6 @@ const includeAddon = (
       task: async (ctx, task) => {
         const onData = (data: any) => {
           const d = data.toString()
-          writeFileSync('./tmp.log', readFileSync('./tmp.log', 'utf-8') + d)
 
           d.split('\n').forEach((line: any) => {
             if (line.trim().length !== 0) {
