@@ -11,7 +11,7 @@
   "scripts": {
     "test": "jest",
     "test:dev": "jest --watch",
-    "build": "rm -rf dist/ && tsc && echo \"#!/usr/bin/env node\"|cat - ./dist/index.js > /tmp/out && mv /tmp/out ./dist/index.js && chmod +x ./dist/index.js",
+    "build": "rm -rf dist/ && tsc && echo \"#!/usr/bin/env node\"|cat - ./dist/index.js > /tmp/out && mv /tmp/out ./dist/index.js && chmod +x ./dist/index.js && cp src/commands/license-check.txt dist/commands/license-check.txt",
     "format": "prettier . -w",
     "lint": "eslint .",
     "docs:install": "",
