@@ -1,69 +1,93 @@
-import chalk from 'chalk'
-import { readdirSync, readFileSync } from 'fs'
-import { resolve } from 'path'
-import { log } from '..'
-import { ENGINE_DIR, PATCHES_DIR } from '../constants'
+import { readFile, writeFile } from 'fs/promises'
+import Listr, { ListrTask } from 'listr'
+import { join } from 'path'
 
-const ignoredExt = ['.json', '.bundle.js']
+import { SRC_DIR } from '../constants'
+import { walkDirectory } from '../utils'
 
-export const licenseCheck = async () => {
-  log.info('Checking project...')
+const ignoredFiles = new RegExp('.*\\.(json|patch|md)')
+const licenseIgnore = new RegExp('(//) Ignore license in this file', 'g')
+const fixableFiles = [
+  { regex: new RegExp('.*\\.js'), comment: '// ' },
+  {
+    regex: new RegExp('.*(\\.inc)?\\.css'),
+    commentOpen: '/*\n',
+    commentClose: '\n*/',
+  },
+  {
+    regex: new RegExp('.*\\.html'),
+    commentOpen: '<!--\n',
+    commentClose: '\n-->',
+  },
+  {
+    regex: new RegExp('.*\\.py|moz\\.build'),
+    comment: '# ',
+  },
+]
 
-  let patches = readdirSync(PATCHES_DIR).map((p) => p)
+export function checkFile(path: string, noFix: boolean): ListrTask<any> {
+  return {
+    skip: () => ignoredFiles.test(path),
+    title: path.replace(SRC_DIR, ''),
+    task: async () => {
+      const contents = (await readFile(path, 'utf8')).split('\n')
 
-  patches = patches.filter((p) => p !== '.index')
+      // We need to grab the top 5 lines just in case there are newlines in the
+      // comment blocks
+      const lines = [
+        contents[0],
+        contents[1],
+        contents[2],
+        contents[3],
+        contents[4],
+      ].join('\n')
+      const hasLicense =
+        (lines.includes('the Mozilla Public') &&
+          lines.includes('If a copy of the MPL was') &&
+          lines.includes('http://mozilla.org/MPL/2.0/')) ||
+        licenseIgnore.test(contents.join('\n'))
 
-  const originalPaths = patches.map((p) => {
-    const data = readFileSync(resolve(PATCHES_DIR, p), 'utf-8')
+      if (!hasLicense) {
+        const fixable = fixableFiles.find(({ regex }) => regex.test(path))
 
-    return data.split('diff --git a/')[1].split(' b/')[0]
-  })
+        if (!fixable || noFix) {
+          throw new Error(
+            `${path} does not have a license. Please add the source code header`
+          )
+        } else {
+          const mpl = await readFile(
+            join(__dirname, 'license-check.txt'),
+            'utf8'
+          )
+          const { comment, commentOpen, commentClose } = fixable
+          let header = mpl
+            .split('\n')
+            .map((ln) => (comment || '') + ln)
+            .join('\n')
 
-  const passed: string[] = []
-  const failed: string[] = []
-  const ignored: string[] = []
+          if (commentOpen) {
+            header = commentOpen + header + commentClose
+          }
 
-  originalPaths.forEach((p) => {
-    const data = readFileSync(resolve(ENGINE_DIR, p), 'utf-8')
-    const headerRegion = data.split('\n').slice(0, 32).join(' ')
-
-    const passes =
-      headerRegion.includes('http://mozilla.org/MPL/2.0') &&
-      headerRegion.includes('This Source Code Form') &&
-      headerRegion.includes('copy of the MPL')
-
-    const isIgnored = !!ignoredExt.find((i) => p.endsWith(i))
-    isIgnored && ignored.push(p)
-
-    if (!isIgnored) {
-      if (passes) passed.push(p)
-      else if (!passes) failed.push(p)
-    }
-  })
-
-  const maxPassed = 5
-  let i = 0
-
-  for (const p of passed) {
-    log.info(`${p}... ${chalk.green('✔ Pass - MPL-2.0')}`)
-
-    if (i >= maxPassed) {
-      log.info(
-        `${chalk.gray.italic(
-          `${passed.length - maxPassed} other files...`
-        )} ${chalk.green('✔ Pass - MPL-2.0')}`
-      )
-      break
-    }
-
-    ++i
+          await writeFile(path, header + '\n' + contents.join('\n'))
+        }
+      }
+    },
   }
+}
 
-  failed.forEach((p, i) => {
-    log.info(`${p}... ${chalk.red('❗ Failed')}`)
-  })
+interface Options {
+  noFix: boolean
+}
 
-  ignored.forEach((p, i) => {
-    log.info(`${p}... ${chalk.gray('➖ Ignored')}`)
-  })
+export const licenseCheck = async (options: Options): Promise<void> => {
+  const files = await walkDirectory(SRC_DIR)
+
+  await new Listr(
+    files.map((file) => checkFile(file, options.noFix)),
+    {
+      concurrent: true,
+      exitOnError: false,
+    }
+  ).run()
 }
