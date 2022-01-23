@@ -163,7 +163,9 @@ const includeAddon = (
         }
       },
       task: async (ctx, task) => {
-        unlinkSync(tempFile)
+        if (existsSync(tempFile)) {
+          unlinkSync(tempFile)
+        }
 
         await downloadFileToLocation(
           downloadURL,
