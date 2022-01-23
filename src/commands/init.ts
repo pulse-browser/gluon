@@ -54,7 +54,7 @@ export const init = async (
     false,
     logInfo
   )
-  await dispatch('git', ['add', '-f', '-q', '.'], dir as string, false, logInfo)
+  await dispatch('git', ['add', '-f', '.'], dir as string, false, logInfo)
   await dispatch(
     'git',
     ['commit', '-am', '-q', `"Firefox ${version}"`],
