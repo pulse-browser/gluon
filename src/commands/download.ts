@@ -15,6 +15,7 @@ import Listr from 'listr'
 import { bin_name, config, log } from '..'
 import { ENGINE_DIR, MELON_TMP_DIR } from '../constants'
 import {
+  commandExistsSync,
   delay,
   ensureDir,
   getConfig,
@@ -289,26 +290,37 @@ async function unpackFirefoxSource(
   if (existsSync(ENGINE_DIR)) rmdirSync(ENGINE_DIR)
   mkdirSync(ENGINE_DIR)
 
-  try {
-    await execa(
-      'tar',
-      [
-        '--transform',
-        `s,firefox-${gFFVersion},engine,`,
-        `--show-transformed`,
-        process.platform == 'win32' ? '--force-local' : null,
-        '-xf',
-        resolve(cwd, '.dotbuild', 'engines', name),
-      ].filter((x) => x) as string[]
-    )
-  } catch (e) {
-    const error = e as unknown as Error
-    error.message = `\nThe following error may have been caused because you are using bsdtar.
-For MacOS users, please run |brew install gnu-tar| if the error includes "--transform is not supported"
-${error.message}\n`
+  let tarExec = 'tar'
 
-    throw e
+  // On MacOS, we need to use gnu tar, otherwise tar doesn't behave how we
+  // would expect it to behave, so this section is responsible for handling
+  // that
+  //
+  // If BSD tar adds --transform support in the future, we can use that
+  // instead
+  if (process.platform == 'darwin') {
+    // GNU Tar doesn't come preinstalled on any MacOS machines, so we need to
+    // check for it and ask for the user to install it if necessary
+    if (!commandExistsSync('gtar')) {
+      throw new Error(
+        `GNU Tar is required to extract Firefox\'s source on MacOS. Please install it using the command |brew install gnu-tar| and try again`
+      )
+    }
+
+    tarExec = 'gtar'
   }
+
+  await execa(
+    tarExec,
+    [
+      '--transform',
+      `s,firefox-${gFFVersion},engine,`,
+      `--show-transformed`,
+      process.platform == 'win32' ? '--force-local' : null,
+      '-xf',
+      resolve(cwd, '.dotbuild', 'engines', name),
+    ].filter((x) => x) as string[]
+  )
 }
 
 async function downloadFirefoxSource(
