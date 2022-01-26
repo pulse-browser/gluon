@@ -174,6 +174,8 @@ export async function apply(name: string): Promise<void> {
   ensureEmpty(outputPath)
 
   await setupImages(configPath, outputPath)
+  // Keep a copy in config for other CI actions
+  await setupImages(configPath, configPath)
   setupLocale(outputPath, brandingConfig)
   await copyMozFiles(outputPath, brandingConfig)
 }
