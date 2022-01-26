@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 // Init the logger before literally anything else to stop really obscure error
 // messages from occurring
 import { log as logInited } from './log'

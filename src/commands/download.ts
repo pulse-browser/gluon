@@ -26,6 +26,7 @@ import { downloadFileToLocation } from '../utils/download'
 import { downloadArtifacts } from './download-artifacts'
 import { discard, init } from '.'
 import { readItem, writeItem } from '../utils/store'
+import { debug } from 'console'
 
 const gFFVersion = getConfig().version.version
 
@@ -67,18 +68,18 @@ export const download = async (): Promise<void> => {
         await unpackFirefoxSource(ctx.firefoxSourceTar, task)
       },
     },
-    {
-      title: 'Install windows artifacts',
-      enabled: (ctx) => process.platform == 'win32',
-      task: async (ctx) => {
-        if (existsSync(resolve(homedir(), '.mozbuild'))) {
-          log.info('Mozbuild directory already exists, not redownloading')
-        } else {
-          log.info('Mozbuild not found, downloading artifacts.')
-          await downloadArtifacts()
-        }
-      },
-    },
+    // {
+    //   title: 'Install windows artifacts',
+    //   enabled: (ctx) => process.platform == 'win32',
+    //   task: async (ctx) => {
+    //     if (existsSync(resolve(homedir(), '.mozbuild'))) {
+    //       log.info('Mozbuild directory already exists, not redownloading')
+    //     } else {
+    //       log.info('Mozbuild not found, downloading artifacts.')
+    //       await downloadArtifacts()
+    //     }
+    //   },
+    // },
     {
       title: 'Init firefox',
       enabled: (ctx) => ctx.firefoxSourceTar && !process.env.CI_SKIP_INIT,
@@ -310,13 +311,16 @@ async function unpackFirefoxSource(
     tarExec = 'gtar'
   }
 
+  if (process.platform == 'win32') {
+    await execa('7z', ['e', resolve(cwd, '.dotbuild', 'engines', name)])
+    await execa('7z', ['x', resolve(cwd, name.replace('.xz', ''))])
+    return
+  }
+
   await execa(
     tarExec,
     [
-      '--transform',
-      `s,firefox-${gFFVersion},engine,`,
-      `--show-transformed`,
-      process.platform == 'win32' ? '--force-local' : null,
+      '--strip-components=1',
       '-xf',
       resolve(cwd, '.dotbuild', 'engines', name),
     ].filter((x) => x) as string[]
