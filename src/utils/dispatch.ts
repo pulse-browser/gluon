@@ -1,5 +1,8 @@
 import execa from 'execa'
-import { log } from '..'
+import { log } from '../log'
+
+export const removeTimestamp = (input: string): string =>
+  input.replace(/\s\d{1,5}:\d\d\.\d\d /g, '')
 
 export const dispatch = (
   cmd: string,
