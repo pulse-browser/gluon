@@ -71,6 +71,9 @@ async function setupImages(configPath: string, outputPath: string) {
     await sharp(join(configPath, 'logo.png'))
       .resize(size, size)
       .toFile(join(outputPath, `default${size}.png`))
+    await sharp(join(configPath, 'logo.png'))
+      .resize(size, size)
+      .toFile(join(configPath, `logo${size}.png`))
   }
 
   await sharp(join(configPath, 'logo.png'))
@@ -174,8 +177,6 @@ export async function apply(name: string): Promise<void> {
   ensureEmpty(outputPath)
 
   await setupImages(configPath, outputPath)
-  // Keep a copy in config for other CI actions
-  await setupImages(configPath, configPath)
   setupLocale(outputPath, brandingConfig)
   await copyMozFiles(outputPath, brandingConfig)
 }
