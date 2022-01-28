@@ -28,6 +28,8 @@ import { discard, init } from '.'
 import { readItem, writeItem } from '../utils/store'
 import { debug } from 'console'
 
+import tar from 'tar'
+
 const gFFVersion = getConfig().version.version
 
 export const download = async (): Promise<void> => {
@@ -286,7 +288,7 @@ async function unpackFirefoxSource(
     cwd = './'
   }
 
-  task.output = `Unpacking Firefox...`
+  task.output = `Extracting Firefox...`
 
   if (existsSync(ENGINE_DIR)) rmdirSync(ENGINE_DIR)
   mkdirSync(ENGINE_DIR)
@@ -313,7 +315,12 @@ async function unpackFirefoxSource(
 
   if (process.platform == 'win32') {
     await execa('7z', ['e', resolve(cwd, '.dotbuild', 'engines', name)])
-    await execa('7z', ['x', resolve(cwd, name.replace('.xz', ''))])
+    task.output = `Unpacking Firefox...`
+    await tar.x({
+      strip: 1,
+      file: resolve(cwd, name.replace('.xz', '')),
+      C: ENGINE_DIR,
+    })
     return
   }
 
