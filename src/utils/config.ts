@@ -4,6 +4,7 @@
 
 import { existsSync, readFileSync } from 'fs'
 import { join } from 'path'
+import { BIN_NAME } from '../constants'
 
 import { log } from '../log'
 
@@ -157,7 +158,7 @@ export function rawConfig(): string {
   } else {
     if (!hasWarnedAboutConfig) {
       log.warning(
-        `Config file not found at ${configPath}. It is recommended to create one by running |melon setup-project|`
+        `Config file not found at ${configPath}. It is recommended to create one by running |${BIN_NAME} setup-project|`
       )
       hasWarnedAboutConfig = true
     }
