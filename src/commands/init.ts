@@ -2,7 +2,9 @@ import { Command } from 'commander'
 import { existsSync, readFileSync } from 'fs'
 import Listr from 'listr'
 import { resolve } from 'path'
-import { bin_name, log } from '..'
+
+import { log } from '..'
+import { BIN_NAME } from '../constants'
 import { dispatch } from '../utils'
 
 export const init = async (
@@ -23,7 +25,7 @@ export const init = async (
 
   if (!existsSync(dir)) {
     log.error(
-      `Directory "${directory}" not found.\nCheck the directory exists and run |${bin_name} init| again.`
+      `Directory "${directory}" not found.\nCheck the directory exists and run |${BIN_NAME} init| again.`
     )
   }
 
@@ -40,7 +42,7 @@ export const init = async (
 
   if (!version)
     log.error(
-      `Directory "${directory}" not found.\nCheck the directory exists and run |${bin_name} init| again.`
+      `Directory "${directory}" not found.\nCheck the directory exists and run |${BIN_NAME} init| again.`
     )
 
   version = version.trim().replace(/\\n/g, '')

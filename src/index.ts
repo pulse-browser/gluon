@@ -9,7 +9,7 @@ import { existsSync, readFileSync } from 'fs'
 import { resolve } from 'path'
 import { errorHandler, config as configInited } from './utils'
 import { commands } from './cmds'
-import { ENGINE_DIR } from './constants'
+import { BIN_NAME, ENGINE_DIR } from './constants'
 import { shaCheck } from './middleware/sha-check'
 import { updateCheck } from './middleware/update-check'
 import { registerCommand } from './middleware/registerCommand'
@@ -17,7 +17,7 @@ import { registerCommand } from './middleware/registerCommand'
 // We have to use a dynamic require here, otherwise the typescript compiler
 // mucks up the directory structure
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { version: melon } = require('../package.json')
+const { version: gluon } = require('../package.json')
 
 export const config = configInited
 
@@ -36,14 +36,13 @@ if (existsSync(resolve(ENGINE_DIR, 'browser', 'config', 'version.txt'))) {
   if (version !== config.version.version) reportedFFVersion = version
 }
 
-export const bin_name = 'melon'
 
 program.version(`
 \t${chalk.bold(config.name)}     ${config.version.displayVersion}
 \t${chalk.bold('Firefox')}         ${config.version.version} ${
   reportedFFVersion ? `(being reported as ${reportedFFVersion})` : ``
 }
-\t${chalk.bold('Melon')}           ${melon}
+\t${chalk.bold('Gluon')}           ${gluon}
 
 ${
   reportedFFVersion
@@ -53,7 +52,7 @@ then switched to another branch.`
     : ``
 }
 `)
-program.name(bin_name)
+program.name(BIN_NAME)
 
 program.option(
   '-v, --verbose',

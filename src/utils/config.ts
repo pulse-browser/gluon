@@ -116,7 +116,7 @@ export const defaultLicenseConfig: LicenseConfig = {
 }
 
 export const defaultConfig: Config = {
-  name: 'Unknown melon build',
+  name: 'Unknown gluon build',
   vendor: 'Unknown',
   appId: 'unknown.appid',
   binaryName: 'firefox',

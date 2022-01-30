@@ -1,8 +1,8 @@
 import execa from 'execa'
 import { existsSync } from 'fs'
 import { resolve } from 'path'
-import { bin_name, log } from '..'
-import { ENGINE_DIR } from '../constants'
+import { log } from '..'
+import { BIN_NAME, ENGINE_DIR } from '../constants'
 
 export const melonPackage = async () => {
   if (existsSync(ENGINE_DIR)) {
@@ -21,7 +21,7 @@ export const melonPackage = async () => {
     }
   } else {
     log.error(
-      `Unable to locate any source directories.\nRun |${bin_name} download| to generate the source directory.`
+      `Unable to locate any source directories.\nRun |${BIN_NAME} download| to generate the source directory.`
     )
   }
 }

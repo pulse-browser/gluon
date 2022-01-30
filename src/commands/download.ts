@@ -12,8 +12,8 @@ import { join, posix, resolve, sep } from 'path'
 import execa from 'execa'
 import Listr from 'listr'
 
-import { bin_name, config, log } from '..'
-import { ENGINE_DIR, MELON_TMP_DIR } from '../constants'
+import { config, log } from '..'
+import { BIN_NAME, ENGINE_DIR, MELON_TMP_DIR } from '../constants'
 import {
   commandExistsSync,
   delay,
@@ -127,7 +127,7 @@ export const download = async (): Promise<void> => {
   ]).run()
 
   log.success(
-    `You should be ready to make changes to ${config.name}.\n\n\t   You should import the patches next, run |${bin_name} import|.\n\t   To begin building ${config.name}, run |${bin_name} build|.`
+    `You should be ready to make changes to ${config.name}.\n\n\t   You should import the patches next, run |${BIN_NAME} import|.\n\t   To begin building ${config.name}, run |${BIN_NAME} build|.`
   )
   console.log()
 }
@@ -363,7 +363,7 @@ async function downloadFirefoxSource(
   // Do not re-download if there is already an existing workspace present
   if (existsSync(ENGINE_DIR)) {
     log.error(
-      `Workspace already exists.\nRemove that workspace and run |${bin_name} download ${version}| again.`
+      `Workspace already exists.\nRemove that workspace and run |${BIN_NAME} download ${version}| again.`
     )
   }
 

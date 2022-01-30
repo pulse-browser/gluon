@@ -1,8 +1,8 @@
 /// <reference path="./linus.d.ts"/>
 
 import distro from 'linus'
-import { bin_name, log } from '..'
-import { ENGINE_DIR } from '../constants'
+import { log } from '..'
+import { BIN_NAME, ENGINE_DIR } from '../constants'
 import { dispatch } from '../utils'
 import { pacmanInstall } from './bootstrap/arch'
 import { aptInstall } from './bootstrap/debian'
@@ -10,7 +10,7 @@ import { aptInstall } from './bootstrap/debian'
 export const bootstrap = async () => {
   if (process.platform == 'win32')
     log.error(
-      `You do not need to bootstrap on Windows. As long as you ran |${bin_name} download-artifacts| everything should work fine.`
+      `You do not need to bootstrap on Windows. As long as you ran |${BIN_NAME} download-artifacts| everything should work fine.`
     )
 
   log.info(`Bootstrapping Dot Browser for Desktop...`)

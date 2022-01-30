@@ -1,7 +1,7 @@
 import { existsSync, readdirSync } from 'fs'
 import { resolve } from 'path'
-import { bin_name, log } from '..'
-import { ENGINE_DIR } from '../constants'
+import { log } from '..'
+import { BIN_NAME, ENGINE_DIR } from '../constants'
 import { dispatch } from '../utils'
 
 export const run = async (chrome?: string) => {
@@ -23,7 +23,7 @@ export const run = async (chrome?: string) => {
     )
   } else {
     log.error(
-      `Unable to locate any built binaries.\nRun |${bin_name} build| to initiate a build.`
+      `Unable to locate any built binaries.\nRun |${BIN_NAME} build| to initiate a build.`
     )
   }
 }

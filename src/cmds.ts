@@ -24,14 +24,14 @@ import { Cmd } from './types'
 export const commands: Cmd[] = [
   {
     cmd: 'bootstrap',
-    description: 'Bootstrap the melon app.',
+    description: 'Bootstrap the gluon app.',
     controller: bootstrap,
   },
   {
     cmd: 'build',
     aliases: ['b'],
     description:
-      'Build the melon app. Specify the OS param for cross-platform builds.',
+      'Build the gluon app. Specify the OS param for cross-platform builds.',
     options: [
       {
         arg: '--a, --arch <architecture>',
@@ -139,7 +139,7 @@ export const commands: Cmd[] = [
   },
   {
     cmd: 'setup-project',
-    description: 'Sets up a melon project for the first time',
+    description: 'Sets up a gluon project for the first time',
     controller: setupProject,
   },
   {
@@ -149,7 +149,7 @@ export const commands: Cmd[] = [
   },
   {
     cmd: 'test',
-    description: 'Run the test suite for the melon app.',
+    description: 'Run the test suite for the gluon app.',
     controller: test,
   },
 ]

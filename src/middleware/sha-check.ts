@@ -1,7 +1,8 @@
 import execa from 'execa'
 import { existsSync, readFileSync } from 'fs'
 import { resolve } from 'path'
-import { bin_name, log } from '..'
+import { log } from '..'
+import { BIN_NAME } from '../constants'
 
 const blacklistedCommands = ['reset', 'init', 'set-branch']
 
@@ -26,9 +27,9 @@ export const shaCheck = async (command: string): Promise<void> => {
       log.warning(`The current branch \`${currentBranch}\` differs from the original branch \`${metadata.branch}\`.
             
 \t If you are changing the Firefox version, you will need to reset the tree
-\t with |${bin_name} reset --hard| and then |${bin_name} download|.
+\t with |${BIN_NAME} reset --hard| and then |${BIN_NAME} download|.
 
-\t Or you can change the default branch by typing |${bin_name} set-branch <branch>|.`)
+\t Or you can change the default branch by typing |${BIN_NAME} set-branch <branch>|.`)
     }
   }
 }

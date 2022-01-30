@@ -1,8 +1,8 @@
 import execa from 'execa'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { join, resolve } from 'path'
-import { bin_name, config, log } from '..'
-import { BUILD_TARGETS, CONFIGS_DIR, ENGINE_DIR } from '../constants'
+import { config, log } from '..'
+import { BIN_NAME, BUILD_TARGETS, CONFIGS_DIR, ENGINE_DIR } from '../constants'
 import { patchCheck } from '../middleware/patch-check'
 import { dispatch, stringTemplate } from '../utils'
 
@@ -101,7 +101,7 @@ const genericBuild = async (os: string, fast = false) => {
   log.info(`Building for "${os}"...`)
 
   log.warning(
-    `If you get any dependency errors, try running |${bin_name} bootstrap|.`
+    `If you get any dependency errors, try running |${BIN_NAME} bootstrap|.`
   )
 
   const buildOptions = ['build']
