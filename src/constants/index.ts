@@ -20,6 +20,7 @@ export const COMMON_DIR = resolve(process.cwd(), 'common')
 export const CONFIGS_DIR = resolve(process.cwd(), 'configs')
 export const MELON_DIR = resolve(process.cwd(), '.dotbuild')
 export const MELON_TMP_DIR = resolve(process.cwd(), '.dotbuild', 'engine')
+export let BASH_PATH: string | null = null
 
 mkdirSync(MELON_TMP_DIR, { recursive: true })
 
@@ -38,14 +39,21 @@ if (existsSync(ENGINE_DIR)) {
         cwd: ENGINE_DIR,
       }).stdout
     } catch (e) {
+      log.warning(`Windows moment ${(e as any).toString()}`)
       log.warning(
-        'An error occurred running engine/build/autoconf/config.guess'
+        'Its probibly nothing, you should be able to ignore it. Its just the NT kernal being pain'
       )
-      log.warning(e)
-      log.askForReport()
-
-      process.exit(1)
+      log.warning('')
     }
+  }
+}
+
+if (process.platform == 'win32') {
+  if (execa.sync('where.exe git.exe').stdout.toString().includes('git.exe')) {
+    let gitPath = execa.sync('where.exe git.exe').stdout.toString()
+    log.info(`Found git at ${gitPath}`)
+    BASH_PATH = resolve(gitPath, '../..', 'bin/bash.exe')
+    log.info(`Found bash at ${BASH_PATH}`)
   }
 }
 

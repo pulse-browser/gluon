@@ -13,7 +13,7 @@ import execa from 'execa'
 import Listr from 'listr'
 
 import { bin_name, config, log } from '..'
-import { ENGINE_DIR, MELON_TMP_DIR } from '../constants'
+import { BASH_PATH, ENGINE_DIR, MELON_TMP_DIR } from '../constants'
 import {
   commandExistsSync,
   delay,
@@ -314,14 +314,15 @@ async function unpackFirefoxSource(
   }
 
   if (process.platform == 'win32') {
-    await execa('7z', ['e', resolve(cwd, '.dotbuild', 'engines', name)])
-    task.output = `Unpacking Firefox...`
-    await tar.x({
-      strip: 1,
-      file: resolve(cwd, name.replace('.xz', '')),
-      C: ENGINE_DIR,
-    })
-    return
+    await execa(
+      tarExec,
+      [
+        '--strip-components=1',
+        '-xf',
+        resolve(cwd, '.dotbuild', 'engines', name),
+      ].filter((x) => x) as string[],
+      { shell: BASH_PATH || false }
+    )
   }
 
   await execa(
