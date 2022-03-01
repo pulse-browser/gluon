@@ -1,96 +1,33 @@
-// import execa from 'execa'
-// import { existsSync } from 'fs'
-// import { resolve } from 'path'
-// import prompts from 'prompts'
-// import rimraf from 'rimraf'
-// import { bin_name, log } from '..'
-// import { ENGINE_DIR } from '../constants'
-// import { IPatch } from '../interfaces/patch'
-// import manualPatches from '../manual-patches'
+import execa from 'execa'
+import prompts from 'prompts'
+
+import { bin_name } from '..'
+import { ENGINE_DIR } from '../constants'
+import { log } from '../log'
 
 export const reset = async (): Promise<void> => {
-  throw new Error('TODO: needs to be implemented')
+  log.warning(`This will remove any changes that you have made to firefox`)
+  log.warning(
+    `If you have made changes to firefox's internal files, save them with |${bin_name} export [filename]|`
+  )
+  log.warning(
+    `You will need to run |${bin_name} import| to bring back your saved changes`
+  )
 
-  // try {
-  // //   log.warning(
-  // //     'This will clear all your unexported changes in the `src` directory!'
-  // //   )
-  // //   log.warning(`You can export your changes by running |${bin_name} export|.`)
+  const { answer } = await prompts({
+    type: 'confirm',
+    name: 'answer',
+    message: 'Are you sure you want to continue?',
+  })
 
-  // //   const { answer } = await prompts({
-  // //     type: 'confirm',
-  // //     name: 'answer',
-  // //     message: 'Are you sure you want to continue?',
-  // //   })
+  if (answer) {
+    log.info('Unstaging changes...')
+    await execa('git', ['reset'], { cwd: ENGINE_DIR })
 
-  // //   if (answer) {
-  // //     await execa('git', ['checkout', '.'], { cwd: ENGINE_DIR })
+    log.info('Reverting uncommitted changes...')
+    await execa('git', ['checkout', '.'], { cwd: ENGINE_DIR })
 
-  // //     manualPatches.forEach(async (patch: IPatch) => {
-  // //       const { src, action } = patch
-
-  // //       if (action == 'copy') {
-  // //         if (typeof src === 'string') {
-  // //           const path = resolve(ENGINE_DIR, src)
-
-  // //           if (path !== ENGINE_DIR) {
-  // //             log.info(`Deleting ${src}...`)
-
-  // //             if (existsSync(path)) rimraf.sync(path)
-  // //           }
-  // //         } else if (Array.isArray(src)) {
-  // //           src.forEach((i) => {
-  // //             const path = resolve(ENGINE_DIR, i)
-
-  // //             if (path !== ENGINE_DIR) {
-  // //               log.info(`Deleting ${i}...`)
-
-  // //               if (existsSync(path)) rimraf.sync(path)
-  // //             }
-  // //           })
-  // //         }
-  // //       } else {
-  // //         log.warning(
-  // //           'Resetting does not work on manual patches that have a `delete` action, skipping...'
-  // //         )
-  // //       }
-  // //     })
-
-  // //     const leftovers = new Set()
-
-  // //     const { stdout: origFiles } = await execa(
-  // //       'git',
-  // //       ['clean', '-e', "'!*.orig'", '--dry-run'],
-  // //       { cwd: ENGINE_DIR }
-  // //     )
-
-  // //     const { stdout: rejFiles } = await execa(
-  // //       'git',
-  // //       ['clean', '-e', "'!*.rej'", '--dry-run'],
-  // //       { cwd: ENGINE_DIR }
-  // //     )
-
-  // //     origFiles
-  // //       .split('\n')
-  // //       .map((f) => leftovers.add(f.replace(/Would remove /, '')))
-  // //     rejFiles
-  // //       .split('\n')
-  // //       .map((f) => leftovers.add(f.replace(/Would remove /, '')))
-
-  // //     Array.from(leftovers).forEach((f: any) => {
-  // //       const path = resolve(ENGINE_DIR, f)
-
-  // //       if (path !== ENGINE_DIR) {
-  // //         log.info(`Deleting ${f}...`)
-
-  // //         rimraf.sync(resolve(ENGINE_DIR, f))
-  // //       }
-  // //     })
-
-  // //     log.success('Reset successfully.')
-  // //     log.info(
-  // //       'Next time you build, it may need to recompile parts of the program because the cache was invalidated.'
-  // //     )
-  // //   }
-  // // } catch (e) {}
+    log.info('Removing all untracked files...')
+    await execa('git', ['clean', '-fdx'], { cwd: ENGINE_DIR })
+  }
 }
