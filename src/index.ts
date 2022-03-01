@@ -10,7 +10,6 @@ import { resolve } from 'path'
 import { errorHandler, config as configInited } from './utils'
 import { commands } from './cmds'
 import { ENGINE_DIR } from './constants'
-import { shaCheck } from './middleware/sha-check'
 import { updateCheck } from './middleware/update-check'
 import { registerCommand } from './middleware/registerCommand'
 
@@ -87,7 +86,6 @@ commands.forEach((command) => {
 
     registerCommand(command.cmd)
 
-    await shaCheck(command.cmd)
     await updateCheck()
 
     command.controller(...args)

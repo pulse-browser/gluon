@@ -20,7 +20,6 @@ import {
   ensureDir,
   getConfig,
   walkDirectoryTree,
-  writeMetadata,
 } from '../utils'
 import { downloadFileToLocation } from '../utils/download'
 import { downloadArtifacts } from './download-artifacts'
@@ -105,10 +104,6 @@ export const download = async (): Promise<void> => {
             .join(',')}]`
         )
       },
-    },
-    {
-      title: 'Write metadata',
-      task: () => writeMetadata(),
     },
     {
       title: 'Cleanup',

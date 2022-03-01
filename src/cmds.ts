@@ -12,10 +12,8 @@ import {
   melonPackage,
   reset,
   run,
-  setBranch,
   setupProject,
   status,
-  test,
 } from './commands'
 import { getFFVersion } from './commands/ff-version'
 import { applyPatches } from './commands/patches'
@@ -131,11 +129,6 @@ export const commands: Cmd[] = [
     aliases: ['r', 'open'],
     description: 'Run the browser.',
     controller: run,
-  },
-  {
-    cmd: 'set-branch <branch>',
-    description: 'Change the default branch.',
-    controller: setBranch,
   },
   {
     cmd: 'setup-project',
