@@ -147,9 +147,4 @@ export const commands: Cmd[] = [
     description: 'Status and files changed for src directory.',
     controller: status,
   },
-  {
-    cmd: 'test',
-    description: 'Run the test suite for the melon app.',
-    controller: test,
-  },
 ]
