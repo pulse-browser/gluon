@@ -12,12 +12,14 @@ const fixableFiles = [
   {
     regex: new RegExp('.*(\\.inc)?\\.css'),
     commentOpen: '/*\n',
-    commentClose: '\n*/',
+    comment: ' * ',
+    commentClose: '\n */',
   },
   {
-    regex: new RegExp('.*\\.html'),
+    regex: new RegExp('.*\\.(html|svg|xml)'),
     commentOpen: '<!--\n',
-    commentClose: '\n-->',
+    comment: '   - ',
+    commentClose: '\n   -->',
   },
   {
     regex: new RegExp('.*\\.py|moz\\.build'),
