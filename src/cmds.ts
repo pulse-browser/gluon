@@ -3,7 +3,6 @@ import {
   build,
   discard,
   download,
-  downloadArtifacts,
   execute,
   exportFile,
   fixLineEndings,
@@ -58,14 +57,6 @@ export const commands: Cmd[] = [
     cmd: 'download [ffVersion]',
     description: 'Download Firefox.',
     controller: download,
-  },
-  {
-    cmd: 'download-artifacts',
-    description: 'Download Windows artifacts from GitHub.',
-    flags: {
-      platforms: ['win32'],
-    },
-    controller: downloadArtifacts,
   },
   {
     cmd: 'execute',

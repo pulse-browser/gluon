@@ -6,7 +6,6 @@ import {
   unlinkSync,
   writeFileSync,
 } from 'fs'
-import { homedir } from 'os'
 import { join, posix, resolve, sep } from 'path'
 
 import execa from 'execa'
@@ -22,7 +21,6 @@ import {
   walkDirectoryTree,
 } from '../utils'
 import { downloadFileToLocation } from '../utils/download'
-import { downloadArtifacts } from './download-artifacts'
 import { discard, init } from '.'
 import { readItem, writeItem } from '../utils/store'
 
@@ -64,18 +62,6 @@ export const download = async (): Promise<void> => {
       enabled: (ctx) => ctx.firefoxSourceTar,
       task: async (ctx, task) => {
         await unpackFirefoxSource(ctx.firefoxSourceTar, task)
-      },
-    },
-    {
-      title: 'Install windows artifacts',
-      enabled: (ctx) => process.platform == 'win32',
-      task: async (ctx) => {
-        if (existsSync(resolve(homedir(), '.mozbuild'))) {
-          log.info('Mozbuild directory already exists, not redownloading')
-        } else {
-          log.info('Mozbuild not found, downloading artifacts.')
-          await downloadArtifacts()
-        }
       },
     },
     {
