@@ -2,7 +2,12 @@ import execa from 'execa'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { join, resolve } from 'path'
 import { bin_name, config, log } from '..'
-import { BUILD_TARGETS, CONFIGS_DIR, ENGINE_DIR } from '../constants'
+import {
+  BUILD_TARGETS,
+  CONFIGS_DIR,
+  ENGINE_DIR,
+  MOZILLA_BUILD,
+} from '../constants'
 import { patchCheck } from '../middleware/patch-check'
 import { dispatch, stringTemplate } from '../utils'
 
@@ -112,7 +117,18 @@ const genericBuild = async (os: string, fast = false) => {
 
   log.info(buildOptions.join(' '))
 
-  await dispatch(`./mach`, buildOptions, ENGINE_DIR)
+  if (process.platform == 'win32') {
+    await dispatch(
+      'powershell',
+      ['mach.ps1', ...buildOptions],
+      ENGINE_DIR,
+      undefined,
+      undefined,
+      { MOZILLABUILD: MOZILLA_BUILD || '' }
+    )
+  } else {
+    await dispatch(`./mach`, buildOptions, ENGINE_DIR)
+  }
 }
 
 const parseDate = (d: number) => {

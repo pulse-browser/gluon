@@ -1,7 +1,8 @@
 import execa from 'execa'
 import { existsSync, mkdirSync } from 'fs'
-import { resolve } from 'path'
+import { join, resolve } from 'path'
 import { log } from '..'
+import { listDrives } from '../utils'
 
 export const BUILD_TARGETS = ['linux', 'windows', 'macos']
 
@@ -20,7 +21,16 @@ export const COMMON_DIR = resolve(process.cwd(), 'common')
 export const CONFIGS_DIR = resolve(process.cwd(), 'configs')
 export const MELON_DIR = resolve(process.cwd(), '.dotbuild')
 export const MELON_TMP_DIR = resolve(process.cwd(), '.dotbuild', 'engine')
+/**
+ * The path to git bash on windows. Reuired for some operations
+ * @windows
+ */
 export let BASH_PATH: string | null = null
+/**
+ * The path to the mozilla build install
+ * @windows
+ */
+export let MOZILLA_BUILD: string | null = null
 
 mkdirSync(MELON_TMP_DIR, { recursive: true })
 
@@ -54,6 +64,28 @@ if (process.platform == 'win32') {
     log.info(`Found git at ${gitPath}`)
     BASH_PATH = resolve(gitPath, '../..', 'bin/bash.exe')
     log.info(`Found bash at ${BASH_PATH}`)
+  }
+}
+
+// Find the location of mozilla-build
+if (process.platform == 'win32') {
+  for (const drive of listDrives()) {
+    const mozPath = join(drive, 'mozilla-build')
+
+    if (existsSync(mozPath)) {
+      MOZILLA_BUILD = mozPath
+      log.info(`Using MOZILLABUILD at ${MOZILLA_BUILD}`)
+      break
+    }
+  }
+
+  if (!MOZILLA_BUILD) {
+    log.warning('There is no MOZILLABUILD program installed on your computer')
+    log.warning(
+      'Go install one from: https://ftp.mozilla.org/pub/mozilla.org/mozilla/libraries/win32/MozillaBuildSetup-Latest.exe'
+    )
+
+    process.exit(1)
   }
 }
 

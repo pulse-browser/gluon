@@ -82,11 +82,13 @@ export const download = async (): Promise<void> => {
     //     }
     //   },
     // },
+
     {
       title: 'Init firefox',
       enabled: (ctx) => ctx.firefoxSourceTar && !process.env.CI_SKIP_INIT,
       task: async (_ctx, task) => await init(ENGINE_DIR, task),
     },
+
     ...addons
       .map((addon) => includeAddon(addon.name, addon.url, addon.id))
       .reduce((acc, cur) => [...acc, ...cur], []),
@@ -318,11 +320,15 @@ async function unpackFirefoxSource(
       tarExec,
       [
         '--strip-components=1',
+        '--force-local',
         '-xf',
-        resolve(cwd, '.dotbuild', 'engines', name),
+        resolve(cwd, '.dotbuild', 'engines', name).replace(/\\/g, '/'),
+        '-C',
+        ENGINE_DIR.replace(/\\/g, '/'),
       ].filter((x) => x) as string[],
       { shell: BASH_PATH || false }
     )
+    return
   }
 
   await execa(

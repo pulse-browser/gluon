@@ -6,7 +6,8 @@ export const dispatch = (
   args?: string[],
   cwd?: string,
   killOnError?: boolean,
-  logger = (data: string) => log.info(data)
+  logger = (data: string) => log.info(data),
+  env?: Record<string, string>
 ): Promise<boolean> => {
   const handle = (data: string | Error, killOnError?: boolean) => {
     const d = data.toString()
@@ -23,6 +24,10 @@ export const dispatch = (
 
   return new Promise((resolve) => {
     process.env.MACH_USE_SYSTEM_PYTHON = 'true'
+
+    for (const key in env || {}) {
+      process.env[key] = (env || {})[key]
+    }
 
     const proc = execa(cmd, args, {
       cwd: cwd || process.cwd(),

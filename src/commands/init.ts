@@ -46,7 +46,13 @@ export const init = async (
   version = version.trim().replace(/\\n/g, '')
 
   logInfo('Initializing git, this may take some time')
-  await dispatch('git', ['init'], dir as string, false, logInfo)
+  await dispatch(
+    'git',
+    ['config', '--global', 'core.autocrlf', 'false', '&&', 'git', 'init'],
+    dir as string,
+    false,
+    logInfo
+  )
   await dispatch(
     'git',
     ['checkout', '--orphan', version],
