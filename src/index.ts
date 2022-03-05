@@ -36,10 +36,10 @@ if (existsSync(resolve(ENGINE_DIR, 'browser', 'config', 'version.txt'))) {
 export const bin_name = BIN_NAME
 
 program
-  .name(bin_name)
-  .option('-v, --verbose', 'Outputs extra debugging messages to the console')
   .storeOptionsAsProperties(false)
   .passCommandToAction(false)
+  .name(bin_name)
+  .option('-v, --verbose', 'Outputs extra debugging messages to the console')
   .version(
     versionFormatter([
       { name: config.name, value: config.version.displayVersion },
@@ -51,12 +51,18 @@ program
       },
       { name: 'Gluon', value: gluonVersion },
       reportedFFVersion
-        ? `Mismatch detected between expected Firefox version and the actual version.
-You may have downloaded the source code using a different version and
-then switched to another branch.`
+        ? `Mismatch detected between expected Firefox version and the actual version.\nYou may have downloaded the source code using a different version and\nthen switched to another branch.`
         : '',
     ])
   )
+
+async function middleware(command: commander.Command, args: unknown[]) {
+  // If the program is verbose, store that fact within the logger
+  log.isDebug = program.opts().verbose
+
+  await updateCheck()
+  registerCommand(command.name())
+}
 
 commands.forEach((command) => {
   if (command.flags) {
@@ -71,26 +77,18 @@ commands.forEach((command) => {
   const buildCommand = commander
     .command(command.cmd)
     .description(command.description)
+    .aliases(command?.aliases || [])
+    .action(async (...args) => {
+      await middleware(buildCommand, args)
+      command.controller(...args)
+    })
 
-  command?.aliases?.forEach((alias) => {
-    buildCommand.alias(alias)
-  })
-
+  // Register all of the required options
   command?.options?.forEach((opt) => {
     buildCommand.option(opt.arg, opt.description)
   })
 
-  buildCommand
-    .action(async (...args: unknown[]) => {
-      log.isDebug = program.opts().verbose
-
-      registerCommand(command.cmd)
-
-      await updateCheck()
-
-      command.controller(...args)
-    })
-    .addCommand(buildCommand)
+  program.addCommand(buildCommand)
 })
 
 process
