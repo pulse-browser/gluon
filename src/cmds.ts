@@ -3,7 +3,6 @@ import {
   build,
   discard,
   download,
-  downloadArtifacts,
   execute,
   exportFile,
   fixLineEndings,
@@ -12,10 +11,8 @@ import {
   melonPackage,
   reset,
   run,
-  setBranch,
   setupProject,
   status,
-  test,
 } from './commands'
 import { getFFVersion } from './commands/ff-version'
 import { applyPatches } from './commands/patches'
@@ -60,14 +57,6 @@ export const commands: Cmd[] = [
     cmd: 'download [ffVersion]',
     description: 'Download Firefox.',
     controller: download,
-  },
-  {
-    cmd: 'download-artifacts',
-    description: 'Download Windows artifacts from GitHub.',
-    flags: {
-      platforms: ['win32'],
-    },
-    controller: downloadArtifacts,
   },
   {
     cmd: 'execute',
@@ -133,11 +122,6 @@ export const commands: Cmd[] = [
     controller: run,
   },
   {
-    cmd: 'set-branch <branch>',
-    description: 'Change the default branch.',
-    controller: setBranch,
-  },
-  {
     cmd: 'setup-project',
     description: 'Sets up a melon project for the first time',
     controller: setupProject,
@@ -146,10 +130,5 @@ export const commands: Cmd[] = [
     cmd: 'status',
     description: 'Status and files changed for src directory.',
     controller: status,
-  },
-  {
-    cmd: 'test',
-    description: 'Run the test suite for the melon app.',
-    controller: test,
   },
 ]

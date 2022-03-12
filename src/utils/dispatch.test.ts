@@ -16,6 +16,11 @@ describe('removeTimestamp', () => {
       'This is a test'
     ))
 
+  it('removes "\t10:41.76"', () =>
+    expect(removeTimestamp('\t10:41.76 This is a test')).toMatch(
+      'This is a test'
+    ))
+
   it('removes "  50:50.50"', () =>
     expect(removeTimestamp('  50:50.50 This is a test')).toMatch(
       'This is a test'

@@ -3,8 +3,9 @@ import { existsSync, mkdirSync } from 'fs'
 import { resolve } from 'path'
 import { log } from '..'
 
-export const BUILD_TARGETS = ['linux', 'windows', 'macos']
+export const BIN_NAME = 'gluon'
 
+export const BUILD_TARGETS = ['linux', 'windows', 'macos']
 export const ARCHITECTURE = ['i686', 'x86_64']
 
 export const PATCH_ARGS = [
