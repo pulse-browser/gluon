@@ -42,10 +42,7 @@ if (existsSync(ENGINE_DIR)) {
       log.warning(
         'An error occurred running engine/build/autoconf/config.guess'
       )
-      log.warning(e)
-      log.askForReport()
-
-      process.exit(1)
+      log.info(e)
     }
   }
 }
