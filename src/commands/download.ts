@@ -352,7 +352,8 @@ async function downloadFirefoxSource(
 
   await downloadFileToLocation(
     url,
-    resolve(process.cwd(), `.dotbuild`, `engines`, filename)
+    resolve(process.cwd(), `.dotbuild`, `engines`, filename),
+    (message) => (task.output = message)
   )
   return filename
 }
