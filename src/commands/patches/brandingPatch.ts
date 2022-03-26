@@ -7,6 +7,7 @@ import {
   writeFileSync,
   copyFileSync,
 } from 'fs'
+import { copyFile } from 'fs/promises'
 import { dirname, extname, join } from 'path'
 import sharp from 'sharp'
 
@@ -67,13 +68,16 @@ function constructConfig(name: string) {
 }
 
 async function setupImages(configPath: string, outputPath: string) {
+  // TODO: This can be made parallel to avoid problems with cpu vs disk access
   for (const size of [16, 22, 24, 32, 48, 64, 128, 256]) {
     await sharp(join(configPath, 'logo.png'))
       .resize(size, size)
       .toFile(join(outputPath, `default${size}.png`))
-    await sharp(join(configPath, 'logo.png'))
-      .resize(size, size)
-      .toFile(join(configPath, `logo${size}.png`))
+
+    await copyFile(
+      join(outputPath, `default${size}.png`),
+      join(configPath, `logo${size}.png`)
+    )
   }
 
   await sharp(join(configPath, 'logo.png'))
