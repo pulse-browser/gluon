@@ -19,8 +19,8 @@ export const SRC_DIR = resolve(process.cwd(), 'src')
 export const PATCHES_DIR = resolve(process.cwd(), 'patches')
 export const COMMON_DIR = resolve(process.cwd(), 'common')
 export const CONFIGS_DIR = resolve(process.cwd(), 'configs')
-export const MELON_DIR = resolve(process.cwd(), '.dotbuild')
-export const MELON_TMP_DIR = resolve(process.cwd(), '.dotbuild', 'engine')
+export const MELON_DIR = resolve(process.cwd(), '.gluon')
+export const MELON_TMP_DIR = resolve(MELON_DIR, 'engine')
 
 mkdirSync(MELON_TMP_DIR, { recursive: true })
 
