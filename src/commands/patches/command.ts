@@ -49,8 +49,11 @@ function importMelonPatches(): ListrTaskGroup {
           const logoCheck = checkHash(
             join(brandingPatch.BRANDING_DIR, name, 'logo.png')
           )
+          const macosInstallerCheck = checkHash(
+            join(brandingPatch.BRANDING_DIR, name, 'MacOSInstaller.svg')
+          )
 
-          if (await logoCheck) {
+          if ((await logoCheck) && (await macosInstallerCheck)) {
             return `${name} has already been applied`
           }
 

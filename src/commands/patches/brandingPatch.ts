@@ -1,3 +1,4 @@
+import { renderAsync } from '@resvg/resvg-js'
 import {
   readdirSync,
   lstatSync,
@@ -7,12 +8,12 @@ import {
   writeFileSync,
   copyFileSync,
 } from 'fs'
-import { copyFile } from 'fs/promises'
+import { copyFile, readFile, writeFile } from 'fs/promises'
 import { dirname, extname, join } from 'path'
 import sharp from 'sharp'
 
 import { templateDir } from '..'
-import { config } from '../..'
+import { config, log } from '../..'
 import { CONFIGS_DIR, ENGINE_DIR } from '../../constants'
 import {
   addHash,
@@ -70,6 +71,8 @@ function constructConfig(name: string) {
 }
 
 async function setupImages(configPath: string, outputPath: string) {
+  log.info('Generating icons')
+
   // TODO: This can be made parallel to avoid problems with cpu vs disk access
   for (const size of [16, 22, 24, 32, 48, 64, 128, 256]) {
     await sharp(join(configPath, 'logo.png'))
@@ -100,6 +103,14 @@ async function setupImages(configPath: string, outputPath: string) {
 
   // Register logo in cache
   await addHash(join(configPath, 'logo.png'))
+
+  log.info('Generating macos install')
+  const macosInstall = await renderAsync(
+    await readFile(join(configPath, 'MacOSInstaller.svg'))
+  )
+  await writeFile(join(outputPath, 'content', 'background.png'), macosInstall)
+
+  await addHash(join(configPath, 'MacOSInstaller.svg'))
 }
 
 function setupLocale(
