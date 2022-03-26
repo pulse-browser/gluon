@@ -19,7 +19,7 @@ export async function generateHash(file: string): Promise<string> {
   hash.end()
 
   // Generate the hash
-  return hash.read()
+  return hash.read().toString('hex')
 }
 
 /**
@@ -31,7 +31,7 @@ export async function addHash(file: string): Promise<void> {
 
   // Add it to the hash file
   await writeItem('hashes', {
-    ...readItem<Record<string, string>>('hashes'),
+    ...readItem<Record<string, string>>('hashes').unwrapOr({}),
     [file]: sha1,
   })
 }

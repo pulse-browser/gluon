@@ -15,6 +15,7 @@ import { templateDir } from '..'
 import { config } from '../..'
 import { CONFIGS_DIR, ENGINE_DIR } from '../../constants'
 import {
+  addHash,
   defaultBrandsConfig,
   ensureEmpty,
   filesExist,
@@ -22,6 +23,7 @@ import {
   stringTemplate,
   walkDirectory,
 } from '../../utils'
+import { IMelonPatch } from './command'
 
 // =============================================================================
 // Pure constants
@@ -95,6 +97,9 @@ async function setupImages(configPath: string, outputPath: string) {
   await sharp(join(configPath, 'logo.png'))
     .resize(1024, 1024)
     .toFile(join(outputPath, 'content', 'about-logo@2x.png'))
+
+  // Register logo in cache
+  await addHash(join(configPath, 'logo.png'))
 }
 
 function setupLocale(
@@ -162,6 +167,10 @@ async function copyMozFiles(
 
 // =============================================================================
 // Exports
+
+export interface IBrandingPatch extends IMelonPatch {
+  value: unknown
+}
 
 export function get(): string[] {
   return readdirSync(BRANDING_DIR).filter((file) =>

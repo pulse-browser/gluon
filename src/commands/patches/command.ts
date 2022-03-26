@@ -5,19 +5,23 @@ import { SRC_DIR } from '../../constants'
 import * as gitPatch from './gitPatch'
 import * as copyPatch from './copyPatches'
 import * as brandingPatch from './brandingPatch'
-import { join } from 'path'
+import path, { join } from 'path'
 import { writeFileSync } from 'fs'
 import { patchCountFile } from '../../middleware/patch-check'
+import { checkHash } from '../../utils'
 
-type ListrTaskGroup = {
-  title: string
-  task: () => Listr<any>
+type ListrTaskGroup = Listr.ListrTask<any>
+
+export interface IMelonPatch {
+  name: string
+  skip?: (
+    ctx: any
+  ) => string | boolean | void | Promise<string | boolean | undefined>
 }
 
-function patchMethod<T>(
+function patchMethod<T extends IMelonPatch>(
   name: string,
   patches: T[],
-  nameFn: (patch: T) => string,
   patchFn: (patch: T, index: number) => Promise<void>
 ): ListrTaskGroup {
   return {
@@ -25,30 +29,35 @@ function patchMethod<T>(
     task: () =>
       new Listr(
         patches.map((patch, index) => ({
-          title: `Apply ${nameFn(patch)}`,
+          title: `Apply ${patch.name}`,
           task: () => patchFn(patch, index),
+          skip: patch.skip,
         }))
       ),
   }
 }
 
-interface IMelonPatch {
-  type: 'branding'
-  name: string
-  value: unknown
-}
-
 function importMelonPatches(): ListrTaskGroup {
   return patchMethod(
-    'melon',
+    'branding',
     [
       ...(brandingPatch.get().map((name) => ({
         type: 'branding',
         name,
         value: name,
-      })) as IMelonPatch[]),
+        skip: async () => {
+          const logoCheck = checkHash(
+            join(brandingPatch.BRANDING_DIR, name, 'logo.png')
+          )
+
+          if (await logoCheck) {
+            return `${name} has already been applied`
+          }
+
+          return
+        },
+      })) as brandingPatch.IBrandingPatch[]),
     ],
-    (patch) => patch.name,
     async (patch) => await brandingPatch.apply(patch.value as string)
   )
 }
@@ -57,7 +66,6 @@ function importFolders(): ListrTaskGroup {
   return patchMethod(
     'folder',
     copyPatch.get(),
-    (patch) => patch.name,
     async (patch) => await copyPatch.apply(patch.src)
   )
 }
@@ -69,11 +77,10 @@ function importGitPatch(): ListrTaskGroup {
 
   writeFileSync(patchCountFile, patches.length.toString())
 
-  return patchMethod(
+  return patchMethod<gitPatch.IGitPatch>(
     'git',
-    patches,
-    (path) => path,
-    async (path) => await gitPatch.apply(path)
+    patches.map((path) => ({ name: path, path })),
+    async (patch) => await gitPatch.apply(patch.path)
   )
 }
 

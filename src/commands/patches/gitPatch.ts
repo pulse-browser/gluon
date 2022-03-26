@@ -1,5 +1,10 @@
 import execa from 'execa'
 import { PATCH_ARGS, ENGINE_DIR } from '../../constants'
+import { IMelonPatch } from './command'
+
+export interface IGitPatch extends IMelonPatch {
+  path: string
+}
 
 export async function apply(path: string): Promise<void> {
   try {

@@ -9,6 +9,7 @@ import rimraf from 'rimraf'
 import { appendToFileSync } from '../../utils'
 import { config } from '../..'
 import { ENGINE_DIR, SRC_DIR } from '../../constants'
+import { IMelonPatch } from './command'
 
 // =============================================================================
 // Utilities
@@ -55,7 +56,7 @@ export const copyManual = async (name: string): Promise<void> => {
 // =============================================================================
 // Data types
 
-export interface ICopyPatch {
+export interface ICopyPatch extends IMelonPatch {
   name: string
   src: string[]
 }
