@@ -1,28 +1,11 @@
-import {
-  bootstrap,
-  build,
-  discard,
-  download,
-  execute,
-  exportFile,
-  fixLineEndings,
-  init,
-  licenseCheck,
-  melonPackage,
-  reset,
-  run,
-  setupProject,
-  status,
-} from './commands'
-import { getFFVersion } from './commands/ff-version'
-import { applyPatches } from './commands/patches'
 import { Cmd } from './types'
 
 export const commands: Cmd[] = [
   {
     cmd: 'bootstrap',
     description: 'Bootstrap the melon app.',
-    controller: bootstrap,
+    requestController: async () =>
+      (await import('./commands/bootstrap')).bootstrap,
   },
   {
     cmd: 'build',
@@ -40,7 +23,7 @@ export const commands: Cmd[] = [
           'Only builds the ui. Faster but not as powerful as a regular build.',
       },
     ],
-    controller: build,
+    requestController: async () => (await import('./commands/build')).build,
   },
   {
     cmd: 'discard <file>',
@@ -51,46 +34,51 @@ export const commands: Cmd[] = [
         description: 'Keep the patch file instead of removing it',
       },
     ],
-    controller: discard,
+    requestController: async () => (await import('./commands/discard')).discard,
   },
   {
     cmd: 'download [ffVersion]',
     description: 'Download Firefox.',
-    controller: download,
+    requestController: async () =>
+      (await import('./commands/download')).download,
   },
   {
     cmd: 'execute',
     description: 'Execute a command inside the engine directory.',
-    controller: execute,
+    requestController: async () => (await import('./commands/execute')).execute,
   },
   {
     cmd: 'export-file <file>',
     aliases: ['export'],
     description: 'Export a changed file as a patch.',
-    controller: exportFile,
+    requestController: async () =>
+      (await import('./commands/export-file')).exportFile,
   },
   {
     cmd: 'lfify',
     aliases: ['fix-le'],
     description: 'Convert CRLF line endings to Unix LF line endings.',
-    controller: fixLineEndings,
+    requestController: async () =>
+      (await import('./commands/fix-le')).fixLineEndings,
   },
   {
     cmd: 'import',
     aliases: ['import-patches', 'i'],
     description: 'Import patches into the browser.',
-    controller: applyPatches,
+    requestController: async () =>
+      (await import('./commands/patches')).applyPatches,
   },
   {
     cmd: 'ff-init <source>',
     aliases: ['ff-initialise', 'ff-initialize'],
     description: 'Initialise the Firefox directory.',
-    controller: init,
+    requestController: async () => (await import('./commands/init')).init,
   },
   {
     cmd: 'ff-version',
     description: 'Retrieves the version of firefox to build against',
-    controller: getFFVersion,
+    requestController: async () =>
+      (await import('./commands/ff-version')).getFFVersion,
   },
   {
     cmd: 'license-check',
@@ -102,33 +90,36 @@ export const commands: Cmd[] = [
       },
     ],
     description: 'Check the src directory for the absence of MPL-2.0 header.',
-    controller: licenseCheck,
+    requestController: async () =>
+      (await import('./commands/license-check')).licenseCheck,
   },
   {
     cmd: 'package',
     aliases: ['pack'],
     description: 'Package the browser for distribution.',
-    controller: melonPackage,
+    requestController: async () =>
+      (await import('./commands/package')).melonPackage,
   },
   {
     cmd: 'reset',
     description: 'Reset the source directory to stock Firefox.',
-    controller: reset,
+    requestController: async () => (await import('./commands/reset')).reset,
   },
   {
     cmd: 'run [chrome]',
     aliases: ['r', 'open'],
     description: 'Run the browser.',
-    controller: run,
+    requestController: async () => (await import('./commands/run')).run,
   },
   {
     cmd: 'setup-project',
     description: 'Sets up a melon project for the first time',
-    controller: setupProject,
+    requestController: async () =>
+      (await import('./commands/setupProject')).setupProject,
   },
   {
     cmd: 'status',
     description: 'Status and files changed for src directory.',
-    controller: status,
+    requestController: async () => (await import('./commands/status')).status,
   },
 ]

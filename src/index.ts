@@ -79,8 +79,14 @@ commands.forEach((command) => {
     .description(command.description)
     .aliases(command?.aliases || [])
     .action(async (...args) => {
+      // Start loading the controller in the background whilst middleware is
+      // executing
+      const controller = command.requestController()
+
       await middleware(buildCommand, args)
-      command.controller(...args)
+
+      // Finish loading the controller and execute it
+      ;(await controller)(...args)
     })
 
   // Register all of the required options

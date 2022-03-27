@@ -2,7 +2,12 @@ export interface Cmd {
   cmd: string
   description: string
 
-  controller: (...args: any) => void
+  /**
+   * A function that returns the controller as a promise. We want to dynamicly
+   * load them to reduce the startup time of gluon, which, at the time of
+   * writing, is getting a touch long
+   */
+  requestController: () => Promise<(...args: any) => void>
 
   options?: CmdOption[]
   aliases?: string[]
