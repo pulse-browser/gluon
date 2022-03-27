@@ -1,9 +1,8 @@
 import execa from 'execa'
 import { existsSync, statSync } from 'fs'
 import { resolve } from 'path'
-import rimraf from 'rimraf'
 import { log } from '..'
-import { ENGINE_DIR, PATCHES_DIR } from '../constants'
+import { ENGINE_DIR } from '../constants'
 
 interface Options {
   keep?: boolean
