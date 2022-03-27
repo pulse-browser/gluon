@@ -1,5 +1,4 @@
-import execa from 'execa'
-import { existsSync, mkdirSync } from 'fs'
+import { mkdirSync, readdirSync } from 'fs'
 import { resolve } from 'path'
 import { log } from '..'
 
@@ -25,26 +24,33 @@ export const DIST_DIR = resolve(process.cwd(), 'dist')
 
 mkdirSync(MELON_TMP_DIR, { recursive: true })
 
-export let CONFIG_GUESS: string = ''
+/**
+ * What we think the current platform might be. Should not be used outside of this
+ * file
+ */
+let CONFIG_GUESS: string = ''
 
-// We should only try and generate this config file if the engine directory has
-// been created
-if (existsSync(ENGINE_DIR)) {
-  if (!existsSync(resolve(ENGINE_DIR, 'build/autoconf/config.guess'))) {
-    log.warning(
-      'The engine directory has been created, but has not been build properly.'
+// We can find the current obj-* dir simply by searching. This shouldn't be to
+// hard and is more reliable than autoconf is
+{
+  const possibleFolders = readdirSync(ENGINE_DIR, {
+    withFileTypes: true,
+  })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .filter((entry) => entry.startsWith('obj-'))
+    .map((entry) => entry.replace('obj-', ''))
+
+  if (possibleFolders.length === 0)
+    log.debug(
+      "There are no obj-* folders. This may mean you haven't completed a build yet"
     )
-  } else {
-    try {
-      CONFIG_GUESS = execa.commandSync('./build/autoconf/config.guess', {
-        cwd: ENGINE_DIR,
-      }).stdout
-    } catch (e) {
-      log.warning(
-        'An error occurred running engine/build/autoconf/config.guess'
-      )
-      log.info(e)
-    }
+  else if (possibleFolders.length === 1) CONFIG_GUESS = possibleFolders[0]
+  else {
+    log.warning(
+      `There are multiple obj-* folders. Defaulting to obj-${possibleFolders[0]}`
+    )
+    CONFIG_GUESS = possibleFolders[0]
   }
 }
 
