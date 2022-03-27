@@ -5,9 +5,10 @@
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { resolve } from 'path'
 import { log } from '..'
+import { MELON_DIR, SRC_DIR } from '../constants'
 import { walkDirectory } from '../utils'
 
-export const patchCountFile = resolve(process.cwd(), '.dotbuild', 'patchCount')
+export const patchCountFile = resolve(MELON_DIR, 'patchCount')
 
 export const patchCheck = async (): Promise<void> => {
   const fileList = await walkDirectory(resolve(process.cwd(), 'src'))
