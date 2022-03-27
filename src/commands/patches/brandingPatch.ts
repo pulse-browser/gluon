@@ -9,6 +9,7 @@ import {
   copyFileSync,
 } from 'fs'
 import { copyFile, readFile, writeFile } from 'fs/promises'
+import { every } from 'modern-async'
 import { dirname, extname, join } from 'path'
 import sharp from 'sharp'
 
@@ -73,8 +74,7 @@ function constructConfig(name: string) {
 async function setupImages(configPath: string, outputPath: string) {
   log.info('Generating icons')
 
-  // TODO: This can be made parallel to avoid problems with cpu vs disk access
-  for (const size of [16, 22, 24, 32, 48, 64, 128, 256]) {
+  await every([16, 22, 24, 32, 48, 64, 128, 256], async (size) => {
     await sharp(join(configPath, 'logo.png'))
       .resize(size, size)
       .toFile(join(outputPath, `default${size}.png`))
@@ -83,7 +83,9 @@ async function setupImages(configPath: string, outputPath: string) {
       join(outputPath, `default${size}.png`),
       join(configPath, `logo${size}.png`)
     )
-  }
+
+    return true
+  })
 
   await sharp(join(configPath, 'logo.png'))
     .resize(512, 512)
