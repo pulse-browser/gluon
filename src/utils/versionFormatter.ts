@@ -23,7 +23,7 @@ export const versionFormatter = (
     }
 
     versionResponse += `\t${chalk.bold(argument.name)} ${' '.repeat(
-      spacesValue - argument.name.length
+      Math.max(spacesValue - argument.name.length, 0)
     )}   ${argument.value}\n`
   }
 
