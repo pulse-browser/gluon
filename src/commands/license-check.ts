@@ -8,7 +8,7 @@ import { walkDirectory } from '../utils/fs'
 const ignoredFiles = new RegExp('.*\\.(json|patch|md)')
 const licenseIgnore = new RegExp('(//|#) Ignore license in this file', 'g')
 const fixableFiles = [
-  { regex: new RegExp('.*\\.js'), comment: '// ' },
+  { regex: new RegExp('.*\\.(j|t)s'), comment: '// ' },
   {
     regex: new RegExp('.*(\\.inc)?\\.css'),
     commentOpen: '/*\n',
