@@ -21,7 +21,7 @@ export const patchCheck = async (): Promise<void> => {
   const recordedPatchCount = Number(readFileSync(patchCountFile).toString())
 
   if (patchCount !== recordedPatchCount) {
-    log.hardWarning(
+    await log.hardWarning(
       'You have not imported all of your patches. This may lead to unexpected behavior'
     )
   }
