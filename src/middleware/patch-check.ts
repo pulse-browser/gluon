@@ -11,7 +11,9 @@ import { walkDirectory } from '../utils'
 export const patchCountFile = resolve(MELON_DIR, 'patchCount')
 
 export const patchCheck = async (): Promise<void> => {
-  const fileList = await walkDirectory(resolve(process.cwd(), 'src'))
+  const fileList = (await walkDirectory(resolve(SRC_DIR))).filter((file) =>
+    file.endsWith('.patch')
+  )
   const patchCount = fileList.length
 
   if (!existsSync(patchCountFile)) {
