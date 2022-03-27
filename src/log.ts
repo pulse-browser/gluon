@@ -1,4 +1,5 @@
 import chalk from 'chalk'
+import prompts from 'prompts'
 
 class Log {
   private startTime: number
@@ -27,18 +28,43 @@ class Log {
     return `${format(hours)}:${format(mins)}:${format(secs)}`
   }
 
+  /**
+   * A version of info that only outputs when in debug mode.
+   *
+   * @param args The information you want to provide to the user
+   */
   debug(...args: unknown[]): void {
     if (this.isDebug) console.debug(...args)
   }
 
+  /**
+   * Provides information to the user. If you intend to provide debugging
+   * information that should be hidden unless verbose mode is enabled, use
+   * `debug` instead.
+   *
+   * @param args The information you want to provide to the user
+   */
   info(...args: unknown[]): void {
     console.info(chalk.blueBright.bold(this.getDiff()), ...args)
   }
 
+  /**
+   * Provides text intended to be a warning to the user. If it is not critical,
+   * for example, something is missing, but probably doesn't matter, use `info`
+   * or even `debug` instead.
+   *
+   * @param args The information you want to provide to the user
+   */
   warning(...args: unknown[]): void {
     console.warn(chalk.yellowBright.bold(' WARNING'), ...args)
   }
 
+  /**
+   * A warning that requires the user to take an action to continue, otherwise
+   * the process will exit.
+   *
+   * @param args The information you want to provide to the user
+   */
   async hardWarning(...args: unknown[]): Promise<void> {
     console.info('', chalk.bgRed.bold('WARNING'), ...args)
 
@@ -51,11 +77,22 @@ class Log {
     if (!answer) process.exit(0)
   }
 
+  /**
+   * Outputs a success message to the console
+   *
+   * @param args The information you want to provide to the user
+   */
   success(...args: unknown[]): void {
+    console.log()
     console.log(`\n${chalk.greenBright.bold('SUCCESS')}`, ...args)
   }
 
-  error(...args: unknown[]): never {
+  /**
+   * Throws an error based on the input
+   *
+   * @param args The error you want to throw or a type that you want to convert to an error
+   */
+  error(...args: (Error | unknown)[]): never {
     if (args[0] instanceof Error) {
       throw args[0]
     }
@@ -67,12 +104,17 @@ class Log {
     )
   }
 
+  /**
+   * Asks for an error report to our issue tracker. Should be used in chases
+   * where we don't think an error will occur, but we want to know if it does
+   * to fix it
+   */
   askForReport(): void {
     console.info(
-      'The following error is a bug. Please open an issue on the melon issue structure with a link to your repository and the output from this command.'
+      'The following error is a bug. Please open an issue on the gluon issue structure with a link to your repository and the output from this command.'
     )
     console.info(
-      'The melon issue tracker is located at: https://github.com/dothq/melon/issues'
+      'The gluon issue tracker is located at: https://github.com/pulse-browser/gluon/issues'
     )
   }
 }
