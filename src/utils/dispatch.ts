@@ -15,12 +15,11 @@ export const dispatch = (
     const d = data.toString()
 
     d.split('\n').forEach((line: string) => {
-      if (line.length !== 0) logger(line.replace(/\s\d{1,5}:\d\d\.\d\d /g, ''))
+      if (line.length !== 0) logger(removeTimestamp(line))
     })
 
     if (killOnError) {
       log.error('Command failed. See error above.')
-      process.exit(1)
     }
   }
 
