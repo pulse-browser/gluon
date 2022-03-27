@@ -1,0 +1,18 @@
+name: Test
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2.3.1
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Test
+        run: yarn test
