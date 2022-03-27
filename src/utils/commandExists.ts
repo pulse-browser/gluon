@@ -1,3 +1,6 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // This file was originally under the MIT license, but is now under the MPL 2.0
 // license. The following license notice applies to only this file
 //
