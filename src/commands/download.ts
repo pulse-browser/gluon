@@ -21,8 +21,9 @@ import {
   walkDirectoryTree,
 } from '../utils'
 import { downloadFileToLocation } from '../utils/download'
-import { discard, init } from '.'
 import { readItem, writeItem } from '../utils/store'
+import { discard } from './discard'
+import { init } from './init'
 
 const gFFVersion = getConfig().version.version
 

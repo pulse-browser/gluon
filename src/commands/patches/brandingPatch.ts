@@ -13,7 +13,6 @@ import { every } from 'modern-async'
 import { dirname, extname, join } from 'path'
 import sharp from 'sharp'
 
-import { templateDir } from '..'
 import { config, log } from '../..'
 import { CONFIGS_DIR, ENGINE_DIR } from '../../constants'
 import {
@@ -25,6 +24,7 @@ import {
   stringTemplate,
   walkDirectory,
 } from '../../utils'
+import { templateDir } from '../setupProject'
 import { IMelonPatch } from './command'
 
 // =============================================================================
