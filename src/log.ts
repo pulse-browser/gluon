@@ -47,7 +47,7 @@ class Log {
     console.log(`\n${chalk.greenBright.bold('SUCCESS')}`, ...args)
   }
 
-  error(...args: unknown[]): void {
+  error(...args: unknown[]): never {
     if (args[0] instanceof Error) {
       throw args[0]
     }
