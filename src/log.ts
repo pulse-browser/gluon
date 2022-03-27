@@ -39,8 +39,16 @@ class Log {
     console.warn(chalk.yellowBright.bold(' WARNING'), ...args)
   }
 
-  hardWarning(...args: unknown[]): void {
+  async hardWarning(...args: unknown[]): Promise<void> {
     console.info('', chalk.bgRed.bold('WARNING'), ...args)
+
+    const { answer } = await prompts({
+      type: 'confirm',
+      name: 'answer',
+      message: 'Are you sure you want to continue?',
+    })
+
+    if (!answer) process.exit(0)
   }
 
   success(...args: unknown[]): void {
