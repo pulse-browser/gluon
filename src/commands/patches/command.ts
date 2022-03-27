@@ -1,12 +1,12 @@
 import { sync } from 'glob'
 import Listr from 'listr'
-import { SRC_DIR } from '../../constants'
+import { ENGINE_DIR, SRC_DIR } from '../../constants'
 
 import * as gitPatch from './gitPatch'
 import * as copyPatch from './copyPatches'
 import * as brandingPatch from './brandingPatch'
 import path, { join } from 'path'
-import { writeFileSync } from 'fs'
+import { existsSync, writeFileSync } from 'fs'
 import { patchCountFile } from '../../middleware/patch-check'
 import { checkHash } from '../../utils'
 
@@ -53,7 +53,11 @@ function importMelonPatches(): ListrTaskGroup {
             join(brandingPatch.BRANDING_DIR, name, 'MacOSInstaller.svg')
           )
 
-          if ((await logoCheck) && (await macosInstallerCheck)) {
+          if (
+            (await logoCheck) &&
+            (await macosInstallerCheck) &&
+            existsSync(join(ENGINE_DIR, 'browser/branding', name))
+          ) {
             return `${name} has already been applied`
           }
 
