@@ -10,24 +10,16 @@ export const reset = async (): Promise<void> => {
   log.warning(
     `If you have made changes to firefox's internal files, save them with |${bin_name} export [filename]|`
   )
-  log.warning(
+  await log.hardWarning(
     `You will need to run |${bin_name} import| to bring back your saved changes`
   )
 
-  const { answer } = await prompts({
-    type: 'confirm',
-    name: 'answer',
-    message: 'Are you sure you want to continue?',
-  })
+  log.info('Unstaging changes...')
+  await execa('git', ['reset'], { cwd: ENGINE_DIR })
 
-  if (answer) {
-    log.info('Unstaging changes...')
-    await execa('git', ['reset'], { cwd: ENGINE_DIR })
+  log.info('Reverting uncommitted changes...')
+  await execa('git', ['checkout', '.'], { cwd: ENGINE_DIR })
 
-    log.info('Reverting uncommitted changes...')
-    await execa('git', ['checkout', '.'], { cwd: ENGINE_DIR })
-
-    log.info('Removing all untracked files...')
-    await execa('git', ['clean', '-fdx'], { cwd: ENGINE_DIR })
-  }
+  log.info('Removing all untracked files...')
+  await execa('git', ['clean', '-fdx'], { cwd: ENGINE_DIR })
 }
