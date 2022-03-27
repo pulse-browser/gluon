@@ -1,10 +1,11 @@
 import chalk from 'chalk'
 import { readFileSync } from 'fs'
 import { resolve } from 'path'
+import { MELON_DIR } from '../constants'
 import { log } from '../log'
 
 export const errorHandler = (err: Error, isUnhandledRej: boolean): void => {
-  let cc = readFileSync(resolve(process.cwd(), '.dotbuild', 'command'), 'utf-8')
+  let cc = readFileSync(resolve(MELON_DIR, 'command'), 'utf-8')
   cc = cc.replace(/(\r\n|\n|\r)/gm, '')
 
   console.log(
