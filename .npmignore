@@ -11,3 +11,4 @@ tsconfig.json
 yarn.lock
 .eslintignore
 .eslintrc.json
+.gluon
