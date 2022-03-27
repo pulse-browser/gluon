@@ -13,8 +13,9 @@ import { every } from 'modern-async'
 import { dirname, extname, join } from 'path'
 import sharp from 'sharp'
 
-import { config, log } from '../..'
+import { config } from '../..'
 import { CONFIGS_DIR, ENGINE_DIR } from '../../constants'
+import { log } from '../../log'
 import {
   addHash,
   defaultBrandsConfig,

@@ -1,6 +1,6 @@
 import { existsSync, readdirSync, readFileSync } from 'fs'
 import { resolve } from 'path'
-import { log } from '..'
+import { log } from '../log'
 import { ENGINE_DIR, PATCHES_DIR } from '../constants'
 import { dispatch } from '../utils'
 

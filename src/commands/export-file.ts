@@ -1,7 +1,7 @@
 import execa from 'execa'
 import { existsSync, writeFileSync } from 'fs'
 import { resolve } from 'path'
-import { log } from '..'
+import { log } from '../log'
 import { ENGINE_DIR, SRC_DIR } from '../constants'
 import { delay, ensureDir } from '../utils'
 

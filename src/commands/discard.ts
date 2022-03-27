@@ -1,7 +1,7 @@
 import execa from 'execa'
 import { existsSync, statSync } from 'fs'
 import { resolve } from 'path'
-import { log } from '..'
+import { log } from '../log'
 import { ENGINE_DIR } from '../constants'
 
 interface Options {

@@ -9,7 +9,7 @@ import {
 import { mkdir, readdir, stat, symlink } from 'fs/promises'
 import { join, isAbsolute, dirname, relative } from 'path'
 
-import { log } from '..'
+import { log } from '../log'
 
 export async function walkDirectory(dirName: string): Promise<string[]> {
   const output = []

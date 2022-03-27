@@ -1,8 +1,9 @@
 import { existsSync } from 'fs'
 import { copyFile, mkdir, readdir, rmdir, stat, unlink } from 'fs/promises'
 import { join, resolve } from 'path'
-import { bin_name, config, log } from '..'
+import { bin_name, config } from '..'
 import { DIST_DIR, ENGINE_DIR, OBJ_DIR } from '../constants'
+import { log } from '../log'
 import { dispatch } from '../utils'
 
 const machPath = resolve(ENGINE_DIR, 'mach')

@@ -1,4 +1,5 @@
-import { config, log } from '..'
+import { config } from '..'
+import { log } from '../log'
 import { getLatestFF } from '../utils'
 
 export const updateCheck = async (): Promise<void> => {

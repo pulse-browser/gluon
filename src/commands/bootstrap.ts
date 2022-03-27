@@ -1,8 +1,9 @@
 /// <reference path="./linus.d.ts"/>
 
 import distro from 'linus'
-import { bin_name, log } from '..'
+import { bin_name } from '..'
 import { ENGINE_DIR } from '../constants'
+import { log } from '../log'
 import { dispatch } from '../utils'
 import { pacmanInstall } from './bootstrap/arch'
 import { aptInstall } from './bootstrap/debian'

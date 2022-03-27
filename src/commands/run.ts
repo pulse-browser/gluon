@@ -1,7 +1,8 @@
 import { existsSync, readdirSync } from 'fs'
 import { resolve } from 'path'
-import { bin_name, log } from '..'
+import { bin_name } from '..'
 import { ENGINE_DIR } from '../constants'
+import { log } from '../log'
 import { config, dispatch } from '../utils'
 
 export const run = async (chrome?: string) => {

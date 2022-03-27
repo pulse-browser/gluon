@@ -1,5 +1,4 @@
 import execa from 'execa'
-import prompts from 'prompts'
 
 import { bin_name } from '..'
 import { ENGINE_DIR } from '../constants'

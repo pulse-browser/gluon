@@ -2,7 +2,8 @@ import { Command } from 'commander'
 import { existsSync, readFileSync } from 'fs'
 import Listr from 'listr'
 import { resolve } from 'path'
-import { bin_name, log } from '..'
+import { bin_name } from '..'
+import { log } from '../log'
 import { dispatch } from '../utils'
 
 export const init = async (

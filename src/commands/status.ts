@@ -1,5 +1,5 @@
 import { existsSync } from 'fs'
-import { log } from '..'
+import { log } from '../log'
 import { ENGINE_DIR } from '../constants'
 import { dispatch, hasConfig } from '../utils'
 

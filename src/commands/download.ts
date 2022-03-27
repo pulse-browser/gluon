@@ -11,7 +11,7 @@ import { join, posix, resolve, sep } from 'path'
 import execa from 'execa'
 import Listr from 'listr'
 
-import { bin_name, config, log } from '..'
+import { bin_name, config } from '..'
 import { ENGINE_DIR, MELON_TMP_DIR } from '../constants'
 import {
   commandExistsSync,
@@ -24,6 +24,7 @@ import { downloadFileToLocation } from '../utils/download'
 import { readItem, writeItem } from '../utils/store'
 import { discard } from './discard'
 import { init } from './init'
+import { log } from '../log'
 
 const gFFVersion = getConfig().version.version
 

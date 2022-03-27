@@ -1,8 +1,9 @@
 import execa from 'execa'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { join, resolve } from 'path'
-import { bin_name, config, log } from '..'
+import { bin_name, config } from '..'
 import { BUILD_TARGETS, CONFIGS_DIR, ENGINE_DIR } from '../constants'
+import { log } from '../log'
 import { patchCheck } from '../middleware/patch-check'
 import { dispatch, stringTemplate } from '../utils'
 

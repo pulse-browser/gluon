@@ -4,7 +4,7 @@ import { join, dirname } from 'path'
 
 import prompts from 'prompts'
 
-import { log } from '..'
+import { log } from '../log'
 import {
   Config,
   configPath,

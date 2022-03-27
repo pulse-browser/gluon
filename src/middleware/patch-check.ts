@@ -4,7 +4,7 @@
 
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { resolve } from 'path'
-import { log } from '..'
+import { log } from '../log'
 import { MELON_DIR, SRC_DIR } from '../constants'
 import { walkDirectory } from '../utils'
 

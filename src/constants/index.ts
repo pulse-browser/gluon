@@ -1,6 +1,6 @@
-import { mkdirSync, readdirSync } from 'fs'
+import { existsSync, mkdirSync, readdirSync } from 'fs'
 import { resolve } from 'path'
-import { log } from '..'
+import { log } from '../log'
 
 export const BIN_NAME = 'gluon'
 
@@ -31,8 +31,9 @@ mkdirSync(MELON_TMP_DIR, { recursive: true })
 let CONFIG_GUESS: string = ''
 
 // We can find the current obj-* dir simply by searching. This shouldn't be to
-// hard and is more reliable than autoconf is
-{
+// hard and is more reliable than autoconf is. This command should only be run
+// if the engine directory has already been created
+if (existsSync(ENGINE_DIR)) {
   const possibleFolders = readdirSync(ENGINE_DIR, {
     withFileTypes: true,
   })

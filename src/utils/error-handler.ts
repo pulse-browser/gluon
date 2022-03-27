@@ -1,7 +1,7 @@
 import chalk from 'chalk'
 import { readFileSync } from 'fs'
 import { resolve } from 'path'
-import { log } from '..'
+import { log } from '../log'
 
 export const errorHandler = (err: Error, isUnhandledRej: boolean): void => {
   let cc = readFileSync(resolve(process.cwd(), '.dotbuild', 'command'), 'utf-8')

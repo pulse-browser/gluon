@@ -1,8 +1,3 @@
-// Init the logger before literally anything else to stop really obscure error
-// messages from occurring
-import { log as logInited } from './log'
-export const log = logInited
-
 import commander, { Command } from 'commander'
 import { existsSync, readFileSync } from 'fs'
 import { resolve } from 'path'
@@ -12,6 +7,7 @@ import { commands } from './cmds'
 import { BIN_NAME, ENGINE_DIR } from './constants'
 import { updateCheck } from './middleware/update-check'
 import { registerCommand } from './middleware/registerCommand'
+import { log } from './log'
 
 // We have to use a dynamic require here, otherwise the typescript compiler
 // mucks up the directory structure
