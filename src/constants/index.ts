@@ -21,6 +21,7 @@ export const COMMON_DIR = resolve(process.cwd(), 'common')
 export const CONFIGS_DIR = resolve(process.cwd(), 'configs')
 export const MELON_DIR = resolve(process.cwd(), '.gluon')
 export const MELON_TMP_DIR = resolve(MELON_DIR, 'engine')
+export const DIST_DIR = resolve(process.cwd(), 'dist')
 
 mkdirSync(MELON_TMP_DIR, { recursive: true })
 
