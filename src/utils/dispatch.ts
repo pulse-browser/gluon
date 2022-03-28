@@ -14,6 +14,8 @@ export const dispatch = (
   killOnError?: boolean,
   logger = (data: string) => log.info(data)
 ): Promise<boolean> => {
+  log.debug(`Running dispatch with args; command: ${cmd}, args: ${args}, cwd: ${cwd}, killOnError: ${killOnError}`)
+  
   const handle = (data: string | Error, killOnError?: boolean) => {
     const d = data.toString()
 

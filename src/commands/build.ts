@@ -116,6 +116,10 @@ const genericBuild = async (os: string, fast = false) => {
 
   log.info(buildOptions.join(' '))
 
+  log.debug(`Running with build options ${buildOptions.join(', ')}`)
+  log.debug(`Mach exists: ${existsSync(join(ENGINE_DIR, 'mach'))}`)
+  log.debug(`Mach contents: \n ${readFileSync(join(ENGINE_DIR, 'mach'))}\n\n===END===`)
+
   await dispatch(`./mach`, buildOptions, ENGINE_DIR)
 }
 
