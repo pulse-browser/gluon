@@ -158,7 +158,7 @@ export const build = async (options: Options): Promise<void> => {
   if (BUILD_TARGETS.includes(prettyHost)) {
     await patchCheck()
 
-    applyConfig(prettyHost, options.arch)
+    await applyConfig(prettyHost, options.arch)
 
     log.info('Starting build...')
 
