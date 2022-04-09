@@ -7,7 +7,7 @@ import Listr from 'listr'
 import { resolve } from 'path'
 import { bin_name } from '..'
 import { log } from '../log'
-import { dispatch } from '../utils'
+import { config, dispatch } from '../utils'
 
 export const init = async (
   directory: Command | string,
@@ -49,6 +49,7 @@ export const init = async (
 
   version = version.trim().replace(/\\n/g, '')
 
+  // TODO: Use bash on windows, this may significantly improve performance. Still needs testing though
   logInfo('Initializing git, this may take some time')
   await dispatch('git', ['init'], dir as string, false, logInfo)
   await dispatch(
@@ -59,6 +60,7 @@ export const init = async (
     logInfo
   )
   await dispatch('git', ['add', '-f', '.'], dir as string, false, logInfo)
+  logInfo('Committing...')
   await dispatch(
     'git',
     ['commit', '-aqm', `"Firefox ${version}"`],
@@ -68,7 +70,7 @@ export const init = async (
   )
   await dispatch(
     'git',
-    ['checkout', '-b', 'dot'],
+    ['checkout', '-b', config.name.toLowerCase().replace(/\s/g, '_')],
     dir as string,
     false,
     logInfo
