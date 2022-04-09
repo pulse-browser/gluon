@@ -14,6 +14,16 @@ import { join, isAbsolute, dirname, relative } from 'path'
 
 import { log } from '../log'
 
+/**
+ * On windows, converts a windows style path to a unix path. On unix, passes the
+ * output through to the other side
+ *
+ * @param path The path that you want to be converted to a unix path
+ * @returns A unix path
+ */
+export const windowsPathToUnix = (path: string): string =>
+  process.platform == 'win32' ? path.replace(/\\/g, '/') : path
+
 export async function walkDirectory(dirName: string): Promise<string[]> {
   const output = []
 

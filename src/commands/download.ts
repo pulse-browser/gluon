@@ -15,13 +15,14 @@ import execa from 'execa'
 import Listr from 'listr'
 
 import { bin_name, config } from '..'
-import { ENGINE_DIR, MELON_TMP_DIR } from '../constants'
+import { BASH_PATH, ENGINE_DIR, MELON_TMP_DIR } from '../constants'
 import {
   commandExistsSync,
   delay,
   ensureDir,
   getConfig,
   walkDirectoryTree,
+  windowsPathToUnix,
 } from '../utils'
 import { downloadFileToLocation } from '../utils/download'
 import { readItem, writeItem } from '../utils/store'
@@ -299,16 +300,21 @@ async function unpackFirefoxSource(
   await execa(
     tarExec,
     [
-      '--transform',
-      `s,firefox-${gFFVersion},engine,`,
-      `--show-transformed`,
+      '--strip-components=1',
       process.platform == 'win32' ? '--force-local' : null,
       '-xf',
-      resolve(cwd, '.dotbuild', 'engines', name),
-    ].filter((x) => x) as string[]
+      windowsPathToUnix(resolve(cwd, '.dotbuild', 'engines', name)),
+      '-C',
+      windowsPathToUnix(ENGINE_DIR),
+    ].filter((x) => x) as string[],
+    {
+      // HACK: Use bash shell on windows to get a sane version of tar that works
+      shell: BASH_PATH || false,
+    }
   )
 }
 
+// TODO: Make this function cache its output
 async function downloadFirefoxSource(
   version: string,
   task: Listr.ListrTaskWrapper<any>
@@ -318,28 +324,16 @@ async function downloadFirefoxSource(
 
   const url = base + filename
 
+  const fsParent = resolve(process.cwd(), '.dotbuild', 'engines')
+  const fsSaveLocation = resolve(fsParent, filename)
+
   task.output = `Locating Firefox release ${version}...`
 
-  await ensureDir(resolve(process.cwd(), `.dotbuild`, `engines`))
+  await ensureDir(fsParent)
 
-  if (
-    existsSync(
-      resolve(
-        process.cwd(),
-        `.dotbuild`,
-        `engines`,
-        `firefox-${version.split('b')[0]}`
-      )
-    )
-  ) {
-    log.error(
-      `Cannot download version ${
-        version.split('b')[0]
-      } as it already exists at "${resolve(
-        process.cwd(),
-        `firefox-${version.split('b')[0]}`
-      )}"`
-    )
+  if (existsSync(fsSaveLocation)) {
+    task.output = 'Using cached download'
+    return filename
   }
 
   if (version.includes('b'))
