@@ -6,10 +6,10 @@ import { existsSync } from 'fs'
 import { lstatSync, readFileSync } from 'fs'
 import { ensureSymlink } from 'fs-extra'
 import { copyFile } from 'fs/promises'
-import { resolve } from 'path'
+import { dirname, resolve } from 'path'
 import rimraf from 'rimraf'
 
-import { appendToFileSync } from '../../utils'
+import { appendToFileSync, mkdirp } from '../../utils'
 import { config } from '../..'
 import { ENGINE_DIR, SRC_DIR } from '../../constants'
 import { IMelonPatch } from './command'
@@ -33,6 +33,9 @@ export const copyManual = async (name: string): Promise<void> => {
     process.platform == 'win32' &&
     !config.buildOptions.windowsUseSymbolicLinks
   ) {
+    // Make the directory if it doesn't already exist.
+    await mkdirp(dirname(resolve(ENGINE_DIR, ...getChunked(name))))
+
     // By default, windows users do not have access to the permissions to create
     // symbolic links. As a work around, we will just copy the files instead
     await copyFile(
