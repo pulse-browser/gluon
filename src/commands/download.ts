@@ -234,9 +234,9 @@ const includeAddon = (
             .sort()
             .map(
               (f) =>
-                `FINAL_TARGET_FILES.features["${id}"]${parent} += ["${f
-                  .replace(outPath + '/', '')
-                  .replace(outPath, '')}"]`
+                `FINAL_TARGET_FILES.features["${id}"]${parent} += ["${windowsPathToUnix(
+                  f.replace(outPath + '/', '').replace(outPath, '')
+                )}"]`
             )
             .join('\n')
 
