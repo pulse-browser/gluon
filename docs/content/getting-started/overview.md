@@ -15,7 +15,7 @@ If you are having problems with following these instructions, or with melon in g
 
 ### System requirements
 
-- **OS**: Linux, Windows, MacOS (We only have active contributors on linux, so other platforms might be a touch buggy)
+- **OS**: Linux and MacOS (If you are using windows, take a look at the [Windows Guide](../windows/))
 - **Melon dependencies**: NodeJS and npm
 - **Browser dependencies**: TODO: find out what firefox's build dependencies are
 
