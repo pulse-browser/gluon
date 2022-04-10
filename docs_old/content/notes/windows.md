@@ -1,3 +1,8 @@
++++
+title = "Forcing windows to work"
+weight = 10
++++
+
 ## Steps followed to get installing on windows to work
 
 1. Install build tools for Visual Studio
