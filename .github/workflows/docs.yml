@@ -2,6 +2,8 @@ name: Build docs
 
 on:
   push:
+    branches:
+      - main
     paths:
       - 'docs/**'
       - '.github/**'
@@ -21,4 +23,4 @@ jobs:
           PAGES_BRANCH: gh-pages
           BUILD_DIR: docs/
           # Provide personal access token
-          TOKEN: ${{ secrets.TOKEN }}
+          TOKEN: ${{ secrets.ROBOT_TOKEN }}

@@ -1,6 +1,6 @@
 +++
 title = "Userchrome"
-weight = 10
+weight = 15
 +++
 
 This page will explain the process for applying custom css (or userchrome) to your new browser. I expect you to have already setup melon as described in the overview and have something that looks like the following on your screen.

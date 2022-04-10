@@ -1,6 +1,7 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
+import execa from 'execa'
 import { existsSync, mkdirSync, readdirSync } from 'fs'
 import { resolve } from 'path'
 import { log } from '../log'
@@ -60,5 +61,35 @@ if (existsSync(ENGINE_DIR)) {
 
 export const OBJ_DIR = resolve(ENGINE_DIR, `obj-${CONFIG_GUESS}`)
 
+// TODO: Remove this, it is unused
 export const FTL_STRING_LINE_REGEX =
   /(([a-zA-Z0-9-]*|\.[a-z-]*) =(.*|\.)|\[[a-zA-Z0-9]*\].*(\n\s?\s?})?|\*\[[a-zA-Z0-9]*\] .*(\n\s?\s?})?)/gm
+
+// =================
+// Windows constants
+// =================
+
+export let BASH_PATH: string | null = null
+
+// All windows specific code should be located inside of this if statement
+if (process.platform == 'win32') {
+  const gitPath = execa.sync('where.exe git.exe').stdout.toString()
+
+  if (gitPath.includes('git.exe')) {
+    // Git is installed on the computer, the bash terminal is probably located
+    // somewhere nearby
+    log.debug('Fount git at ' + gitPath)
+
+    log.debug(`Searching for bash`)
+    BASH_PATH = resolve(gitPath, '../..', 'bin/bash.exe')
+    if (!existsSync(BASH_PATH)) {
+      log.askForReport()
+      log.error(`Expected bash at ${BASH_PATH}, could not find it. Aborting`)
+    }
+    log.debug(`Found bash at ${BASH_PATH}`)
+  } else {
+    log.error(
+      "Git doesn't appear to be installed on this computer. Please install it before continuing"
+    )
+  }
+}

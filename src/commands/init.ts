@@ -7,7 +7,7 @@ import Listr from 'listr'
 import { resolve } from 'path'
 import { bin_name } from '..'
 import { log } from '../log'
-import { dispatch } from '../utils'
+import { config, configDispatch, dispatch } from '../utils'
 
 export const init = async (
   directory: Command | string,
@@ -49,28 +49,50 @@ export const init = async (
 
   version = version.trim().replace(/\\n/g, '')
 
+  // TODO: Use bash on windows, this may significantly improve performance. Still needs testing though
   logInfo('Initializing git, this may take some time')
-  await dispatch('git', ['init'], dir as string, false, logInfo)
-  await dispatch(
-    'git',
-    ['checkout', '--orphan', version],
-    dir as string,
-    false,
-    logInfo
-  )
-  await dispatch('git', ['add', '-f', '.'], dir as string, false, logInfo)
-  await dispatch(
-    'git',
-    ['commit', '-aqm', `"Firefox ${version}"`],
-    dir as string,
-    false,
-    logInfo
-  )
-  await dispatch(
-    'git',
-    ['checkout', '-b', 'dot'],
-    dir as string,
-    false,
-    logInfo
-  )
+
+  await configDispatch('git', {
+    args: ['init'],
+    cwd: dir,
+    logger: logInfo,
+    shell: 'unix',
+  })
+
+  await configDispatch('git', {
+    args: ['init'],
+    cwd: dir,
+    logger: logInfo,
+    shell: 'unix',
+  })
+
+  await configDispatch('git', {
+    args: ['checkout', '--orphan', version],
+    cwd: dir,
+    logger: logInfo,
+    shell: 'unix',
+  })
+
+  await configDispatch('git', {
+    args: ['add', '-f', '.'],
+    cwd: dir,
+    logger: logInfo,
+    shell: 'unix',
+  })
+
+  logInfo('Committing...')
+
+  await configDispatch('git', {
+    args: ['commit', '-aqm', `"Firefox ${version}"`],
+    cwd: dir,
+    logger: logInfo,
+    shell: 'unix',
+  })
+
+  await configDispatch('git', {
+    args: ['checkout', '-b', config.name.toLowerCase().replace(/\s/g, '_')],
+    cwd: dir,
+    logger: logInfo,
+    shell: 'unix',
+  })
 }

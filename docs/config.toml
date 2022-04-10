@@ -1,12 +1,26 @@
-base_url = "/build/"
-title = "Melon docs"
+name = "Gluon"
+description = "Build Firefox-based browsers with ease"
+license = "MPL 2.0"
+homepage = "https://github.com/pulse-browser/gluon"
+min_version = "1.14.0"
+
+# The URL the site will be built for
+base_url = "https://docs.gluon.dev"
+
+# Whether to automatically compile all Sass files in the sass directory
 compile_sass = true
+
+# Whether to build a search index to be used later on by a JavaScript library
 build_search_index = true
 
 [markdown]
+# Whether to do syntax highlighting
+# Theme can be customised by setting the `highlight_theme` variable to a theme supported by Zola
 highlight_code = true
-highlight_theme = "base16-ocean-dark"
 
 [extra]
-logo = "https://camo.githubusercontent.com/d8b2046aa769e171cb4c89d0f86dfb52c7f677ff287c2b5ac9451ae3d45b2ef3/68747470733a2f2f7477656d6f6a692e6d617863646e2e636f6d2f762f31332e302e312f7376672f31663334392e737667"
-release = "https://api.github.com/repos/focus-browse/build/releases/latest"
+# TODO: New logo
+release = "https://api.github.com/repos/focus-browser/build/releases/latest"
+
+[author]
+name = "TrickyPR"
