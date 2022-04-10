@@ -2,6 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import execa from 'execa'
+import { BASH_PATH } from '../constants'
 import { log } from '../log'
 
 export const removeTimestamp = (input: string): string =>
@@ -14,8 +15,10 @@ export const dispatch = (
   killOnError?: boolean,
   logger = (data: string) => log.info(data)
 ): Promise<boolean> => {
-  log.debug(`Running dispatch with args; command: ${cmd}, args: ${args}, cwd: ${cwd}, killOnError: ${killOnError}`)
-  
+  log.debug(
+    `Running dispatch with args; command: ${cmd}, args: ${args}, cwd: ${cwd}, killOnError: ${killOnError}`
+  )
+
   const handle = (data: string | Error, killOnError?: boolean) => {
     const d = data.toString()
 
@@ -33,6 +36,7 @@ export const dispatch = (
 
     const proc = execa(cmd, args, {
       cwd: cwd || process.cwd(),
+      shell: BASH_PATH || false,
       env: process.env,
     })
 
