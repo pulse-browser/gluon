@@ -232,11 +232,13 @@ const includeAddon = (
 
           const current = (tree['.'] as string[])
             .sort()
+            // Don't use windows path, which brick mozbuild
+            .map((f) => windowsPathToUnix(f))
             .map(
               (f) =>
-                `FINAL_TARGET_FILES.features["${id}"]${parent} += ["${windowsPathToUnix(
-                  f.replace(outPath + '/', '').replace(outPath, '')
-                )}"]`
+                `FINAL_TARGET_FILES.features["${id}"]${parent} += ["${f
+                  .replace(outPath + '/', '')
+                  .replace(outPath, '')}"]`
             )
             .join('\n')
 
