@@ -17,13 +17,14 @@ export const commands: Cmd[] = [
       'Build the melon app. Specify the OS param for cross-platform builds.',
     options: [
       {
-        arg: '--a, --arch <architecture>',
-        description: 'Specify architecture for build',
-      },
-      {
         arg: '--u, --ui',
         description:
           'Only builds the ui. Faster but not as powerful as a regular build.',
+      },
+      {
+        arg: '--skip-patch-check',
+        description:
+          "Doesn't check to see if all of the patches have been applied",
       },
     ],
     requestController: async () => (await import('./commands/build')).build,

@@ -16,7 +16,7 @@ const platform: Record<string, string> = {
   linux: 'linux',
 }
 
-const applyConfig = async (os: string, arch: string) => {
+const applyConfig = async (os: string) => {
   log.info('Applying mozconfig...')
 
   let changeset
@@ -55,14 +55,7 @@ const applyConfig = async (os: string, arch: string) => {
   )
 
   const osConfig = stringTemplate(
-    readFileSync(
-      resolve(
-        CONFIGS_DIR,
-        os,
-        arch === 'i686' ? 'mozconfig-i686' : 'mozconfig'
-      ),
-      'utf-8'
-    ),
+    readFileSync(resolve(CONFIGS_DIR, os, 'mozconfig'), 'utf-8'),
     templateOptions
   )
 
@@ -144,8 +137,8 @@ const success = (date: number) => {
 }
 
 interface Options {
-  arch: string
   ui: boolean
+  skipPatchCheck: boolean
 }
 
 export const build = async (options: Options): Promise<void> => {
@@ -156,9 +149,9 @@ export const build = async (options: Options): Promise<void> => {
   const prettyHost = platform[process.platform]
 
   if (BUILD_TARGETS.includes(prettyHost)) {
-    await patchCheck()
+    if (!options.skipPatchCheck) await patchCheck()
 
-    await applyConfig(prettyHost, options.arch)
+    await applyConfig(prettyHost)
 
     log.info('Starting build...')
 
