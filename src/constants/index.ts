@@ -32,7 +32,7 @@ mkdirSync(MELON_TMP_DIR, { recursive: true })
  * What we think the current platform might be. Should not be used outside of this
  * file
  */
-let CONFIG_GUESS: string = ''
+let CONFIG_GUESS = ''
 
 // We can find the current obj-* dir simply by searching. This shouldn't be to
 // hard and is more reliable than autoconf is. This command should only be run
@@ -83,9 +83,14 @@ if (process.platform == 'win32') {
     log.debug(`Searching for bash`)
     BASH_PATH = resolve(gitPath, '../..', 'bin/bash.exe')
     if (!existsSync(BASH_PATH)) {
-      log.askForReport()
-      log.error(`Expected bash at ${BASH_PATH}, could not find it. Aborting`)
+      log.debug(`Could not find bash at ${BASH_PATH}`)
+
+      BASH_PATH = execa.sync('where.exe bash.exe').stdout.toString()
+      if (!BASH_PATH.includes('bash.exe')) {
+        log.error('Could not find bash, aborting')
+      }
     }
+
     log.debug(`Found bash at ${BASH_PATH}`)
   } else {
     log.error(
