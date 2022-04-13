@@ -76,7 +76,7 @@ function constructConfig(name: string) {
 }
 
 async function setupImages(configPath: string, outputPath: string) {
-  log.info('Generating icons')
+  log.debug('Generating icons')
 
   await every([16, 22, 24, 32, 48, 64, 128, 256], async (size) => {
     await sharp(join(configPath, 'logo.png'))
@@ -110,7 +110,7 @@ async function setupImages(configPath: string, outputPath: string) {
   // Register logo in cache
   await addHash(join(configPath, 'logo.png'))
 
-  log.info('Generating macos install')
+  log.debug('Generating macos install')
   const macosInstall = await renderAsync(
     await readFile(join(configPath, 'MacOSInstaller.svg'))
   )
