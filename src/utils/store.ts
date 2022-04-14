@@ -15,7 +15,7 @@ export const readItem = <T>(key: string): OptionEquipped<T> => {
     return equip<T>(None)
   }
 
-  const data = readFileSync(dir, 'utf8')
+  const data = readFileSync(dir).toString()
 
   return equip(JSON.parse(data))
 }
