@@ -35,6 +35,10 @@ Without a correct manifest file, windows will report on windows 8 on windows 10 
 - Try running commands in MozillaBuild shell rather than windows cmd
 - Tests need to be disabled by default, they take up too much build time
 
+## Bootstrap freezes in a CI environment
+
+We use mach bootstrap within our CI environments without initing it as a git repo. Under normal circumstances bootstrap will error (on windows boostrap freezes without using the CI )
+
 ## TODO:
 
 ### UI

@@ -63,3 +63,17 @@ gluon run
 ```
 
 Exporting changes will work as per usual.
+
+## Additional packages required for releasing
+
+If you are creating binaries to target windows, you will need nsis (which mach calls `makensisu` for some reason, even though the binary is `makensis`):
+
+```powershell
+choco install nsis
+```
+
+Note that you will also have to provide a path to nsis on your system. For mine it is:
+
+```sh
+export MAKENSISU="C:\\Program Files (x86)\\NSIS\\Bin\\makensis.exe"
+```
