@@ -6,7 +6,7 @@ import { Cmd } from './types'
 export const commands: Cmd[] = [
   {
     cmd: 'bootstrap',
-    description: 'Bootstrap the melon app.',
+    description: 'Bootstrap the gluon app.',
     requestController: async () =>
       (await import('./commands/bootstrap')).bootstrap,
   },
@@ -14,7 +14,7 @@ export const commands: Cmd[] = [
     cmd: 'build',
     aliases: ['b'],
     description:
-      'Build the melon app. Specify the OS param for cross-platform builds.',
+      'Build the gluon app. Specify the OS param for cross-platform builds.',
     options: [
       {
         arg: '--u, --ui',
@@ -117,7 +117,7 @@ export const commands: Cmd[] = [
   },
   {
     cmd: 'setup-project',
-    description: 'Sets up a melon project for the first time',
+    description: 'Sets up a gluon project for the first time',
     requestController: async () =>
       (await import('./commands/setupProject')).setupProject,
   },
