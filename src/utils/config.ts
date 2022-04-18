@@ -183,6 +183,13 @@ export function getConfig(): Config {
     process.exit(1)
   }
 
+  // Provide some useful warnings to the user to help improve their config files
+  if (!fileParsed.binaryName) {
+    log.warning(
+      'It is recommended that you provide a `binaryName` field in your config file, otherwise packaging may get messed up'
+    )
+  }
+
   // Merge the default config with the file parsed config
   fileParsed = { ...defaultConfig, ...fileParsed }
 
