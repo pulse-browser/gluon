@@ -51,6 +51,45 @@ export const melonPackage = async () => {
     await copyFile(join(OBJ_DIR, 'dist', file), destFile)
   }
 
+  // Windows has some special dist files that are available within the dist
+  // directory.
+  if (process.platform == 'win32') {
+    const installerDistDirectory = join(OBJ_DIR, 'dist', 'install', 'sea')
+
+    if (!existsSync(installerDistDirectory)) {
+      log.error(
+        `Could not find windows installer files located at '${installerDistDirectory}'`
+      )
+    }
+
+    const windowsInstallerFiles = (
+      await readdir(installerDistDirectory, { withFileTypes: true })
+    )
+      .filter((entry) => entry.isFile())
+      .map((entry) => entry.name)
+
+    for (const file of windowsInstallerFiles) {
+      let newFileName = file
+
+      // There are some special cases that I want to reformat the name for
+      if (file.includes('.installer.exe')) {
+        newFileName = `${config.binaryName}.installer.exe`
+      }
+      if (file.includes('.installer-stub.exe')) {
+        newFileName = `${config.binaryName}.installer.pretty.exe`
+        log.warning(
+          `The installer ${newFileName} requires that your binaries are available from the internet and everything is correctly configured. I recommend you ship '${config.binaryName}.installer.exe' if you have not set this up correctly yet`
+        )
+      }
+
+      // Actually copy
+      const destFile = join(DIST_DIR, newFileName)
+      log.debug(`Copying ${file}`)
+      if (existsSync(destFile)) await unlink(destFile)
+      await copyFile(join(installerDistDirectory, file), destFile)
+    }
+  }
+
   log.info()
   log.info(`Output written to ${DIST_DIR}`)
 
