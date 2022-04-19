@@ -13,9 +13,7 @@
     "**/node_modules/*/**": true,
     "*.tar.xz": true
   },
-  "javascript.updateImportsOnFileMove.enabled": "always",
   "files.exclude": {
-    "**/node_modules": true,
-    "**/.dotbuild": true
+    "**/node_modules": true
   }
 }
