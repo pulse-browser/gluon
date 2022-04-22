@@ -18,6 +18,7 @@ import { bin_name, config } from '..'
 import { BASH_PATH, ENGINE_DIR, MELON_TMP_DIR } from '../constants'
 import {
   commandExistsSync,
+  configDispatch,
   delay,
   ensureDir,
   getConfig,
@@ -259,6 +260,22 @@ DEFINES["MOZ_APP_MAXVERSION"] = CONFIG["MOZ_APP_MAXVERSION"]
 
 ${runTree(files, '')}`
         )
+      },
+    },
+    {
+      // This step allows patches to be applied to extensions that are downloaded
+      // providing more flexibility to the browser developers
+      title: 'Initializing',
+      enabled: (ctx) => typeof ctx[name] !== 'undefined',
+      task: async (ctx, task) => {
+        await configDispatch('git', {
+          args: ['add', '-f', '.'],
+          cwd: outPath,
+        })
+        await configDispatch('git', {
+          args: ['commit', '-m', name],
+          cwd: ENGINE_DIR,
+        })
       },
     },
   ]
