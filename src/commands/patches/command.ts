@@ -12,6 +12,7 @@ import { join } from 'path'
 import { existsSync, writeFileSync } from 'fs'
 import { patchCountFile } from '../../middleware/patch-check'
 import { checkHash } from '../../utils'
+import { log } from '../../log'
 
 type ListrTaskGroup = Listr.ListrTask<any>
 
@@ -95,9 +96,7 @@ function importGitPatch(): ListrTaskGroup {
 }
 
 export async function applyPatches(): Promise<void> {
-  await new Listr([
-    importMelonPatches(),
-    importFolders(),
-    importGitPatch(),
-  ]).run()
+  await new Listr([importMelonPatches(), importFolders(), importGitPatch()], {
+    renderer: log.isDebug ? 'verbose' : 'default',
+  }).run()
 }
