@@ -8,7 +8,7 @@ import { join } from 'path'
 import { SRC_DIR } from '../constants'
 import { walkDirectory } from '../utils/fs'
 
-const ignoredFiles = new RegExp('.*\\.(json|patch|md)')
+const ignoredFiles = new RegExp('.*\\.(json|patch|md|jpeg|png|gif|tiff|ico)')
 const licenseIgnore = new RegExp('(//|#) Ignore license in this file', 'g')
 const fixableFiles = [
   { regex: new RegExp('.*\\.(j|t)s'), comment: '// ', commentClose: '\n' },
