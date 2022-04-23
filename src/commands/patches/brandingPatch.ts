@@ -15,6 +15,7 @@ import { copyFile, readFile, writeFile } from 'fs/promises'
 import { every } from 'modern-async'
 import { dirname, extname, join } from 'path'
 import sharp from 'sharp'
+import pngToIco from 'png-to-ico'
 
 import { config } from '../..'
 import { CONFIGS_DIR, ENGINE_DIR } from '../../constants'
@@ -78,7 +79,8 @@ function constructConfig(name: string) {
 async function setupImages(configPath: string, outputPath: string) {
   log.debug('Generating icons')
 
-  await every([16, 22, 24, 32, 48, 64, 128, 256], async (size) => {
+  // Firefox doesn't use 512 by 512, but we need it to generate ico files later
+  await every([16, 22, 24, 32, 48, 64, 128, 256, 512], async (size) => {
     await sharp(join(configPath, 'logo.png'))
       .resize(size, size)
       .toFile(join(outputPath, `default${size}.png`))
@@ -91,12 +93,14 @@ async function setupImages(configPath: string, outputPath: string) {
     return true
   })
 
-  await sharp(join(configPath, 'logo.png'))
-    .resize(512, 512)
-    .toFile(join(outputPath, 'firefox.ico'))
-  await sharp(join(configPath, 'logo.png'))
-    .resize(64, 64)
-    .toFile(join(outputPath, 'firefox64.ico'))
+  writeFileSync(
+    join(outputPath, 'firefox.ico'),
+    await pngToIco([join(configPath, 'logo512.png')])
+  )
+  writeFileSync(
+    join(outputPath, 'firefox64.ico'),
+    await pngToIco([join(configPath, 'logo64.png')])
+  )
 
   mkdirSync(join(outputPath, 'content'), { recursive: true })
 

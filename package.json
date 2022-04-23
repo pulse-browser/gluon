@@ -48,6 +48,7 @@
     "linus": "^0.0.6",
     "listr": "^0.14.3",
     "modern-async": "^1.1.2",
+    "png-to-ico": "^2.1.4",
     "prompts": "^2.4.1",
     "rimraf": "^3.0.2",
     "rustic": "^1.2.1",
