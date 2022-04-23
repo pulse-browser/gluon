@@ -18,6 +18,7 @@ import { bin_name, config } from '..'
 import { BASH_PATH, ENGINE_DIR, MELON_TMP_DIR } from '../constants'
 import {
   commandExistsSync,
+  configDispatch,
   delay,
   ensureDir,
   getConfig,
@@ -48,70 +49,77 @@ export const download = async (): Promise<void> => {
     ...config.addons[addon],
   }))
 
-  await new Listr([
-    {
-      title: 'Downloading firefox source',
-      skip: () => {
-        if (
-          existsSync(ENGINE_DIR) &&
-          existsSync(resolve(ENGINE_DIR, 'toolkit', 'moz.build'))
-        ) {
-          return 'Firefox has already been downloaded, unpacked and inited'
-        }
+  await new Listr(
+    [
+      {
+        title: 'Downloading firefox source',
+        skip: () => {
+          if (
+            existsSync(ENGINE_DIR) &&
+            existsSync(resolve(ENGINE_DIR, 'toolkit', 'moz.build'))
+          ) {
+            return 'Firefox has already been downloaded, unpacked and inited'
+          }
+        },
+        task: async (ctx, task) => {
+          ctx.firefoxSourceTar = await downloadFirefoxSource(version, task)
+        },
       },
-      task: async (ctx, task) => {
-        ctx.firefoxSourceTar = await downloadFirefoxSource(version, task)
+      {
+        title: 'Unpack firefox source',
+        enabled: (ctx) => ctx.firefoxSourceTar,
+        task: async (ctx, task) => {
+          await unpackFirefoxSource(ctx.firefoxSourceTar, task)
+        },
       },
-    },
-    {
-      title: 'Unpack firefox source',
-      enabled: (ctx) => ctx.firefoxSourceTar,
-      task: async (ctx, task) => {
-        await unpackFirefoxSource(ctx.firefoxSourceTar, task)
+      {
+        title: 'Init firefox',
+        enabled: (ctx) => ctx.firefoxSourceTar && !process.env.CI_SKIP_INIT,
+        task: async (_ctx, task) => await init(ENGINE_DIR, task),
       },
-    },
-    {
-      title: 'Init firefox',
-      enabled: (ctx) => ctx.firefoxSourceTar && !process.env.CI_SKIP_INIT,
-      task: async (_ctx, task) => await init(ENGINE_DIR, task),
-    },
-    ...addons
-      .map((addon) => includeAddon(addon.name, addon.url, addon.id))
-      .reduce((acc, cur) => [...acc, ...cur], []),
-    {
-      title: 'Add addons to mozbuild',
-      task: async (ctx, task) => {
-        // Discard the file to make sure it has no changes
-        await discard('browser/extensions/moz.build', {})
+      ...addons
+        .map((addon) => includeAddon(addon.name, addon.url, addon.id))
+        .reduce((acc, cur) => [...acc, ...cur], []),
+      {
+        title: 'Add addons to mozbuild',
+        task: async (ctx, task) => {
+          // Discard the file to make sure it has no changes
+          await discard('browser/extensions/moz.build', {})
 
-        const path = join(ENGINE_DIR, 'browser', 'extensions', 'moz.build')
+          const path = join(ENGINE_DIR, 'browser', 'extensions', 'moz.build')
 
-        // Append all the files to the bottom
-        writeFileSync(
-          path,
-          `${readFileSync(path, 'utf8')}\nDIRS += [${addons
-            .map((addon) => addon.name)
-            .sort()
-            .map((addon) => `"${addon}"`)
-            .join(',')}]`
-        )
+          // Append all the files to the bottom
+          writeFileSync(
+            path,
+            `${readFileSync(path, 'utf8')}\nDIRS += [${addons
+              .map((addon) => addon.name)
+              .sort()
+              .map((addon) => `"${addon}"`)
+              .join(',')}]`
+          )
+        },
       },
-    },
+      {
+        title: 'Cleanup',
+        task: (ctx) => {
+          let cwd = process.cwd().split(sep).join(posix.sep)
+
+          if (process.platform == 'win32') {
+            cwd = './'
+          }
+
+          if (ctx.firefoxSourceTar) {
+            unlinkSync(
+              resolve(cwd, '.dotbuild', 'engines', ctx.firefoxSourceTar)
+            )
+          }
+        },
+      },
+    ],
     {
-      title: 'Cleanup',
-      task: (ctx) => {
-        let cwd = process.cwd().split(sep).join(posix.sep)
-
-        if (process.platform == 'win32') {
-          cwd = './'
-        }
-
-        if (ctx.firefoxSourceTar) {
-          unlinkSync(resolve(cwd, '.dotbuild', 'engines', ctx.firefoxSourceTar))
-        }
-      },
-    },
-  ]).run()
+      renderer: log.isDebug ? 'verbose' : 'default',
+    }
+  ).run()
 
   log.success(
     `You should be ready to make changes to ${config.name}.\n\n\t   You should import the patches next, run |${bin_name} import|.\n\t   To begin building ${config.name}, run |${bin_name} build|.`
@@ -170,44 +178,28 @@ const includeAddon = (
       title: `Unpack to ${name}`,
       enabled: (ctx) => typeof ctx[name] !== 'undefined',
       task: async (ctx, task) => {
-        const onData = (data: any) => {
-          const d = data.toString()
-
-          d.split('\n').forEach((line: any) => {
-            if (line.trim().length !== 0) {
-              const t = line.split(' ')
-              t.shift()
-              task.output = t.join(' ')
-            }
-          })
-        }
-
         task.output = `Unpacking extension...`
 
         // I do not know why, but this delay causes unzip to work reliably
         await delay(200)
 
-        return await new Promise<void>((res, reg) => {
-          if (existsSync(outPath)) {
-            rmdirSync(outPath, { recursive: true })
-          }
+        if (existsSync(outPath)) {
+          rmdirSync(outPath, { recursive: true })
+        }
 
-          mkdirSync(outPath, {
-            recursive: true,
-          })
+        mkdirSync(outPath, {
+          recursive: true,
+        })
 
-          const tarProc = execa('unzip', [ctx[name], '-d', outPath])
-
-          tarProc.stdout?.on('data', onData)
-          tarProc.stdout?.on('error', (data) => {
-            reg(data)
-          })
-
-          tarProc.on('exit', async () => {
-            task.output = ''
-            await writeItem(name, { url: downloadURL })
-            res()
-          })
+        await configDispatch('unzip', {
+          args: [
+            windowsPathToUnix(ctx[name]),
+            '-d',
+            windowsPathToUnix(outPath),
+          ],
+          killOnError: true,
+          logger: (data) => (task.output = data),
+          shell: 'unix',
         })
       },
     },
@@ -259,6 +251,24 @@ DEFINES["MOZ_APP_MAXVERSION"] = CONFIG["MOZ_APP_MAXVERSION"]
 
 ${runTree(files, '')}`
         )
+      },
+    },
+    {
+      // This step allows patches to be applied to extensions that are downloaded
+      // providing more flexibility to the browser developers
+      title: 'Initializing',
+      enabled: (ctx) => typeof ctx[name] !== 'undefined',
+      task: async (ctx, task) => {
+        await configDispatch('git', {
+          args: ['add', '-f', '.'],
+          cwd: outPath,
+          logger: (data) => (task.output = data),
+        })
+        await configDispatch('git', {
+          args: ['commit', '-m', name],
+          cwd: ENGINE_DIR,
+          logger: (data) => (task.output = data),
+        })
       },
     },
   ]
