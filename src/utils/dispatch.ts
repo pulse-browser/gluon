@@ -26,6 +26,7 @@ export const configDispatch = (
     shell?: 'default' | 'unix'
   }
 ): Promise<boolean> => {
+  // Provide a default logger if none was specified by the user
   const logger = config?.logger || ((data: string) => log.info(data))
 
   // Decide what shell we should be using. False will use the system default
@@ -61,8 +62,6 @@ export const configDispatch = (
   }
 
   return new Promise((resolve) => {
-    process.env.MACH_USE_SYSTEM_PYTHON = 'true'
-
     const proc = execa(cmd, config?.args, {
       cwd: config?.cwd || process.cwd(),
       shell: shell,
