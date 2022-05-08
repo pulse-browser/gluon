@@ -6,10 +6,11 @@ export interface Cmd {
   description: string
 
   /**
-   * A function that returns the controller as a promise. We want to dynamicly
+   * A function that returns the controller as a promise. We want to dynamically
    * load them to reduce the startup time of gluon, which, at the time of
    * writing, is getting a touch long
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   requestController: () => Promise<(...args: any) => void>
 
   options?: CmdOption[]

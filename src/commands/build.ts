@@ -8,7 +8,7 @@ import { bin_name, config } from '..'
 import { BUILD_TARGETS, CONFIGS_DIR, ENGINE_DIR } from '../constants'
 import { log } from '../log'
 import { patchCheck } from '../middleware/patch-check'
-import { configDispatch, dispatch, stringTemplate } from '../utils'
+import { configDispatch, stringTemplate } from '../utils'
 
 const platform: Record<string, string> = {
   win32: 'windows',
@@ -157,6 +157,6 @@ export const build = async (options: Options): Promise<void> => {
 
     log.info('Starting build...')
 
-    await genericBuild(prettyHost, options.ui).then((_) => success(d))
+    await genericBuild(prettyHost, options.ui).then(() => success(d))
   }
 }

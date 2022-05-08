@@ -26,7 +26,7 @@ import {
   windowsPathToUnix,
 } from '../utils'
 import { downloadFileToLocation } from '../utils/download'
-import { readItem, writeItem } from '../utils/store'
+import { readItem } from '../utils/store'
 import { discard } from './discard'
 import { init } from './init'
 import { log } from '../log'
@@ -49,7 +49,11 @@ export const download = async (): Promise<void> => {
     ...config.addons[addon],
   }))
 
-  await new Listr(
+  // Listr and typescript do not mix. Just specify any and move on with the
+  // rest of our life
+  //
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await new Listr<Record<string, string | any>>(
     [
       {
         title: 'Downloading firefox source',
@@ -82,9 +86,9 @@ export const download = async (): Promise<void> => {
         .reduce((acc, cur) => [...acc, ...cur], []),
       {
         title: 'Add addons to mozbuild',
-        task: async (ctx, task) => {
+        task: async () => {
           // Discard the file to make sure it has no changes
-          await discard('browser/extensions/moz.build', {})
+          await discard('browser/extensions/moz.build')
 
           const path = join(ENGINE_DIR, 'browser', 'extensions', 'moz.build')
 
@@ -109,6 +113,14 @@ export const download = async (): Promise<void> => {
           }
 
           if (ctx.firefoxSourceTar) {
+            if (typeof ctx.firefoxSourceTar !== 'string') {
+              log.askForReport()
+              log.error(
+                `The type ctx.firefoxSourceTar was ${typeof ctx.firefoxSourceTar} when it should have been a string`
+              )
+              return
+            }
+
             unlinkSync(
               resolve(cwd, '.dotbuild', 'engines', ctx.firefoxSourceTar)
             )
@@ -131,7 +143,7 @@ const includeAddon = (
   name: string,
   downloadURL: string,
   id: string
-): Listr.ListrTask<any>[] => {
+): Listr.ListrTask<Record<string, string>>[] => {
   const tempFile = join(MELON_TMP_DIR, name + '.xpi')
   const outPath = join(ENGINE_DIR, 'browser', 'extensions', name)
 
@@ -206,9 +218,13 @@ const includeAddon = (
     {
       title: 'Generate mozbuild',
       enabled: (ctx) => typeof ctx[name] !== 'undefined',
-      task: async (ctx, task) => {
+      task: async () => {
         const files = await walkDirectoryTree(outPath)
 
+        // Because the tree has the potential of being infinitely recursive, we
+        // cannot possibly know the the type of the tree
+        //
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         function runTree(tree: any, parent: string): string {
           if (Array.isArray(tree)) {
             return tree
@@ -276,7 +292,7 @@ ${runTree(files, '')}`
 
 async function unpackFirefoxSource(
   name: string,
-  task: Listr.ListrTaskWrapper<any>
+  task: Listr.ListrTaskWrapper<never>
 ): Promise<void> {
   let cwd = process.cwd().split(sep).join(posix.sep)
 
@@ -302,7 +318,7 @@ async function unpackFirefoxSource(
     // check for it and ask for the user to install it if necessary
     if (!commandExistsSync('gtar')) {
       throw new Error(
-        `GNU Tar is required to extract Firefox\'s source on MacOS. Please install it using the command |brew install gnu-tar| and try again`
+        `GNU Tar is required to extract Firefox's source on MacOS. Please install it using the command |brew install gnu-tar| and try again`
       )
     }
 
@@ -329,7 +345,7 @@ async function unpackFirefoxSource(
 // TODO: Make this function cache its output
 async function downloadFirefoxSource(
   version: string,
-  task: Listr.ListrTaskWrapper<any>
+  task: Listr.ListrTaskWrapper<never>
 ) {
   const base = `https://archive.mozilla.org/pub/firefox/releases/${version}/source/`
   const filename = `firefox-${version}.source.tar.xz`

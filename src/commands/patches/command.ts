@@ -14,12 +14,12 @@ import { patchCountFile } from '../../middleware/patch-check'
 import { checkHash } from '../../utils'
 import { log } from '../../log'
 
-type ListrTaskGroup = Listr.ListrTask<any>
+type ListrTaskGroup = Listr.ListrTask<unknown>
 
 export interface IMelonPatch {
   name: string
   skip?: (
-    ctx: any
+    ctx: unknown
   ) => string | boolean | void | Promise<string | boolean | undefined>
 }
 

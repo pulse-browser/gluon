@@ -6,7 +6,7 @@ import { log } from '../log'
 import { ENGINE_DIR } from '../constants'
 import { dispatch } from '../utils'
 
-export const execute = async (_: any, cmd: any[]) => {
+export const execute = async (cmd: string[]) => {
   if (existsSync(ENGINE_DIR)) {
     if (!cmd || cmd.length == 0)
       log.error('You need to specify a command to run.')

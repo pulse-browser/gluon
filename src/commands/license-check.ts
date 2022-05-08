@@ -53,7 +53,10 @@ export async function isValidLicense(path: string): Promise<boolean> {
   return hasLicense
 }
 
-export function listrCheckFile(path: string, noFix: boolean): ListrTask<any> {
+export function listrCheckFile(
+  path: string,
+  noFix: boolean
+): ListrTask<unknown> {
   return {
     skip: () => ignoredFiles.test(path),
     title: path.replace(SRC_DIR, ''),

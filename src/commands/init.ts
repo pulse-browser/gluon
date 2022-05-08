@@ -7,11 +7,11 @@ import Listr from 'listr'
 import { resolve } from 'path'
 import { bin_name } from '..'
 import { log } from '../log'
-import { config, configDispatch, dispatch } from '../utils'
+import { config, configDispatch } from '../utils'
 
 export const init = async (
   directory: Command | string,
-  task?: Listr.ListrTaskWrapper<any>
+  task?: Listr.ListrTaskWrapper<unknown>
 ): Promise<void> => {
   function logInfo(data: string) {
     if (task) {
