@@ -2061,11 +2061,6 @@ get-stream@^6.0.0:
   resolved "https://registry.yarnpkg.com/get-stream/-/get-stream-6.0.1.tgz#a262d8eef67aced57c2852ad6167526a43cbf7b7"
   integrity sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==
 
-getos@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/getos/-/getos-1.0.1.tgz#b28cbd12ec7aeb4462e5bb52217c4ec61696a9c5"
-  integrity sha1-soy9Eux660Ri5btSIXxOxhaWqcU=
-
 gifwrap@^0.9.2:
   version "0.9.4"
   resolved "https://registry.yarnpkg.com/gifwrap/-/gifwrap-0.9.4.tgz#f4eb6169ba027d61df64aafbdcb1f8ae58ccc0c5"
@@ -2910,15 +2905,6 @@ lines-and-columns@^1.1.6:
   resolved "https://registry.yarnpkg.com/lines-and-columns/-/lines-and-columns-1.2.4.tgz#eca284f75d2965079309dc0ad9255abb2ebc1632"
   integrity sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==
 
-linus@^0.0.6:
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/linus/-/linus-0.0.6.tgz#ebc400367035784d851c332302a8857bf50b3f13"
-  integrity sha1-68QANnA1eE2FHDMjAqiFe/ULPxM=
-  dependencies:
-    getos "^1.0.1"
-    memorize "0.0.4"
-    whenever "0.0.2"
-
 listr-silent-renderer@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/listr-silent-renderer/-/listr-silent-renderer-1.1.1.tgz#924b5a3757153770bf1a8e3fbf74b8bbf3f9242e"
@@ -3035,11 +3021,6 @@ makeerror@1.0.12:
   integrity sha512-JmqCvUhmt43madlpFzG4BQzG2Z3m6tvQDNKdClZnO3VbIudJYmxsT0FNJMeiB2+JTSlTQTSbU8QdesVmwJcmLg==
   dependencies:
     tmpl "1.0.5"
-
-memorize@0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/memorize/-/memorize-0.0.4.tgz#28e7a917888548addc5566f94eae8b400bb41a3e"
-  integrity sha1-KOepF4iFSK3cVWb5Tq6LQAu0Gj4=
 
 merge-stream@^2.0.0:
   version "2.0.0"
@@ -4097,11 +4078,6 @@ whatwg-url@^8.0.0, whatwg-url@^8.5.0:
     lodash "^4.7.0"
     tr46 "^2.1.0"
     webidl-conversions "^6.1.0"
-
-whenever@0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/whenever/-/whenever-0.0.2.tgz#a23370410992761c0c82f179e2bd30df4bb9cced"
-  integrity sha1-ojNwQQmSdhwMgvF54r0w30u5zO0=
 
 which@^2.0.1:
   version "2.0.2"
