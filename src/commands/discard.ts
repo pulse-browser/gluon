@@ -7,14 +7,7 @@ import { resolve } from 'path'
 import { log } from '../log'
 import { ENGINE_DIR } from '../constants'
 
-interface Options {
-  keep?: boolean
-}
-
-export const discard = async (
-  file: string,
-  options: Options
-): Promise<void> => {
+export const discard = async (file: string): Promise<void> => {
   const realFile = resolve(ENGINE_DIR, file)
 
   log.info(`Discarding ${file}...`)

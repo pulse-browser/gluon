@@ -10,7 +10,7 @@ import { config, dispatch } from '../utils'
 
 export const run = async (chrome?: string) => {
   const dirs = readdirSync(ENGINE_DIR)
-  const objDirname: any = dirs.find((dir) => dir.startsWith('obj-'))
+  const objDirname = dirs.find((dir) => dir.startsWith('obj-'))
 
   if (!objDirname) {
     throw new Error(`${config.name} needs to be built before you can do this.`)

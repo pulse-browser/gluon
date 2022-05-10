@@ -2,7 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import { existsSync } from 'fs'
-import { copyFile, mkdir, readdir, rmdir, stat, unlink } from 'fs/promises'
+import { copyFile, mkdir, readdir, unlink } from 'fs/promises'
 import { join, resolve } from 'path'
 import { bin_name, config } from '..'
 import { DIST_DIR, ENGINE_DIR, OBJ_DIR } from '../constants'

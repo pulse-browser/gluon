@@ -31,7 +31,7 @@ export async function downloadFileToLocation(
                 consoleWriter(chunk.toString())
                 next()
               },
-              read: (size) => {
+              read: () => {
                 /* Empty output */
               },
             })

@@ -3,10 +3,13 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import execa from 'execa'
 import { existsSync, writeFileSync } from 'fs'
-import { resolve } from 'path'
+import { basename, resolve } from 'path'
 import { log } from '../log'
 import { ENGINE_DIR, SRC_DIR } from '../constants'
 import { delay, ensureDir } from '../utils'
+
+export const getPatchName = (file: string): string =>
+  `${basename(file).replace(/\./g, '-')}.patch`
 
 export const exportFile = async (file: string): Promise<void> => {
   log.info(`Exporting ${file}...`)
@@ -30,10 +33,7 @@ export const exportFile = async (file: string): Promise<void> => {
       stripFinalNewline: false,
     }
   )
-  const name = `${file
-    .split('/')
-    [file.replace(/\./g, '-').split('/').length - 1].replace(/\./g, '-')}.patch`
-
+  const name = getPatchName(file)
   const patchPath = file.replace(/\./g, '-').split('/').slice(0, -1)
 
   await ensureDir(resolve(SRC_DIR, ...patchPath))

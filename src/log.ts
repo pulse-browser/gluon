@@ -96,15 +96,13 @@ class Log {
    * @param args The error you want to throw or a type that you want to convert to an error
    */
   error(...args: (Error | unknown)[]): never {
-    if (args[0] instanceof Error) {
-      throw args[0]
-    }
-
-    throw new Error(
-      ...args.map((a) =>
-        typeof a !== 'undefined' ? (a as object).toString() : a
-      )
-    )
+    throw args[0] instanceof Error
+      ? args[0]
+      : new Error(
+          ...args.map((a) =>
+            typeof a !== 'undefined' ? (a as object).toString() : a
+          )
+        )
   }
 
   /**

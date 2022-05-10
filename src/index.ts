@@ -57,7 +57,7 @@ program
     ])
   )
 
-async function middleware(command: commander.Command, args: unknown[]) {
+async function middleware(command: commander.Command) {
   // If the program is verbose, store that fact within the logger
   log.isDebug = program.opts().verbose
 
@@ -84,7 +84,7 @@ commands.forEach((command) => {
       // executing
       const controller = command.requestController()
 
-      await middleware(buildCommand, args)
+      await middleware(buildCommand)
 
       // Finish loading the controller and execute it
       ;(await controller)(...args)

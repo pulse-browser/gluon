@@ -55,12 +55,10 @@ export async function walkDirectory(dirName: string): Promise<string[]> {
   return output
 }
 
-export type TreeType<T> = Record<string, T | string[]>
+export type TreeType = { [property: string]: string[] | TreeType }
 
-export async function walkDirectoryTree(
-  dirName: string
-): Promise<TreeType<TreeType<TreeType<TreeType<TreeType<TreeType<any>>>>>>> {
-  const output: TreeType<any> = {}
+export async function walkDirectoryTree(dirName: string): Promise<TreeType> {
+  const output: TreeType = {}
 
   if (!isAbsolute(dirName)) {
     log.askForReport()

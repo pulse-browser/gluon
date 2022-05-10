@@ -6,7 +6,7 @@ docs/
 site/
 
 .prettierrc.json
-melon.json
+gluon.json
 tsconfig.json
 yarn.lock
 .eslintignore

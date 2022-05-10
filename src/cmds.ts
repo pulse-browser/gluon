@@ -32,12 +32,6 @@ export const commands: Cmd[] = [
   {
     cmd: 'discard <file>',
     description: 'Discard a files changes.',
-    options: [
-      {
-        arg: '--keep, --keep-patch',
-        description: 'Keep the patch file instead of removing it',
-      },
-    ],
     requestController: async () => (await import('./commands/discard')).discard,
   },
   {
@@ -57,13 +51,6 @@ export const commands: Cmd[] = [
     description: 'Export a changed file as a patch.',
     requestController: async () =>
       (await import('./commands/export-file')).exportFile,
-  },
-  {
-    cmd: 'lfify',
-    aliases: ['fix-le'],
-    description: 'Convert CRLF line endings to Unix LF line endings.',
-    requestController: async () =>
-      (await import('./commands/fix-le')).fixLineEndings,
   },
   {
     cmd: 'import',

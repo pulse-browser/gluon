@@ -11,7 +11,7 @@ import { join } from 'path'
 import { log } from '../log'
 
 export const projectDir = process.cwd()
-export const configPath = join(projectDir, 'melon.json')
+export const configPath = join(projectDir, 'gluon.json')
 
 let hasWarnedAboutConfig = false
 
