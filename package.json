@@ -39,6 +39,7 @@
   "homepage": "https://github.com/dothq/melon#readme",
   "dependencies": {
     "@resvg/resvg-js": "^1.4.0",
+    "async-icns": "^1.0.2",
     "axios": "^0.21.1",
     "chalk": "^4.1.0",
     "cli-progress": "^3.9.1",
