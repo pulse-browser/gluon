@@ -11,14 +11,15 @@ import {
   writeFileSync,
   copyFileSync,
 } from 'fs'
-import { copyFile, readFile, writeFile } from 'fs/promises'
+import { copyFile, readFile, rmdir, writeFile } from 'fs/promises'
 import { every } from 'modern-async'
 import { dirname, extname, join } from 'path'
 import sharp from 'sharp'
 import pngToIco from 'png-to-ico'
+import asyncIcns from 'async-icns'
 
 import { config } from '../..'
-import { CONFIGS_DIR, ENGINE_DIR } from '../../constants'
+import { CONFIGS_DIR, ENGINE_DIR, MELON_TMP_DIR } from '../../constants'
 import { log } from '../../log'
 import {
   addHash,
@@ -76,6 +77,9 @@ function constructConfig(name: string) {
   }
 }
 
+// =============================================================================
+// Main code
+
 async function setupImages(configPath: string, outputPath: string) {
   log.debug('Generating icons')
 
@@ -93,6 +97,7 @@ async function setupImages(configPath: string, outputPath: string) {
     return true
   })
 
+  log.debug('Generating Windows Icons')
   writeFileSync(
     join(outputPath, 'firefox.ico'),
     await pngToIco([join(configPath, 'logo512.png')])
@@ -101,6 +106,21 @@ async function setupImages(configPath: string, outputPath: string) {
     join(outputPath, 'firefox64.ico'),
     await pngToIco([join(configPath, 'logo64.png')])
   )
+
+  // TODO: Custom MacOS icon support
+  if (process.platform == 'darwin') {
+    log.debug('Generating Mac Icons')
+    const tmp = join(MELON_TMP_DIR, 'macos_icon_info.iconset')
+
+    if (existsSync(tmp)) await rmdir(tmp, { recursive: true })
+
+    asyncIcns.convert({
+      input: join(configPath, 'logo.png'),
+      output: join(outputPath, 'firefox.icns'),
+      sizes: [16, 32, 64, 128, 256, 512],
+      tmpDirectory: tmp,
+    })
+  }
 
   mkdirSync(join(outputPath, 'content'), { recursive: true })
 
