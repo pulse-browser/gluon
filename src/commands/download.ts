@@ -121,9 +121,7 @@ export const download = async (): Promise<void> => {
               return
             }
 
-            unlinkSync(
-              resolve(cwd, '.dotbuild', 'engines', ctx.firefoxSourceTar)
-            )
+            unlinkSync(resolve(MELON_TMP_DIR, ctx.firefoxSourceTar))
           }
         },
       },
@@ -331,7 +329,7 @@ async function unpackFirefoxSource(
       '--strip-components=1',
       process.platform == 'win32' ? '--force-local' : null,
       '-xf',
-      windowsPathToUnix(resolve(cwd, '.dotbuild', 'engines', name)),
+      windowsPathToUnix(resolve(MELON_TMP_DIR, name)),
       '-C',
       windowsPathToUnix(ENGINE_DIR),
     ].filter((x) => x) as string[],
@@ -352,7 +350,7 @@ async function downloadFirefoxSource(
 
   const url = base + filename
 
-  const fsParent = resolve(process.cwd(), '.dotbuild', 'engines')
+  const fsParent = MELON_TMP_DIR
   const fsSaveLocation = resolve(fsParent, filename)
 
   task.output = `Locating Firefox release ${version}...`
@@ -379,7 +377,7 @@ async function downloadFirefoxSource(
 
   await downloadFileToLocation(
     url,
-    resolve(process.cwd(), `.dotbuild`, `engines`, filename),
+    resolve(MELON_TMP_DIR, filename),
     (message) => (task.output = message)
   )
   return filename
