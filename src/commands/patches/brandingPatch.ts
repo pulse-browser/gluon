@@ -143,7 +143,7 @@ async function setupImages(configPath: string, outputPath: string) {
   await addHash(join(configPath, 'MacOSInstaller.svg'))
 }
 
-function setupLocale(
+async function setupLocale(
   outputPath: string,
   brandingConfig: {
     backgroundColor: string
@@ -154,10 +154,14 @@ function setupLocale(
     brandingVendor: string
   }
 ) {
-  readdirSync(join(templateDir, 'branding.optional'))
+  // eslint-disable-next-line @typescript-eslint/no-extra-semi
+  ;(await walkDirectory(join(templateDir, 'branding.optional')))
+    .map((file) =>
+      file.replace(join(templateDir, 'branding.optional') + '/', '')
+    )
     .map((file) => [
       readFileSync(join(templateDir, 'branding.optional', file), 'utf-8'),
-      join(outputPath, 'locales/en-US', file),
+      join(outputPath, file),
     ])
     .forEach(([contents, path]) => {
       mkdirSync(dirname(path), { recursive: true })
@@ -231,6 +235,6 @@ export async function apply(name: string): Promise<void> {
   ensureEmpty(outputPath)
 
   await setupImages(configPath, outputPath)
-  setupLocale(outputPath, brandingConfig)
+  await setupLocale(outputPath, brandingConfig)
   await copyMozFiles(outputPath, brandingConfig)
 }
