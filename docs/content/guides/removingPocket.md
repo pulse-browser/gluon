@@ -5,7 +5,7 @@ weight = 5
 
 # Removing pocket
 
-**Note:** This expects you have melon setup.
+**Note:** This expects you have gluon setup.
 
 ## Disabling in firefox.js
 
@@ -42,7 +42,7 @@ user_pref(
 Now you simply need to export the changes made to `firefox.js`:
 
 ```sh
-melon export-file browser/app/profile/firefox.js
+gluon export-file browser/app/profile/firefox.js
 ```
 
 ## Removing pocket icon from toolbar
@@ -70,5 +70,5 @@ let navbarPlacements = [
 Remove the `save-to-pocket-button` item from the array and export the changes:
 
 ```sh
-melon export-file browser/components/customizableui/CustomizableUI.jsm
+gluon export-file browser/components/customizableui/CustomizableUI.jsm
 ```

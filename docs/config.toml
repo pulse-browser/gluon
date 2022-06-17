@@ -19,8 +19,8 @@ build_search_index = true
 highlight_code = true
 
 [extra]
-# TODO: New logo
-release = "https://api.github.com/repos/focus-browser/build/releases/latest"
+logo = "https://twemoji.maxcdn.com/v/13.0.1/svg/1f4e6.svg"
+release = "https://api.github.com/repos/pulse-browser/gluon/releases/latest"
 
 [author]
 name = "TrickyPR"
