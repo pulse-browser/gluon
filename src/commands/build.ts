@@ -50,12 +50,12 @@ const applyConfig = async (os: string) => {
   }
 
   const commonConfig = stringTemplate(
-    readFileSync(resolve(CONFIGS_DIR, 'common', 'mozconfig'), 'utf-8'),
+    readFileSync(resolve(CONFIGS_DIR, 'common', 'mozconfig')).toString(),
     templateOptions
   )
 
   const osConfig = stringTemplate(
-    readFileSync(resolve(CONFIGS_DIR, os, 'mozconfig'), 'utf-8'),
+    readFileSync(resolve(CONFIGS_DIR, os, 'mozconfig')).toString(),
     templateOptions
   )
 

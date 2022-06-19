@@ -164,7 +164,7 @@ async function setupLocale(
       )
     )
     .map((file) => [
-      readFileSync(join(templateDir, 'branding.optional', file), 'utf-8'),
+      readFileSync(join(templateDir, 'branding.optional', file)).toString(),
       join(outputPath, file),
     ])
     .forEach(([contents, path]) => {
@@ -194,7 +194,7 @@ async function copyMozFiles(
 
   css
     .map((filePath) => [
-      readFileSync(filePath, 'utf-8'),
+      readFileSync(filePath).toString(),
       join(outputPath, filePath.replace(BRANDING_FF, '')),
     ])
     .map(([contents, path]) => [

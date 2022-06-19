@@ -95,7 +95,7 @@ export const download = async (): Promise<void> => {
           // Append all the files to the bottom
           writeFileSync(
             path,
-            `${readFileSync(path, 'utf8')}\nDIRS += [${addons
+            `${readFileSync(path).toString()}\nDIRS += [${addons
               .map((addon) => addon.name)
               .sort()
               .map((addon) => `"${addon}"`)

@@ -27,9 +27,10 @@ let reportedFFVersion
 
 if (existsSync(resolve(ENGINE_DIR, 'browser', 'config', 'version.txt'))) {
   const version = readFileSync(
-    resolve(ENGINE_DIR, 'browser', 'config', 'version.txt'),
-    'utf-8'
-  ).replace(/\n/g, '')
+    resolve(ENGINE_DIR, 'browser', 'config', 'version.txt')
+  )
+    .toString()
+    .replace(/\n/g, '')
 
   if (version !== config.version.version) reportedFFVersion = version
 }

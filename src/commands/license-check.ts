@@ -32,7 +32,7 @@ const fixableFiles = [
 ]
 
 export async function isValidLicense(path: string): Promise<boolean> {
-  const file = await readFile(path, 'utf-8')
+  const file = (await readFile(path)).toString()
   const contents = file.split('\n')
 
   // We need to grab the top 5 lines just in case there are newlines in the
@@ -61,7 +61,7 @@ export function listrCheckFile(
     skip: () => ignoredFiles.test(path),
     title: path.replace(SRC_DIR, ''),
     task: async () => {
-      const contents = (await readFile(path, 'utf8')).split('\n')
+      const contents = (await readFile(path)).toString().split('\n')
       const hasLicense = await isValidLicense(path)
 
       if (!hasLicense) {
@@ -72,10 +72,9 @@ export function listrCheckFile(
             `${path} does not have a license. Please add the source code header`
           )
         } else {
-          const mpl = await readFile(
-            join(__dirname, 'license-check.txt'),
-            'utf8'
-          )
+          const mpl = (
+            await readFile(join(__dirname, 'license-check.txt'))
+          ).toString()
           const { comment, commentOpen, commentClose } = fixable
           let header = mpl
             .split('\n')

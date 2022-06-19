@@ -147,7 +147,7 @@ export async function setupProject(): Promise<void> {
     let gitignoreContents = ''
 
     if (existsSync(gitignore)) {
-      gitignoreContents = readFileSync(gitignore, 'utf8')
+      gitignoreContents = readFileSync(gitignore).toString()
     }
 
     gitignoreContents += '\n.dotbuild/\nengine/\nfirefox-*/\nnode_modules/\n'
