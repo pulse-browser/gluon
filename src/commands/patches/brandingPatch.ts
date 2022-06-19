@@ -29,6 +29,7 @@ import {
   mkdirpSync,
   stringTemplate,
   walkDirectory,
+  windowsPathToUnix,
 } from '../../utils'
 import { templateDir } from '../setupProject'
 import { IMelonPatch } from './command'
@@ -157,7 +158,10 @@ async function setupLocale(
   // eslint-disable-next-line @typescript-eslint/no-extra-semi
   ;(await walkDirectory(join(templateDir, 'branding.optional')))
     .map((file) =>
-      file.replace(join(templateDir, 'branding.optional') + '/', '')
+      windowsPathToUnix(file).replace(
+        windowsPathToUnix(join(templateDir, 'branding.optional') + '/'),
+        ''
+      )
     )
     .map((file) => [
       readFileSync(join(templateDir, 'branding.optional', file), 'utf-8'),
