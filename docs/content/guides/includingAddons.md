@@ -5,7 +5,7 @@ weight = 10
 
 # Including addons
 
-Melon provides an automated system for including extensions in your project. The addons are downloaded and included during the `download` build step. Addons can be included in the project config (`melon.json`).
+Gluon provides an automated system for including extensions in your project. The addons are downloaded and included during the `download` build step. Addons can be included in the project config (`gluon.json`).
 
 ```json
 {
@@ -84,5 +84,5 @@ let navbarPlacements = [
 Finally, export the changes you have made:
 
 ```sh
-melon export-file browser/components/customizableui/CustomizableUI.jsm
+gluon export-file browser/components/customizableui/CustomizableUI.jsm
 ```

@@ -3,13 +3,13 @@ title = "Userchrome"
 weight = 15
 +++
 
-This page will explain the process for applying custom css (or userchrome) to your new browser. I expect you to have already setup melon as described in the overview and have something that looks like the following on your screen.
+This page will explain the process for applying custom css (or userchrome) to your new browser. I expect you to have already setup gluon as described in the overview and have something that looks like the following on your screen.
 
 ![Firefox build without branding](https://cdn.statically.io/img/dothq.github.io/f=auto/melon/images/userchrome/css-basic.png)
 
 The firefox window shown above is constructed from (x)html, styled with css and made dynamic with javascript. This means that the entire browser can be styled with custom css, called userchrome.
 
-If you selected the userchrome option when setting up the project, melon will have already created the theme files for you. `src/browser/themes/custom/shared/shared.inc.css` will be included on all platforms, whilst platform specific styles will be included from similar files in `src/browser/themes/custom`.
+If you selected the userchrome option when setting up the project, gluon will have already created the theme files for you. `src/browser/themes/custom/shared/shared.inc.css` will be included on all platforms, whilst platform specific styles will be included from similar files in `src/browser/themes/custom`.
 
 Additionally, firefox has an equivalent to "inspect element", but for the browser. Click on the hamburger menu, select "More tools", then "Browser toolbox" to open it.
 
