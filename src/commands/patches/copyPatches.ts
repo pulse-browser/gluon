@@ -50,7 +50,7 @@ export const copyManual = async (name: string): Promise<void> => {
     )
   }
 
-  const gitignore = readFileSync(resolve(ENGINE_DIR, '.gitignore'), 'utf-8')
+  const gitignore = readFileSync(resolve(ENGINE_DIR, '.gitignore')).toString()
 
   if (!gitignore.includes(getChunked(name).join('/')))
     appendToFileSync(

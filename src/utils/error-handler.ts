@@ -8,7 +8,7 @@ import { MELON_DIR } from '../constants'
 import { log } from '../log'
 
 export const errorHandler = (err: Error, isUnhandledRej: boolean): void => {
-  let cc = readFileSync(resolve(MELON_DIR, 'command'), 'utf-8')
+  let cc = readFileSync(resolve(MELON_DIR, 'command')).toString()
   cc = cc.replace(/(\r\n|\n|\r)/gm, '')
 
   console.log(

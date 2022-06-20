@@ -156,7 +156,7 @@ export function rawConfig(): string {
   let contents = '{}'
 
   if (configExists) {
-    contents = readFileSync(configPath, 'utf8')
+    contents = readFileSync(configPath).toString()
   } else {
     if (!hasWarnedAboutConfig) {
       log.warning(

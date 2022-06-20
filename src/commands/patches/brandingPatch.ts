@@ -29,6 +29,7 @@ import {
   mkdirpSync,
   stringTemplate,
   walkDirectory,
+  windowsPathToUnix,
 } from '../../utils'
 import { templateDir } from '../setupProject'
 import { IMelonPatch } from './command'
@@ -157,10 +158,13 @@ async function setupLocale(
   // eslint-disable-next-line @typescript-eslint/no-extra-semi
   ;(await walkDirectory(join(templateDir, 'branding.optional')))
     .map((file) =>
-      file.replace(join(templateDir, 'branding.optional') + '/', '')
+      windowsPathToUnix(file).replace(
+        windowsPathToUnix(join(templateDir, 'branding.optional') + '/'),
+        ''
+      )
     )
     .map((file) => [
-      readFileSync(join(templateDir, 'branding.optional', file), 'utf-8'),
+      readFileSync(join(templateDir, 'branding.optional', file)).toString(),
       join(outputPath, file),
     ])
     .forEach(([contents, path]) => {
@@ -190,7 +194,7 @@ async function copyMozFiles(
 
   css
     .map((filePath) => [
-      readFileSync(filePath, 'utf-8'),
+      readFileSync(filePath).toString(),
       join(outputPath, filePath.replace(BRANDING_FF, '')),
     ])
     .map(([contents, path]) => [

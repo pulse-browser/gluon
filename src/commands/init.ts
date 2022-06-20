@@ -38,9 +38,8 @@ export const init = async (
       'browser',
       'config',
       'version_display.txt'
-    ),
-    'utf-8'
-  )
+    )
+  ).toString()
 
   if (!version)
     log.error(
