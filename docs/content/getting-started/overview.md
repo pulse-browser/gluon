@@ -24,9 +24,9 @@ If you are having problems with following these instructions, or with gluon in g
 The first thing you are going to need to do is to install Gluon. As it is a nodejs program it can be installed through npm or yarn.
 
 ```sh
-npm install -g gluon-build
+npm install -g gluon-build@next
 # or
-yarn global add gluon-build
+yarn global add gluon-build@next
 
 # Note: Linux and mac users may have to run the above command with sudo
 ```
