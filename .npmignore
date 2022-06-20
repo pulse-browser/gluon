@@ -2,6 +2,7 @@ testing/
 node_modules/
 src/
 !template/src/
+!dist/
 docs/
 site/
 
@@ -12,3 +13,7 @@ yarn.lock
 .eslintignore
 .eslintrc.json
 .gluon
+.vscode/
+.github/
+.eslintrc.js
+jest.config.js
