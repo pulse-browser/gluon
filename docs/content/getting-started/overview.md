@@ -11,7 +11,7 @@ Melon is a build tool and documentation for creating firefox-based browsers. Its
 
 ### Getting help
 
-If you are having problems with following these instructions, or with melon in general, please contact us. You can [create a discussion on github](https://github.com/dothq/melon/discussions/new), ping @trickypr on the [Dot HQ discord](https://dothq.link/dsc), or [join our Matrix chat](https://dothq.link/matrix).
+If you are having problems with following these instructions, or with melon in general, please contact us. You can [create a discussion on github](https://github.com/pulse-browser/gluon/discussions/new), ping @trickypr on the [Dot HQ discord](https://dothq.link/dsc), or [join our Matrix chat](https://dothq.link/matrix).
 
 ### System requirements
 

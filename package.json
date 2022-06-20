@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dothq/melon.git"
+    "url": "git+https://github.com/pulse-browser/gluon.git"
   },
   "keywords": [
     "firefox",
@@ -34,9 +34,9 @@
   ],
   "license": "MPL-2.0",
   "bugs": {
-    "url": "https://github.com/dothq/melon/issues"
+    "url": "https://github.com/pulse-browser/gluon/issues"
   },
-  "homepage": "https://github.com/dothq/melon#readme",
+  "homepage": "https://github.com/pulse-browser/gluon#readme",
   "dependencies": {
     "@resvg/resvg-js": "^1.4.0",
     "async-icns": "^1.0.2",
