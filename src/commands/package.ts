@@ -2,15 +2,54 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import { existsSync } from 'fs'
-import { copyFile, mkdir, mkdtemp, readdir, unlink } from 'fs/promises'
-import { platform } from 'os'
-import { join, resolve } from 'path'
+import {
+  copyFile,
+  mkdir,
+  readdir,
+  readFile,
+  stat,
+  unlink,
+  writeFile,
+} from 'fs/promises'
+import { dirname, join, resolve } from 'path'
+import { parse } from 'ini'
+import { create } from 'xmlbuilder2'
+
 import { bin_name, config } from '..'
 import { DIST_DIR, ENGINE_DIR, OBJ_DIR } from '../constants'
 import { log } from '../log'
-import { configDispatch, dispatch, dynamicConfig, ensureEmpty } from '../utils'
+import {
+  configDispatch,
+  defaultLicenseConfig,
+  dispatch,
+  dynamicConfig,
+  ensureEmpty,
+} from '../utils'
+import { createHash } from 'crypto'
+import { cpus } from 'os'
 
 const machPath = resolve(ENGINE_DIR, 'mach')
+
+/**
+ * These are all of the different platforms that aus should deploy to. Note that
+ * the names have been simplified and they are all only the ones that are
+ * supported by Pulse Browser. If you need something else, open an issue on gh.
+ *
+ * Based off the code from mozrelease:
+ * https://searchfox.org/mozilla-central/source/python/mozrelease/mozrelease/platforms.py
+ * https://searchfox.org/mozilla-central/source/taskcluster/gecko_taskgraph/util/partials.py
+ */
+const ausPlatformsMap = {
+  linux64: ['Linux_x86_64-gcc3'],
+  macosIntel: [
+    'Darwin_x86_64-gcc3-u-i386-x86_64',
+    'Darwin_x86-gcc3-u-i386-x86_64',
+    'Darwin_x86-gcc3',
+    'Darwin_x86_64-gcc3',
+  ],
+  macosArm: ['Darwin_aarch64-gcc3'],
+  win64: ['WINNT_x86_64-msvc', 'WINNT_x86_64-msvc-x64'],
+}
 
 export const melonPackage = async () => {
   // The engine directory must have been downloaded for this to be valid
@@ -96,7 +135,10 @@ export const melonPackage = async () => {
   log.info(`Preparing to create the mar file...`)
 
   const version = config.version.displayVersion
-  const channel = config.version.channel || 'default'
+  const channel = config.version.channel || 'stable'
+
+  console.log(config.version.channel)
+  console.log(channel)
 
   let marBinary: string = join(OBJ_DIR, 'dist/host/bin', 'mar')
 
@@ -120,6 +162,7 @@ export const melonPackage = async () => {
     binary = join(OBJ_DIR, 'dist', config.binaryName)
   }
 
+  const marPath = join(DIST_DIR, 'output.mar')
   await configDispatch('./tools/update-packaging/make_full_update.sh', {
     args: [
       // The mar output location
@@ -134,7 +177,81 @@ export const melonPackage = async () => {
     },
   })
 
+  log.info('Creating AUS update files')
+
+  const platform = parse(
+    (
+      await readFile(join(OBJ_DIR, 'dist', config.binaryName, 'platform.ini'))
+    ).toString()
+  )
+
+  // TODO: Add a method of fixing this warning
+  log.warning(
+    'No release information found! Default release location will be "http://localhost:8000/output.mar"'
+  )
+
+  const marHash = createHash('sha512')
+  marHash.update(await readFile(marPath))
+
+  const updateObject = {
+    updates: {
+      update: {
+        // TODO: Correct update type from semvar, store the old version somewhere
+        '@type': 'minor',
+        '@displayVersion': version,
+        '@appVersion': version,
+        '@platformVersion': config.version.version,
+        '@buildID': platform.Build.BuildID,
+
+        patch: {
+          // TODO: Partial patches might be nice for download speed
+          '@type': 'complete',
+          '@URL': 'http://localhost:8000/output.mar',
+          '@hashFunction': 'sha512',
+          '@hashValue': marHash.digest('hex'),
+          '@size': (await stat(marPath)).size,
+        },
+      },
+    },
+  }
+
+  for (const target of getArchFolders()) {
+    const xmlPath = join(
+      DIST_DIR,
+      'update',
+      'browser',
+      target,
+      channel,
+      'update.xml'
+    )
+    const document = create(updateObject)
+
+    ensureEmpty(dirname(xmlPath))
+    await writeFile(xmlPath, document.end({ prettyPrint: true }))
+  }
+
   log.success('Packaging complected!')
+}
+
+function getArchFolders(): string[] {
+  if (process.platform == 'win32') {
+    return ausPlatformsMap.win64
+  }
+
+  if (process.platform == 'linux') {
+    return ausPlatformsMap.linux64
+  }
+
+  // Everything else will have to be darwin of some kind. So, for future possible
+  // Apple silicon support, we should chose between the two wisely
+  // TODO: This is a hack, fix it
+  const cpuCores = cpus()
+
+  if (cpuCores[0].model.includes('Apple')) {
+    return ausPlatformsMap.macosArm
+  }
+
+  return ausPlatformsMap.macosIntel
 }
 
 function getCurrentBrandName(): string {
