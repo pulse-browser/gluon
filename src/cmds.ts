@@ -103,6 +103,12 @@ export const commands: Cmd[] = [
     requestController: async () => (await import('./commands/run')).run,
   },
   {
+    cmd: 'config',
+    aliases: ['set', 'get'],
+    description: 'Get and set the dynamic config from this project',
+    requestController: async () => (await import('./commands/set')).set,
+  },
+  {
     cmd: 'setup-project',
     description: 'Sets up a gluon project for the first time',
     requestController: async () =>
