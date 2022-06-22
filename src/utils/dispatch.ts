@@ -24,6 +24,7 @@ export const configDispatch = (
      * Chose what shell you should be using for the operating system
      */
     shell?: 'default' | 'unix'
+    env?: Record<string, string>
   }
 ): Promise<boolean> => {
   // Provide a default logger if none was specified by the user
@@ -65,7 +66,10 @@ export const configDispatch = (
     const proc = execa(cmd, config?.args, {
       cwd: config?.cwd || process.cwd(),
       shell: shell,
-      env: process.env,
+      env: {
+        ...(config?.env || {}),
+        ...process.env,
+      },
     })
 
     proc.stdout?.on('data', (d) => handle(d))

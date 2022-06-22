@@ -88,10 +88,12 @@ export interface Config {
     version?: string
     /**
      * The version of your output product. E.g. 1.3.5
-     * This is in relation to the product you are building. For example, for
-     * dothq, it might be Dot Browser 1.3.5
      */
     displayVersion: string
+    /**
+     * The channel that you are shipping this with
+     */
+    channel?: string
   }
   buildOptions: {
     generateBranding: boolean

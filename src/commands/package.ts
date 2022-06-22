@@ -2,12 +2,13 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import { existsSync } from 'fs'
-import { copyFile, mkdir, readdir, unlink } from 'fs/promises'
+import { copyFile, mkdir, mkdtemp, readdir, unlink } from 'fs/promises'
+import { platform } from 'os'
 import { join, resolve } from 'path'
 import { bin_name, config } from '..'
 import { DIST_DIR, ENGINE_DIR, OBJ_DIR } from '../constants'
 import { log } from '../log'
-import { dispatch } from '../utils'
+import { configDispatch, dispatch, dynamicConfig, ensureEmpty } from '../utils'
 
 const machPath = resolve(ENGINE_DIR, 'mach')
 
@@ -92,6 +93,56 @@ export const melonPackage = async () => {
 
   log.info()
   log.info(`Output written to ${DIST_DIR}`)
+  log.info(`Preparing to create the mar file...`)
+
+  const version = config.version.displayVersion
+  const channel = config.version.channel || 'default'
+
+  let marBinary: string = join(OBJ_DIR, 'dist/host/bin', 'mar')
+
+  if (process.platform == 'win32') {
+    marBinary += '.exe'
+  }
+
+  // On macos this should be
+  // <obj dir>/dist/${binaryName}/${brandFullName}.app and on everything else,
+  // the contents of the folder <obj dir>/dist/${binaryName}
+  let binary: string
+
+  if (process.platform == 'darwin') {
+    binary = join(
+      OBJ_DIR,
+      'dist',
+      config.binaryName,
+      `${getCurrentBrandName()}.app`
+    )
+  } else {
+    binary = join(OBJ_DIR, 'dist', config.binaryName)
+  }
+
+  await configDispatch('./tools/update-packaging/make_full_update.sh', {
+    args: [
+      // The mar output location
+      join(DIST_DIR),
+      binary,
+    ],
+    cwd: ENGINE_DIR,
+    env: {
+      MOZ_PRODUCT_VERSION: version,
+      MAR_CHANNEL_ID: channel,
+      MAR: marBinary,
+    },
+  })
 
   log.success('Packaging complected!')
+}
+
+function getCurrentBrandName(): string {
+  const brand = dynamicConfig.get('brand')
+
+  if (brand == 'unofficial') {
+    return 'Nightly'
+  }
+
+  return config.brands[brand].brandFullName
 }
