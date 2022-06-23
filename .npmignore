@@ -17,3 +17,7 @@ yarn.lock
 .github/
 .eslintrc.js
 jest.config.js
+
+# Patch generation
+.moz-central
+patches.sh

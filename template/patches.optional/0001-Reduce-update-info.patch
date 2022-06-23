@@ -1,0 +1,26 @@
+From d1a2aac4daffb822afcee499ee329304dd53a520 Mon Sep 17 00:00:00 2001
+From: trickypr <trickypr@icloud.com>
+Date: Thu, 23 Jun 2022 16:13:36 +1000
+Subject: [PATCH] Reduce update info
+
+The default mozilla update config will send a bunch of unnessisary
+config to the update server, which just increases the complexity of the
+updates that gluon needs to generate.
+---
+ build/application.ini.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/build/application.ini.in b/build/application.ini.in
+index 6df13230a4..797006c4ee 100644
+--- a/build/application.ini.in
++++ b/build/application.ini.in
+@@ -52,5 +52,5 @@ ServerURL=@MOZ_CRASHREPORTER_URL@/submit?id=@MOZ_APP_ID@&version=@MOZ_APP_VERSIO
+ 
+ #if MOZ_UPDATER
+ [AppUpdate]
+-URL=https://@MOZ_APPUPDATE_HOST@/update/6/%PRODUCT%/%VERSION%/%BUILD_ID%/%BUILD_TARGET%/%LOCALE%/%CHANNEL%/%OS_VERSION%/%SYSTEM_CAPABILITIES%/%DISTRIBUTION%/%DISTRIBUTION_VERSION%/update.xml
++URL=http://@MOZ_APPUPDATE_HOST@/update/browser/%BUILD_TARGET%/%CHANNEL%/update.xml
+ #endif
+-- 
+2.36.1
+

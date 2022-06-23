@@ -13,6 +13,7 @@ import { existsSync, writeFileSync } from 'fs'
 import { patchCountFile } from '../../middleware/patch-check'
 import { checkHash } from '../../utils'
 import { log } from '../../log'
+import { templateDir } from '../setupProject'
 
 type ListrTaskGroup = Listr.ListrTask<unknown>
 
@@ -95,8 +96,32 @@ function importGitPatch(): ListrTaskGroup {
   )
 }
 
+function importInternalPatch(): ListrTaskGroup {
+  const patches = sync('*.patch', {
+    nodir: true,
+    cwd: join(templateDir, 'patches.optional'),
+  }).map((path) => ({
+    name: path,
+    path: join(templateDir, 'patches.optional', path),
+  }))
+
+  return patchMethod<gitPatch.IGitPatch>(
+    'gluon',
+    patches,
+    async (patch) => await gitPatch.apply(patch.path)
+  )
+}
+
 export async function applyPatches(): Promise<void> {
-  await new Listr([importMelonPatches(), importFolders(), importGitPatch()], {
-    renderer: log.isDebug ? 'verbose' : 'default',
-  }).run()
+  await new Listr(
+    [
+      importInternalPatch(),
+      importMelonPatches(),
+      importFolders(),
+      importGitPatch(),
+    ],
+    {
+      renderer: log.isDebug ? 'verbose' : 'default',
+    }
+  ).run()
 }
