@@ -25,13 +25,13 @@ type DynamicSetter<K extends keyof DefaultValuesType> = (
 ) => void
 
 export const get: DynamicGetter<keyof DefaultValuesType> = (key) =>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   readItem(`dynamicConfig.${key}`).unwrapOrElse(() => {
     log.info(
       `Dynamic config '${key} not set, defaulting to '${defaultValues[key]}'`
     )
     return defaultValues[key]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as any
 
 export const set: DynamicSetter<keyof DefaultValuesType> = (key, value) =>
-  writeItem(key, value)
+  writeItem(`dynamicConfig.${key}`, value)
