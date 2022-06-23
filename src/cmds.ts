@@ -49,7 +49,7 @@ export const commands: Cmd[] = [
         description: 'What version should be bumped',
       },
       {
-        arg: '--version <version>',
+        arg: '--display-version <version>',
         description: 'Bind this CI instance to a specific version',
       },
     ],
