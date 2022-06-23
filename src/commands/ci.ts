@@ -9,6 +9,7 @@ import { dynamicConfig, saveConfig } from '../utils'
 interface Options {
   brand?: string
   bump?: ReleaseType
+  version?: string
 }
 
 export const ci = (options: Options) => {
@@ -35,6 +36,19 @@ export const ci = (options: Options) => {
       `Bumped the version: ${
         config.brands[dynamicConfig.get('brand')].release.displayVersion
       } → ${version}`
+    )
+  }
+
+  if (options.version) {
+    config.brands[dynamicConfig.get('brand')].release.displayVersion =
+      options.version ||
+      config.brands[dynamicConfig.get('brand')].release.displayVersion
+    saveConfig()
+
+    log.info(
+      `Bumped the version: ${
+        config.brands[dynamicConfig.get('brand')].release.displayVersion
+      } → ${options.version}`
     )
   }
 }

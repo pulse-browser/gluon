@@ -30,7 +30,7 @@ export const commands: Cmd[] = [
     requestController: async () => (await import('./commands/build')).build,
   },
   {
-    cmd: 'config',
+    cmd: 'config <key> [value]',
     aliases: ['set', 'get'],
     description: 'Get and set the dynamic config from this project',
     requestController: async () => (await import('./commands/set')).set,
@@ -47,6 +47,10 @@ export const commands: Cmd[] = [
       {
         arg: '--bump <section>',
         description: 'What version should be bumped',
+      },
+      {
+        arg: '--version <version>',
+        description: 'Bind this CI instance to a specific version',
       },
     ],
   },
