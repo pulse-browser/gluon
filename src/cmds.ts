@@ -30,6 +30,12 @@ export const commands: Cmd[] = [
     requestController: async () => (await import('./commands/build')).build,
   },
   {
+    cmd: 'config',
+    aliases: ['set', 'get'],
+    description: 'Get and set the dynamic config from this project',
+    requestController: async () => (await import('./commands/set')).set,
+  },
+  {
     cmd: 'discard <file>',
     description: 'Discard a files changes.',
     requestController: async () => (await import('./commands/discard')).discard,
@@ -101,12 +107,6 @@ export const commands: Cmd[] = [
     aliases: ['r', 'open'],
     description: 'Run the browser.',
     requestController: async () => (await import('./commands/run')).run,
-  },
-  {
-    cmd: 'config',
-    aliases: ['set', 'get'],
-    description: 'Get and set the dynamic config from this project',
-    requestController: async () => (await import('./commands/set')).set,
   },
   {
     cmd: 'setup-project',

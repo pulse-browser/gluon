@@ -78,7 +78,7 @@ const applyConfig = async (os: string) => {
     '\n\n' +
     customConfig +
     '\n' +
-    internalMozconfg(brandingKey)
+    internalMozconfg(brandingKey, dynamicConfig.get('buildMode'))
 
   writeFileSync(resolve(ENGINE_DIR, 'mozconfig'), mergedConfig)
 
