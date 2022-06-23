@@ -37,6 +37,16 @@ if (existsSync(resolve(ENGINE_DIR, 'browser', 'config', 'version.txt'))) {
 
 export const bin_name = BIN_NAME
 
+const programVersions = []
+
+for (const brand in config.brands) {
+  const brandConfig = config.brands[brand]
+  programVersions.push({
+    name: brandConfig.brandFullName,
+    value: brandConfig.release.displayVersion,
+  })
+}
+
 program
   .storeOptionsAsProperties(false)
   .passCommandToAction(false)
@@ -44,7 +54,7 @@ program
   .option('-v, --verbose', 'Outputs extra debugging messages to the console')
   .version(
     versionFormatter([
-      { name: config.name, value: config.version.displayVersion },
+      ...programVersions,
       {
         name: 'Firefox',
         value: `${config.version.version} ${
