@@ -14,19 +14,19 @@ import {
 import { dirname, join, resolve } from 'path'
 import { parse } from 'ini'
 import { create } from 'xmlbuilder2'
+import { createHash } from 'crypto'
+import { isAppleSilicon } from 'is-apple-silicon'
 
 import { bin_name, config } from '..'
 import { DIST_DIR, ENGINE_DIR, OBJ_DIR } from '../constants'
 import { log } from '../log'
 import {
   configDispatch,
-  defaultLicenseConfig,
   dispatch,
   dynamicConfig,
   ensureEmpty,
+  ReleaseInfo,
 } from '../utils'
-import { createHash } from 'crypto'
-import { cpus } from 'os'
 
 const machPath = resolve(ENGINE_DIR, 'mach')
 
@@ -132,14 +132,112 @@ export const melonPackage = async () => {
 
   log.info()
   log.info(`Output written to ${DIST_DIR}`)
-  log.info(`Preparing to create the mar file...`)
 
-  const version = config.version.displayVersion
-  const channel = config.version.channel || 'stable'
+  const brandingKey = dynamicConfig.get('brand')
+  const brandingDetails = config.brands[brandingKey]
 
-  console.log(config.version.channel)
-  console.log(channel)
+  const version = brandingDetails.release.displayVersion
+  const channel = brandingKey || 'unofficial'
 
+  const marPath = await createMarFile(version, channel)
+
+  log.info('Creating AUS update files')
+
+  await generateUpdateFile(marPath, version, channel, brandingDetails.release)
+
+  log.success('Packaging complected!')
+}
+
+function getReleaseMarName(releaseInfo: ReleaseInfo): string | undefined {
+  if (isAppleSilicon) {
+    log.askForReport()
+    log.warning('Apple silicon is not yet supported by the distribution script')
+    return
+  }
+
+  switch (process.platform) {
+    case 'win32':
+      return releaseInfo.x86?.windowsMar
+    case 'darwin':
+      return releaseInfo.x86?.macosMar
+    case 'linux':
+      return releaseInfo.x86?.linuxMar
+  }
+}
+
+async function generateUpdateFile(
+  marPath: string,
+  version: string,
+  channel: string,
+  releaseInfo: ReleaseInfo
+) {
+  // We need the sha512 hash of the mar file for the update file. AUS will use
+  // this to ensure that the mar file has not been modified on the distribution
+  // server
+  const marHash = createHash('sha512')
+  marHash.update(await readFile(marPath))
+
+  // We need platform information, primarily for the BuildID, but other stuff
+  // might be helpful later
+  const platform = parse(
+    (
+      await readFile(join(OBJ_DIR, 'dist', config.binaryName, 'platform.ini'))
+    ).toString()
+  )
+
+  const releaseMarName = getReleaseMarName(releaseInfo)
+  let completeMarURL = `http://localhost:8000/${releaseMarName || 'output.mar'}`
+
+  // The user is using github to distribute release binaries for this version.
+  if (releaseInfo.github) {
+    completeMarURL = `https://github.com/${releaseInfo.github.repo}/releases/download/${version}/${releaseMarName}`
+    log.info(`Using '${completeMarURL}' as the distribution url`)
+  } else {
+    log.warning(
+      `No release information found! Default release location will be "${completeMarURL}"`
+    )
+  }
+
+  const updateObject = {
+    updates: {
+      update: {
+        // TODO: Correct update type from semvar, store the old version somewhere
+        '@type': 'minor',
+        '@displayVersion': version,
+        '@appVersion': version,
+        '@platformVersion': config.version.version,
+        '@buildID': platform.Build.BuildID,
+
+        patch: {
+          // TODO: Partial patches might be nice for download speed
+          '@type': 'complete',
+          '@URL': completeMarURL,
+          '@hashFunction': 'sha512',
+          '@hashValue': marHash.digest('hex'),
+          '@size': (await stat(marPath)).size,
+        },
+      },
+    },
+  }
+
+  for (const target of getArchFolders()) {
+    const xmlPath = join(
+      DIST_DIR,
+      'update',
+      'browser',
+      target,
+      channel,
+      'update.xml'
+    )
+    const document = create(updateObject)
+
+    ensureEmpty(dirname(xmlPath))
+    await writeFile(xmlPath, document.end({ prettyPrint: true }))
+  }
+}
+
+async function createMarFile(version: string, channel: string) {
+  log.info(`Creating mar file...`)
   let marBinary: string = join(OBJ_DIR, 'dist/host/bin', 'mar')
 
   if (process.platform == 'win32') {
@@ -176,61 +274,7 @@ export const melonPackage = async () => {
       MAR: marBinary,
     },
   })
-
-  log.info('Creating AUS update files')
-
-  const platform = parse(
-    (
-      await readFile(join(OBJ_DIR, 'dist', config.binaryName, 'platform.ini'))
-    ).toString()
-  )
-
-  // TODO: Add a method of fixing this warning
-  log.warning(
-    'No release information found! Default release location will be "http://localhost:8000/output.mar"'
-  )
-
-  const marHash = createHash('sha512')
-  marHash.update(await readFile(marPath))
-
-  const updateObject = {
-    updates: {
-      update: {
-        // TODO: Correct update type from semvar, store the old version somewhere
-        '@type': 'minor',
-        '@displayVersion': version,
-        '@appVersion': version,
-        '@platformVersion': config.version.version,
-        '@buildID': platform.Build.BuildID,
-
-        patch: {
-          // TODO: Partial patches might be nice for download speed
-          '@type': 'complete',
-          '@URL': 'http://localhost:8000/output.mar',
-          '@hashFunction': 'sha512',
-          '@hashValue': marHash.digest('hex'),
-          '@size': (await stat(marPath)).size,
-        },
-      },
-    },
-  }
-
-  for (const target of getArchFolders()) {
-    const xmlPath = join(
-      DIST_DIR,
-      'update',
-      'browser',
-      target,
-      channel,
-      'update.xml'
-    )
-    const document = create(updateObject)
-
-    ensureEmpty(dirname(xmlPath))
-    await writeFile(xmlPath, document.end({ prettyPrint: true }))
-  }
-
-  log.success('Packaging complected!')
+  return marPath
 }
 
 function getArchFolders(): string[] {
@@ -245,9 +289,7 @@ function getArchFolders(): string[] {
   // Everything else will have to be darwin of some kind. So, for future possible
   // Apple silicon support, we should chose between the two wisely
   // TODO: This is a hack, fix it
-  const cpuCores = cpus()
-
-  if (cpuCores[0].model.includes('Apple')) {
+  if (isAppleSilicon) {
     return ausPlatformsMap.macosArm
   }
 

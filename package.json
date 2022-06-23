@@ -48,6 +48,7 @@
     "fs-extra": "^10.0.0",
     "glob": "^7.1.7",
     "ini": "^3.0.0",
+    "is-apple-silicon": "trickypr/is-apple-silicon",
     "listr": "^0.14.3",
     "modern-async": "^1.1.2",
     "png-to-ico": "^2.1.4",

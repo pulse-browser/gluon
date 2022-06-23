@@ -53,6 +53,22 @@ export interface LicenseConfig {
   ignoredFiles: string[]
 }
 
+export interface ReleaseInfo {
+  /**
+   * The version of your output product. E.g. 1.3.5
+   */
+  displayVersion: string
+  github?: {
+    repo: string
+  }
+
+  x86?: {
+    windowsMar?: string
+    macosMar?: string
+    linuxMar?: string
+  }
+}
+
 export interface Config {
   /**
    * The name of the product to build
@@ -74,6 +90,10 @@ export interface Config {
    * The license check config
    */
   license: LicenseConfig
+  /**
+   * This is the host name of your update server
+   */
+  updateHostname?: string
   version: {
     /**
      * What branch of firefox you are forking. e.g. stable ('firefox'), dev ('firefox-dev')
@@ -86,14 +106,6 @@ export interface Config {
      * The version of the selected product you are forking
      */
     version?: string
-    /**
-     * The version of your output product. E.g. 1.3.5
-     */
-    displayVersion: string
-    /**
-     * The channel that you are shipping this with
-     */
-    channel?: string
   }
   buildOptions: {
     generateBranding: boolean
@@ -107,6 +119,7 @@ export interface Config {
       brandShorterName: string
       brandShortName: string
       brandFullName: string
+      release: ReleaseInfo
     }
   >
 }
@@ -124,13 +137,12 @@ export const defaultLicenseConfig: LicenseConfig = {
 }
 
 export const defaultConfig: Config = {
-  name: 'Unknown melon build',
+  name: 'Unknown gluon build',
   vendor: 'Unknown',
   appId: 'unknown.appid',
   binaryName: 'firefox',
   version: {
     product: SupportedProducts.Firefox,
-    displayVersion: '1.0.0',
   },
   buildOptions: {
     generateBranding: true,
