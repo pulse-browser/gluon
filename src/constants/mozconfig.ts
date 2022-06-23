@@ -1,3 +1,5 @@
+import { config } from '..'
+
 const otherBuildModes = `# You can change to other build modes by running:
 #   $ gluon set buildMode [dev|debug|release]`
 
@@ -55,5 +57,8 @@ ac_add_options --with-branding=browser/branding/${brand}
 # Config for updates
 ac_add_options --disable-verify-mar
 ac_add_options --enable-update-channel=${brand}
+export MOZ_APPUPDATE_HOST=${
+    config.updateHostname || 'localhost:7648 # This should not resolve'
+  }
 `
 }
