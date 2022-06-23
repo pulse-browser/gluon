@@ -101,7 +101,7 @@ const applyConfig = async (os: string) => {
 
   log.debug(`Writing ${version} to the browser version files`)
   writeFileSync(join(ENGINE_DIR, 'browser/config/version.txt'), version)
-  writeFileSync(join(ENGINE_DIR, 'browser/config/display_version.txt'), version)
+  writeFileSync(join(ENGINE_DIR, 'browser/config/version_display.txt'), version)
 }
 
 const genericBuild = async (os: string, fast = false) => {

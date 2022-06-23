@@ -23,8 +23,7 @@ export const internalMozconfg = (
     case 'dev':
       buildOptions = `# Development build settings
 ${otherBuildModes}
-ac_add_options --disable-debug
-ac_add_options --disable-optimize`
+ac_add_options --disable-debug`
       break
     case 'debug':
       buildOptions = `# Debug build settings
