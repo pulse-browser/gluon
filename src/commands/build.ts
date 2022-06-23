@@ -93,6 +93,15 @@ const applyConfig = async (os: string) => {
           .replace(/export /, '')}`
       )
   })
+
+  // We need to install the browser display version inside of browser/config/version.txt
+  // and browser/config/version_display.txt
+  const brandingConfig = config.brands[brandingKey]
+  const version = brandingConfig.release.displayVersion || '1.0.0'
+
+  log.debug(`Writing ${version} to the browser version files`)
+  writeFileSync(join(ENGINE_DIR, 'browser/config/version.txt'), version)
+  writeFileSync(join(ENGINE_DIR, 'browser/config/display_version.txt'), version)
 }
 
 const genericBuild = async (os: string, fast = false) => {
