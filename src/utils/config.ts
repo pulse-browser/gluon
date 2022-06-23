@@ -5,7 +5,7 @@
  * Responsible for loading, parsing and checking the config file for melon
  */
 
-import { existsSync, readFileSync } from 'fs'
+import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { join } from 'path'
 
 import { log } from '../log'
@@ -221,6 +221,10 @@ export function getConfig(): Config {
   }
 
   return fileParsed
+}
+
+export function saveConfig() {
+  writeFileSync(configPath, JSON.stringify(config, null, 2))
 }
 
 export const config = getConfig()

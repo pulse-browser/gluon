@@ -36,6 +36,21 @@ export const commands: Cmd[] = [
     requestController: async () => (await import('./commands/set')).set,
   },
   {
+    cmd: 'ci',
+    description: 'Configure the CI',
+    requestController: async () => (await import('./commands/ci')).ci,
+    options: [
+      {
+        arg: '--brand <brand>',
+        description: 'Set the brand that the build is using',
+      },
+      {
+        arg: '--bump <section>',
+        description: 'What version should be bumped',
+      },
+    ],
+  },
+  {
     cmd: 'discard <file>',
     description: 'Discard a files changes.',
     requestController: async () => (await import('./commands/discard')).discard,

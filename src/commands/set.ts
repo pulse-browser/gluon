@@ -1,8 +1,16 @@
+import { config } from '..'
 import { log } from '../log'
 import { dynamicConfig } from '../utils'
 
 export const set = (key: string, value?: string) => {
-  if (key in dynamicConfig.defaultValues) {
+  if (key == 'version') {
+    console.log(
+      config.brands[dynamicConfig.get('brand')].release.displayVersion
+    )
+    return
+  }
+
+  if (!(key in dynamicConfig.defaultValues)) {
     log.warning(`The key ${key} is not found within the dynamic config options`)
     return
   }
@@ -13,9 +21,5 @@ export const set = (key: string, value?: string) => {
     return
   }
 
-  log.info(
-    `The key '${key}' has ${dynamicConfig.get(
-      key as dynamicConfig.DefaultValuesKeys
-    )}`
-  )
+  console.log(dynamicConfig.get(key as dynamicConfig.DefaultValuesKeys))
 }
