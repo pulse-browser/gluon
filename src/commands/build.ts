@@ -20,6 +20,8 @@ const platform: Record<string, string> = {
 const applyConfig = async (os: string) => {
   log.info('Applying mozconfig...')
 
+  const brandingKey = dynamicConfig.get('brand')
+
   let changeset
 
   try {
@@ -76,7 +78,7 @@ const applyConfig = async (os: string) => {
     '\n\n' +
     customConfig +
     '\n' +
-    internalMozconfg(dynamicConfig.get('brand'))
+    internalMozconfg(brandingKey)
 
   writeFileSync(resolve(ENGINE_DIR, 'mozconfig'), mergedConfig)
 
