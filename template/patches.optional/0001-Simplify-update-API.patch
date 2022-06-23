@@ -1,0 +1,28 @@
+From 7a930bb2dfeba52120291278ccd4ba76bc853428 Mon Sep 17 00:00:00 2001
+From: trickypr <trickypr@icloud.com>
+Date: Thu, 23 Jun 2022 16:39:21 +1000
+Subject: [PATCH] Simplify update API
+
+By defualt gecko will send a large amount of details to the server when
+deciding to update. This makes the gluon generation code significantly
+more complex, so we have just removed a large number of those
+paramaters. Maybe in the future, if we write our own server update
+software, we will add these back in to help with analytics
+---
+ build/application.ini.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/build/application.ini.in b/build/application.ini.in
+index 6df13230a4..ca4d8ea239 100644
+--- a/build/application.ini.in
++++ b/build/application.ini.in
+@@ -52,5 +52,5 @@ ServerURL=@MOZ_CRASHREPORTER_URL@/submit?id=@MOZ_APP_ID@&version=@MOZ_APP_VERSIO
+ 
+ #if MOZ_UPDATER
+ [AppUpdate]
+-URL=https://@MOZ_APPUPDATE_HOST@/update/6/%PRODUCT%/%VERSION%/%BUILD_ID%/%BUILD_TARGET%/%LOCALE%/%CHANNEL%/%OS_VERSION%/%SYSTEM_CAPABILITIES%/%DISTRIBUTION%/%DISTRIBUTION_VERSION%/update.xml
++URL=https://@MOZ_APPUPDATE_HOST@/update/browser/%BUILD_TARGET%/%CHANNEL%/update.xml
+ #endif
+-- 
+2.36.1
+
