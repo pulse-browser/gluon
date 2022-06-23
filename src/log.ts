@@ -7,7 +7,7 @@ import prompts from 'prompts'
 class Log {
   private startTime: number
 
-  isDebug = false
+  _isDebug = false
 
   constructor() {
     const d = new Date()
@@ -29,6 +29,16 @@ class Log {
     const format = (r: number) => (r.toString().length == 1 ? `0${r}` : r)
 
     return `${format(hours)}:${format(mins)}:${format(secs)}`
+  }
+
+  set isDebug(val: boolean) {
+    log.debug(`Logger debug mode has been ${val ? 'enabled' : 'disabled'}`)
+    this._isDebug = val
+    log.debug(`Logger debug mode has been ${val ? 'enabled' : 'disabled'}`)
+  }
+
+  get isDebug() {
+    return this._isDebug
   }
 
   /**
