@@ -109,3 +109,6 @@ site/
 
 docs/public/
 .gluon
+
+# Patch generation
+.moz-central

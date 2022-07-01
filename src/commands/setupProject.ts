@@ -121,7 +121,7 @@ export async function setupProject(): Promise<void> {
       name,
       vendor,
       appId,
-      version: { product, version, displayVersion: '1.0.0' },
+      version: { product, version },
       buildOptions: {
         generateBranding: false,
         windowsUseSymbolicLinks: false,
