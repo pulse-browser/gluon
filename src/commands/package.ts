@@ -26,6 +26,7 @@ import {
   dynamicConfig,
   ensureEmpty,
   ReleaseInfo,
+  windowsPathToUnix,
 } from '../utils'
 
 const machPath = resolve(ENGINE_DIR, 'mach')
@@ -186,7 +187,9 @@ async function generateUpdateFile(
   )
 
   const releaseMarName = getReleaseMarName(releaseInfo)
-  let completeMarURL = `http://localhost:8000/${releaseMarName || 'output.mar'}`
+  let completeMarURL = `https://${config.updateHostname || 'localhost:8000'}/${
+    releaseMarName || 'output.mar'
+  }`
 
   // The user is using github to distribute release binaries for this version.
   if (releaseInfo.github) {
@@ -260,11 +263,11 @@ async function createMarFile(version: string, channel: string) {
     binary = join(OBJ_DIR, 'dist', config.binaryName)
   }
 
-  const marPath = join(DIST_DIR, 'output.mar')
+  const marPath = windowsPathToUnix(join(DIST_DIR, 'output.mar'))
   await configDispatch('./tools/update-packaging/make_full_update.sh', {
     args: [
       // The mar output location
-      join(DIST_DIR),
+      windowsPathToUnix(join(DIST_DIR)),
       binary,
     ],
     cwd: ENGINE_DIR,
