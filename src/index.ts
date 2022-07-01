@@ -86,27 +86,26 @@ commands.forEach((command) => {
     }
   }
 
-  const buildCommand = commander
+  let buildCommand = program
     .command(command.cmd)
     .description(command.description)
     .aliases(command?.aliases || [])
-    .action(async (...args) => {
-      // Start loading the controller in the background whilst middleware is
-      // executing
-      const controller = command.requestController()
-
-      await middleware(buildCommand)
-
-      // Finish loading the controller and execute it
-      ;(await controller)(...args)
-    })
 
   // Register all of the required options
   command?.options?.forEach((opt) => {
-    buildCommand.option(opt.arg, opt.description)
+    buildCommand = buildCommand.option(opt.arg, opt.description)
   })
 
-  program.addCommand(buildCommand)
+  buildCommand = buildCommand.action(async (...args) => {
+    // Start loading the controller in the background whilst middleware is
+    // executing
+    const controller = command.requestController()
+
+    await middleware(buildCommand)
+
+    // Finish loading the controller and execute it
+    ;(await controller)(...args)
+  })
 })
 
 process

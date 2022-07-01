@@ -22,6 +22,8 @@ export const ci = (options: Options) => {
   }
 
   if (options.bump) {
+    const oldVersion =
+      config.brands[dynamicConfig.get('brand')].release.displayVersion
     const version = inc(
       config.brands[dynamicConfig.get('brand')].release.displayVersion,
       options.bump
@@ -32,11 +34,7 @@ export const ci = (options: Options) => {
       config.brands[dynamicConfig.get('brand')].release.displayVersion
     saveConfig()
 
-    log.info(
-      `Bumped the version: ${
-        config.brands[dynamicConfig.get('brand')].release.displayVersion
-      } → ${version}`
-    )
+    log.info(`Bumped the version: ${oldVersion} → ${version}`)
   }
 
   if (options.version) {
@@ -46,7 +44,7 @@ export const ci = (options: Options) => {
     saveConfig()
 
     log.info(
-      `Bumped the version: ${
+      `Loaded version: ${
         config.brands[dynamicConfig.get('brand')].release.displayVersion
       } → ${options.version}`
     )
