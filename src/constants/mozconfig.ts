@@ -7,7 +7,7 @@ const platformOptimize =
   process.platform == 'darwin'
     ? 'ac_add_options --enable-optimize="-O3 -march=nehalem -mtune=haswell -w"'
     : process.platform == 'linux'
-    ? 'ac_add_options --enable-optimize="-O3 -march=x86-64-v2 -mtune=haswell -w"'
+    ? 'ac_add_options --enable-optimize="-O3 -march=haswell -mtune=haswell -w"'
     : process.platform == 'win32'
     ? 'ac_add_options --enable-optimize="-O2 -Qvec -w -clang:-ftree-vectorize -clang:-msse3 -clang:-mssse3 -clang:-msse4.1 -clang:-mtune=haswell"'
     : `# Unknown platform ${process.platform}`
