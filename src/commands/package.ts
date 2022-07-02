@@ -150,7 +150,7 @@ export const melonPackage = async () => {
 }
 
 function getReleaseMarName(releaseInfo: ReleaseInfo): string | undefined {
-  if (isAppleSilicon) {
+  if (isAppleSilicon()) {
     log.askForReport()
     log.warning('Apple silicon is not yet supported by the distribution script')
     return
@@ -180,11 +180,11 @@ async function generateUpdateFile(
 
   // We need platform information, primarily for the BuildID, but other stuff
   // might be helpful later
-  const platform = parse(
-    (
-      await readFile(join(OBJ_DIR, 'dist', config.binaryName, 'platform.ini'))
-    ).toString()
-  )
+  let platformINI = join(OBJ_DIR, 'dist', config.binaryName, 'platform.ini')
+  if (!existsSync(platformINI))
+    platformINI = join(OBJ_DIR, 'dist', 'bin', 'platform.ini')
+
+  const platform = parse((await readFile(platformINI)).toString())
 
   const releaseMarName = getReleaseMarName(releaseInfo)
   let completeMarURL = `https://${config.updateHostname || 'localhost:8000'}/${
@@ -292,7 +292,7 @@ function getArchFolders(): string[] {
   // Everything else will have to be darwin of some kind. So, for future possible
   // Apple silicon support, we should chose between the two wisely
   // TODO: This is a hack, fix it
-  if (isAppleSilicon) {
+  if (isAppleSilicon()) {
     return ausPlatformsMap.macosArm
   }
 
