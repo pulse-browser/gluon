@@ -106,12 +106,6 @@ export const download = async (): Promise<void> => {
       {
         title: 'Cleanup',
         task: (ctx) => {
-          let cwd = process.cwd().split(sep).join(posix.sep)
-
-          if (process.platform == 'win32') {
-            cwd = './'
-          }
-
           if (ctx.firefoxSourceTar) {
             if (typeof ctx.firefoxSourceTar !== 'string') {
               log.askForReport()
