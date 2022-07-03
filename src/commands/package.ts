@@ -241,7 +241,9 @@ async function generateUpdateFile(
 
 async function createMarFile(version: string, channel: string) {
   log.info(`Creating mar file...`)
-  let marBinary: string = join(OBJ_DIR, 'dist/host/bin', 'mar')
+  let marBinary: string = windowsPathToUnix(
+    join(OBJ_DIR, 'dist/host/bin', 'mar')
+  )
 
   if (process.platform == 'win32') {
     marBinary += '.exe'
