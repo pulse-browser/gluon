@@ -34,6 +34,7 @@ export const commands: Cmd[] = [
     aliases: ['set', 'get'],
     description: 'Get and set the dynamic config from this project',
     requestController: async () => (await import('./commands/set')).set,
+    disableMiddleware: true,
   },
   {
     cmd: 'ci',

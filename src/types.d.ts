@@ -18,6 +18,8 @@ export interface Cmd {
   flags?: {
     platforms?: CmdFlagPlatform[]
   }
+
+  disableMiddleware?: boolean
 }
 
 export interface CmdOption {

@@ -101,9 +101,12 @@ commands.forEach((command) => {
     // executing
     const controller = command.requestController()
 
-    await middleware(buildCommand)
+    if (!command.disableMiddleware) {
+      await middleware(buildCommand)
+    }
 
     // Finish loading the controller and execute it
+    // eslint-disable-next-line @typescript-eslint/no-extra-semi
     ;(await controller)(...args)
   })
 })
