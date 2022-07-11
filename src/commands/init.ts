@@ -3,24 +3,12 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import { Command } from 'commander'
 import { existsSync, readFileSync } from 'fs'
-import Listr from 'listr'
 import { resolve } from 'path'
 import { bin_name } from '..'
 import { log } from '../log'
 import { config, configDispatch } from '../utils'
 
-export const init = async (
-  directory: Command | string,
-  task?: Listr.ListrTaskWrapper<unknown>
-): Promise<void> => {
-  function logInfo(data: string) {
-    if (task) {
-      task.output = data
-    } else {
-      log.info(data)
-    }
-  }
-
+export const init = async (directory: Command | string): Promise<void> => {
   const cwd = process.cwd()
 
   const dir = resolve(cwd as string, directory.toString())
@@ -49,49 +37,43 @@ export const init = async (
   version = version.trim().replace(/\\n/g, '')
 
   // TODO: Use bash on windows, this may significantly improve performance. Still needs testing though
-  logInfo('Initializing git, this may take some time')
+  log.info('Initializing git, this may take some time')
 
   await configDispatch('git', {
     args: ['init'],
     cwd: dir,
-    logger: logInfo,
     shell: 'unix',
   })
 
   await configDispatch('git', {
     args: ['init'],
     cwd: dir,
-    logger: logInfo,
     shell: 'unix',
   })
 
   await configDispatch('git', {
     args: ['checkout', '--orphan', version],
     cwd: dir,
-    logger: logInfo,
     shell: 'unix',
   })
 
   await configDispatch('git', {
     args: ['add', '-f', '.'],
     cwd: dir,
-    logger: logInfo,
     shell: 'unix',
   })
 
-  logInfo('Committing...')
+  log.info('Committing...')
 
   await configDispatch('git', {
     args: ['commit', '-aqm', `"Firefox ${version}"`],
     cwd: dir,
-    logger: logInfo,
     shell: 'unix',
   })
 
   await configDispatch('git', {
     args: ['checkout', '-b', config.name.toLowerCase().replace(/\s/g, '_')],
     cwd: dir,
-    logger: logInfo,
     shell: 'unix',
   })
 }
