@@ -69,6 +69,29 @@ export interface ReleaseInfo {
   }
 }
 
+export interface GithubAddonInfo {
+  platform: 'github'
+  id: string
+  repo: string
+  version: string
+  fileGlob: string
+}
+
+export interface AMOAddonInfo {
+  platform: 'amo'
+  id: string
+  amoId: string
+  version: string
+}
+
+export interface UrlAddonInfo {
+  platform: 'url'
+  id: string
+  url: string
+}
+
+export type AddonInfo = GithubAddonInfo | AMOAddonInfo | UrlAddonInfo
+
 export interface Config {
   /**
    * The name of the product to build
@@ -111,7 +134,7 @@ export interface Config {
     generateBranding: boolean
     windowsUseSymbolicLinks: boolean
   }
-  addons: Record<string, { id: string; url: string }>
+  addons: Record<string, AddonInfo>
   brands: Record<
     string,
     {
@@ -218,6 +241,54 @@ export function getConfig(): Config {
   if (!validProducts.includes(fileParsed.version.product)) {
     log.error(`${fileParsed.version.product} is not a valid product`)
     process.exit(1)
+  }
+
+  // Make sure that each addon conforms to the specification
+  for (const addonKey in fileParsed.addons) {
+    const addon = fileParsed.addons[addonKey]
+
+    if (!addon.id)
+      log.error(`The 'id' property was not provided for addon ${addonKey}`)
+
+    if (addon.platform == 'url') {
+      if (!addon.url)
+        log.error(`The 'url' property was not provided for addon ${addonKey}`)
+
+      continue
+    }
+
+    if (addon.platform == 'amo') {
+      if (!addon.amoId)
+        log.error(`The 'amoId' property was not provided for addon ${addonKey}`)
+
+      if (!addon.version)
+        log.error(
+          `The 'version' property was not provided for addon ${addonKey}`
+        )
+
+      continue
+    }
+
+    if (addon.platform == 'github') {
+      if (!addon.repo)
+        log.error(`The 'repo' property was not provided for addon ${addonKey}`)
+
+      if (!addon.version)
+        log.error(
+          `The 'version' property was not provided for addon ${addonKey}`
+        )
+
+      if (!addon.fileGlob)
+        log.error(
+          `The 'fileGlob' property was not provided for addon ${addonKey}`
+        )
+
+      continue
+    }
+
+    log.error(
+      `Unknown addon platform ${(addon as { platform: string }).platform}`
+    )
   }
 
   return fileParsed
