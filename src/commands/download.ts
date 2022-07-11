@@ -55,7 +55,10 @@ export const download = async (): Promise<void> => {
   await addAddonsToMozBuild(addons)
 
   log.success(
-    `You should be ready to make changes to ${config.name}.\n\n\t   You should import the patches next, run |${bin_name} import|.\n\t   To begin building ${config.name}, run |${bin_name} build|.`
+    `You should be ready to make changes to ${config.name}.`,
+    '',
+    `You should import the patches next, run |${bin_name} import|.`,
+    `To begin building ${config.name}, run |${bin_name} build|.`
   )
   console.log()
 }
