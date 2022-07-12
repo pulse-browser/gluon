@@ -97,7 +97,7 @@ class Log {
    */
   success(...args: unknown[]): void {
     console.log()
-    console.log(`\n${chalk.greenBright.bold('SUCCESS')}`, ...args)
+    console.log(`\n${chalk.greenBright.bold('SUCCESS')}`, args.join('\n\t'))
   }
 
   /**

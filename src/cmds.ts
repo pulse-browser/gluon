@@ -139,4 +139,18 @@ export const commands: Cmd[] = [
     description: 'Status and files changed for src directory.',
     requestController: async () => (await import('./commands/status')).status,
   },
+  {
+    cmd: 'updates-browser',
+    description:
+      'Generate update manifest for the browser binary. This should be run after packaging',
+    requestController: async () =>
+      (await import('./commands/updates/browser')).generateBrowserUpdateFiles,
+  },
+  {
+    cmd: 'updates-addons',
+    description:
+      'Generates update manifests for system addons that are included in the browser',
+    requestController: async () =>
+      (await import('./commands/updates/addons')).generateAddonUpdateFiles,
+  },
 ]

@@ -4,13 +4,14 @@
 import { log } from '../log'
 import { readItem, writeItem } from './store'
 
-export type ValidDynamicEntries = 'brand'
 export const defaultValues: {
   brand: string
   buildMode: 'dev' | 'debug' | 'release'
+  marPath: string
 } = {
   brand: 'unofficial',
   buildMode: 'dev',
+  marPath: '',
 }
 
 export type DefaultValuesType = typeof defaultValues
