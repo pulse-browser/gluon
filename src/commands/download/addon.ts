@@ -1,6 +1,8 @@
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs'
 import { join } from 'path'
 import { isMatch } from 'picomatch'
+import {} from 'node'
+
 import { config } from '../..'
 import { ENGINE_DIR, MELON_TMP_DIR } from '../../constants'
 import { log } from '../../log'
@@ -16,6 +18,7 @@ import {
 import { downloadFileToLocation } from '../../utils/download'
 import { readItem } from '../../utils/store'
 import { discard } from '../discard'
+import axios from 'axios'
 
 export const getAddons = (): (AddonInfo & { name: string })[] =>
   Object.keys(config.addons).map((addon) => ({
@@ -32,23 +35,19 @@ export async function resolveAddonDownloadUrl(
 
     case 'amo':
       return (
-        await (
-          await fetch(
-            `https://addons.mozilla.org/api/v4/addons/addon/${addon.amoId}/versions/`
-          )
-        ).json()
-      ).results[0].files[0].url
+        await axios.get(
+          `https://addons.mozilla.org/api/v4/addons/addon/${addon.amoId}/versions/`
+        )
+      ).data.results[0].files[0].url
 
     case 'github':
       return (
         (
           ((
-            await (
-              await fetch(
-                `https://api.github.com/repos/${addon.repo}/releases/tags/${addon.version}`
-              )
-            ).json()
-          ).assets as {
+            await axios.get(
+              `https://api.github.com/repos/${addon.repo}/releases/tags/${addon.version}`
+            )
+          ).data.assets as {
             url: string
             browser_download_url: string
             name: string
