@@ -1,6 +1,6 @@
 import execa from 'execa'
 import { existsSync } from 'fs'
-import { resolve } from 'path'
+import { dirname, resolve } from 'path'
 import { bin_name } from '../..'
 import { BASH_PATH, ENGINE_DIR, MELON_TMP_DIR } from '../../constants'
 import { log } from '../../log'
@@ -80,7 +80,7 @@ async function downloadFirefoxSource(version: string) {
 
   log.info(`Locating Firefox release ${version}...`)
 
-  await ensureDir(fsSaveLocation)
+  await ensureDir(dirname(fsSaveLocation))
 
   if (existsSync(fsSaveLocation)) {
     log.info('Using cached download')
