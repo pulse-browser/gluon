@@ -1,7 +1,6 @@
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs'
 import { join } from 'path'
 import { isMatch } from 'picomatch'
-import {} from 'node'
 
 import { config } from '../..'
 import { ENGINE_DIR, MELON_TMP_DIR } from '../../constants'
