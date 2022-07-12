@@ -6,7 +6,7 @@ import {
   existsSync,
   mkdirSync,
   openSync,
-  rmdirSync,
+  rmSync,
   writeSync,
 } from 'fs'
 import { mkdir, readdir, stat, symlink } from 'fs/promises'
@@ -168,7 +168,7 @@ export function filesExist(files: string[]): boolean {
 
 export function ensureEmpty(path: string) {
   if (existsSync(path)) {
-    rmdirSync(path, { recursive: true })
+    rmSync(path, { recursive: true })
   }
 
   mkdirSync(path, { recursive: true })

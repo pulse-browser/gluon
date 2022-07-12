@@ -11,7 +11,7 @@ import {
   writeFileSync,
   copyFileSync,
 } from 'fs'
-import { copyFile, readFile, rmdir, writeFile } from 'fs/promises'
+import { copyFile, readFile, rm, writeFile } from 'fs/promises'
 import { every } from 'modern-async'
 import { dirname, extname, join } from 'path'
 import sharp from 'sharp'
@@ -113,7 +113,7 @@ async function setupImages(configPath: string, outputPath: string) {
     log.debug('Generating Mac Icons')
     const tmp = join(MELON_TMP_DIR, 'macos_icon_info.iconset')
 
-    if (existsSync(tmp)) await rmdir(tmp, { recursive: true })
+    if (existsSync(tmp)) await rm(tmp, { recursive: true })
 
     asyncIcns.convert({
       input: join(configPath, 'logo.png'),

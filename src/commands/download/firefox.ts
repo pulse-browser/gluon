@@ -1,5 +1,5 @@
 import execa from 'execa'
-import { existsSync, mkdirSync, rmdirSync } from 'fs'
+import { existsSync } from 'fs'
 import { resolve } from 'path'
 import { bin_name } from '../..'
 import { BASH_PATH, ENGINE_DIR, MELON_TMP_DIR } from '../../constants'
@@ -30,8 +30,7 @@ export async function setupFirefoxSource(version: string) {
 async function unpackFirefoxSource(name: string): Promise<void> {
   log.info(`Unpacking Firefox...`)
 
-  if (existsSync(ENGINE_DIR)) rmdirSync(ENGINE_DIR)
-  mkdirSync(ENGINE_DIR)
+  ensureDir(ENGINE_DIR)
 
   let tarExec = 'tar'
 

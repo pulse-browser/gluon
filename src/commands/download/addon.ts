@@ -1,11 +1,4 @@
-import {
-  existsSync,
-  mkdirSync,
-  readFileSync,
-  rmdirSync,
-  unlinkSync,
-  writeFileSync,
-} from 'fs'
+import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs'
 import { join } from 'path'
 import { isMatch } from 'picomatch'
 import { ENGINE_DIR, MELON_TMP_DIR } from '../../constants'
@@ -15,6 +8,7 @@ import {
   AddonInfo,
   configDispatch,
   delay,
+  ensureDir,
   walkDirectoryTree,
   windowsPathToUnix,
 } from '../../utils'
@@ -109,13 +103,7 @@ export async function unpackAddon(
   // I do not know why, but this delay causes unzip to work reliably
   await delay(200)
 
-  if (existsSync(outPath)) {
-    rmdirSync(outPath, { recursive: true })
-  }
-
-  mkdirSync(outPath, {
-    recursive: true,
-  })
+  ensureDir(outPath)
 
   await configDispatch('unzip', {
     args: [windowsPathToUnix(path), '-d', windowsPathToUnix(outPath)],
