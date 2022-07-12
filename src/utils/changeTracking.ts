@@ -10,19 +10,13 @@ import { readItem, writeItem } from './store'
  * @param file File to generate a hash for
  * @returns The generated hash
  */
-export async function generateHash(file: string): Promise<string> {
-  // I know that sha1 is not a great hashing algorithm, but it's good enough
-  // for tracking file changes
-  const hash = createHash('sha1')
-
-  // Read the file, add it to the hash as a binary. End the hash so I can write
-  // it out
-  hash.setEncoding('binary')
-  hash.write(await readFile(file, 'binary'))
-  hash.end()
-
-  // Generate the hash
-  return hash.read().toString('hex')
+export async function generateHash(
+  file: string,
+  type = 'sha1'
+): Promise<string> {
+  return createHash(type)
+    .update(await readFile(file))
+    .digest('hex')
 }
 
 /**
