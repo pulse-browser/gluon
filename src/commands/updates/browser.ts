@@ -1,5 +1,5 @@
 import { existsSync } from 'fs'
-import { readFile, stat, writeFile } from 'fs/promises'
+import { readFile, writeFile } from 'fs/promises'
 import { parse } from 'ini'
 import { isAppleSilicon } from 'is-apple-silicon'
 import { dirname, join } from 'path'
@@ -11,6 +11,7 @@ import {
   dynamicConfig,
   ensureEmpty,
   generateHash,
+  getSize,
   ReleaseInfo,
 } from '../../utils'
 
@@ -165,7 +166,7 @@ export async function generateBrowserUpdateFiles() {
           '@URL': completeMarURL,
           '@hashFunction': 'sha512',
           '@hashValue': marHash,
-          '@size': (await stat(marPath)).size,
+          '@size': await getSize(marPath),
         },
       },
     },

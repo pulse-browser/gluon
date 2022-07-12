@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs'
 import { join } from 'path'
 import { isMatch } from 'picomatch'
+import { config } from '../..'
 import { ENGINE_DIR, MELON_TMP_DIR } from '../../constants'
 import { log } from '../../log'
 
@@ -15,6 +16,12 @@ import {
 import { downloadFileToLocation } from '../../utils/download'
 import { readItem } from '../../utils/store'
 import { discard } from '../discard'
+
+export const getAddons = (): (AddonInfo & { name: string })[] =>
+  Object.keys(config.addons).map((addon) => ({
+    name: addon,
+    ...config.addons[addon],
+  }))
 
 export async function resolveAddonDownloadUrl(
   addon: AddonInfo
@@ -55,27 +62,22 @@ export async function resolveAddonDownloadUrl(
 export async function downloadAddon(
   url: string,
   addon: AddonInfo & { name: string }
-): Promise<string | false> {
+): Promise<string> {
   const tempFile = join(MELON_TMP_DIR, addon.name + '.xpi')
-  const outPath = join(ENGINE_DIR, 'browser', 'extensions', addon.name)
 
   log.info(`Download addon from ${url}`)
 
-  if (existsSync(outPath)) {
-    // Now we need to do some tests. First, if there is no cache file,
-    // we must discard the existing folder and download the file again.
-    // If there is a cache file and the cache file points to the same path
-    // we can return and skip the download.
-
+  {
     const extensionCache = readItem<{ url: string }>(addon.name)
 
     if (extensionCache.isNone()) {
-      // We haven't stored it in the cache, therefore we need to redonwload
+      // We haven't stored it in the cache, therefore we need to redownload
       // it
     } else {
       const cache = extensionCache.unwrap()
-      if (cache.url == url) {
-        return false
+      if (cache.url == url && existsSync(tempFile)) {
+        log.info(`Using cached version of ${addon.name}`)
+        return tempFile
       }
     }
   }
@@ -97,6 +99,13 @@ export async function unpackAddon(
   addon: AddonInfo & { name: string }
 ) {
   const outPath = join(ENGINE_DIR, 'browser', 'extensions', addon.name)
+
+  if (existsSync(outPath)) {
+    log.info(
+      `The extension ${addon.name} has already been unpacked... skipping`
+    )
+    return
+  }
 
   log.info(`Unpacking extension...`)
 

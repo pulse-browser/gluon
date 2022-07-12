@@ -173,3 +173,7 @@ export function ensureEmpty(path: string) {
 
   mkdirSync(path, { recursive: true })
 }
+
+export async function getSize(path: string): Promise<number> {
+  return (await stat(path)).size
+}

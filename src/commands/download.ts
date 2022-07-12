@@ -13,6 +13,7 @@ import {
   addAddonsToMozBuild,
   downloadAddon,
   generateAddonMozBuild,
+  getAddons,
   initializeAddon,
   resolveAddonDownloadUrl,
   unpackAddon,
@@ -29,30 +30,20 @@ export const download = async (): Promise<void> => {
     process.exit(1)
   }
 
-  const addons = Object.keys(config.addons).map((addon) => ({
-    name: addon,
-    ...config.addons[addon],
-  }))
-
   if (shouldSetupFirefoxSource()) {
     await setupFirefoxSource(version)
   }
 
-  for (const addon of addons) {
+  for (const addon of getAddons()) {
     const downloadUrl = await resolveAddonDownloadUrl(addon)
     const downloadedXPI = await downloadAddon(downloadUrl, addon)
-
-    if (!downloadedXPI) {
-      log.info(`Skipping ${addon.name}... Already installed`)
-      continue
-    }
 
     await unpackAddon(downloadedXPI, addon)
     await generateAddonMozBuild(addon)
     await initializeAddon(addon)
   }
 
-  await addAddonsToMozBuild(addons)
+  await addAddonsToMozBuild(getAddons())
 
   log.success(
     `You should be ready to make changes to ${config.name}.`,

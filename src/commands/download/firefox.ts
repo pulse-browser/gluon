@@ -80,7 +80,7 @@ async function downloadFirefoxSource(version: string) {
 
   log.info(`Locating Firefox release ${version}...`)
 
-  await ensureDir(fsParent)
+  await ensureDir(fsSaveLocation)
 
   if (existsSync(fsSaveLocation)) {
     log.info('Using cached download')

@@ -86,6 +86,7 @@ export interface AMOAddonInfo {
 
 export interface UrlAddonInfo {
   platform: 'url'
+  version: string
   id: string
   url: string
 }
