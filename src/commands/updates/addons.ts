@@ -45,6 +45,6 @@ export async function generateAddonUpdateFiles() {
     'update.xml'
   )
 
-  ensureDir(path)
+  await ensureDir(path)
   await writeFile(path, root.end({ prettyPrint: true }))
 }
