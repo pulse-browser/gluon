@@ -1,5 +1,5 @@
 +++
-title = "Userchrome"
+title = "Customizing Your Browser's UI"
 weight = 15
 +++
 
