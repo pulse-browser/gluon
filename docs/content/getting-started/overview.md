@@ -1,5 +1,5 @@
 +++
-title = "Overview"
+title = "Setting up your project"
 weight = 5
 +++
 
