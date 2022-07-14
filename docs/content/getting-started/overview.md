@@ -62,6 +62,12 @@ Next it will ask for the name of your browser. Avoid references to Firefox or ot
 ? Enter a product name › Gluon Example Browser
 ```
 
+The binary name is the name that your program will be run from. We recommend that you add `-browser` to the end to [avoid conflicts with common utilities](https://github.com/dothq/browser/issues/604).
+
+```
+? Enter the name of the binary › gluon-example-browser
+```
+
 Vendor is the company (or solo developer) who is creating the browser.
 
 ```

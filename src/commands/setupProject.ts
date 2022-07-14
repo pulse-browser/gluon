@@ -82,7 +82,7 @@ export async function setupProject(): Promise<void> {
 
     const productVersion = await getLatestFF(product)
 
-    const { version, name, appId, vendor, ui } = await prompts([
+    const { version, name, appId, vendor, ui, binaryName } = await prompts([
       {
         type: 'text',
         name: 'version',
@@ -94,6 +94,12 @@ export async function setupProject(): Promise<void> {
         name: 'name',
         message: 'Enter a product name',
         initial: 'Example browser',
+      },
+      {
+        type: 'text',
+        name: 'binaryName',
+        message: 'Enter the name of the binary',
+        initial: 'example-browser',
       },
       {
         type: 'text',
@@ -134,6 +140,7 @@ export async function setupProject(): Promise<void> {
       name,
       vendor,
       appId,
+      binaryName,
       version: { product, version },
       buildOptions: {
         generateBranding: false,
