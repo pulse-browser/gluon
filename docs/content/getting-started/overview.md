@@ -74,7 +74,13 @@ The appid follows reverse dns naming conventions. For example, Fushra owns the d
 ? Enter an appid › dev.gluon.example
 ```
 
-Next you need to chose a starting template for your browser. You can go with userchrome, where you apply css changes to firefox or custom html, where you have to write everything (tabs, navigation, search boxes) yourself. We generally recommend userchrome for new users, as it has the lowest learning curve. Additionally, you can chose to use no template.
+Next you need to chose a starting template for your browser. If you know what you are doing, you can go with `None` and configure it how you like. Otherwise, we recommend you stick with `UserChrome`.
+
+```
+? Select a ui mode template › - Use arrow-keys. Return to submit.
+    None
+❯   User Chrome (custom browser css, simplest)
+```
 
 Now you have created the directory structure for your project, you can build it for the first time. First, ask melon to download the firefox source.
 

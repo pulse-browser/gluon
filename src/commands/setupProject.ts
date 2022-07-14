@@ -115,16 +115,16 @@ export async function setupProject(): Promise<void> {
         choices: [
           {
             title: 'None',
+            description:
+              'No files for the ui will be created, we will let you find that out on your own',
             value: 'none',
           },
           {
-            title: 'User Chrome (custom browser css, simplest)',
+            title: 'UserChrome',
             value: 'uc',
           },
-          {
-            title: 'Custom html',
-            value: 'html',
-          },
+          // TODO: We also need to add extension based theming like the version
+          // used in Pulse Browser
         ],
       },
     ])
@@ -142,13 +142,7 @@ export async function setupProject(): Promise<void> {
 
     await copyRequired()
 
-    if (ui === 'html') {
-      await copyOptional([
-        'customui',
-        'toolkit-mozbuild.patch',
-        'confvars-sh.patch',
-      ])
-    } else if (ui === 'uc') {
+    if (ui === 'uc') {
       await copyOptional(['browser/themes'])
     }
 
