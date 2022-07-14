@@ -6,6 +6,7 @@ import { copyFile } from 'fs/promises'
 import { join, dirname } from 'path'
 
 import prompts from 'prompts'
+import { bin_name } from '..'
 
 import { log } from '../log'
 import {
@@ -160,8 +161,15 @@ export async function setupProject(): Promise<void> {
       '\n.dotbuild/\n.gluon\nengine/\nfirefox-*/\nnode_modules/\n'
 
     writeFileSync(gitignore, gitignoreContents)
+
+    log.success(
+      'Project setup complete!',
+      '',
+      `You can start downloading the Firefox source code by running |${bin_name} download|`,
+      'Or you can follow the getting started guide at https://docs.gluon.dev/getting-started/overview/'
+    )
   } catch (e) {
-    console.log(e)
+    log.error(e)
   }
 }
 
