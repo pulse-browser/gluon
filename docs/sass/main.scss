@@ -95,6 +95,11 @@ pre {
   }
 }
 
+.language-filesystem {
+  // Compact should be as compressed as possible
+  line-height: 0.95em;
+}
+
 code {
   font: $code_font;
 }
