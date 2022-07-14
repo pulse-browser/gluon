@@ -41,25 +41,37 @@ export async function setupProject(): Promise<void> {
       name: 'product',
       message: 'Select a product to fork',
       choices: [
-        { title: 'Firefox stable', value: SupportedProducts.Firefox },
+        {
+          title: 'Firefox stable',
+          description: 'Releases around every 4 weeks, fairly stable',
+          value: SupportedProducts.Firefox,
+        },
         {
           title: 'Firefox extended support (older)',
+          description:
+            'The oldest supported extended support release. Maximum security and stability, but will lose support sooner than the newer extended support release.',
           value: SupportedProducts.FirefoxESR,
         },
         {
           title: 'Firefox extended support (newer)',
+          description:
+            'The latest extended support release. Releases around once every 8 stable cycles. Receives regular small security patches and bug fixes.',
           value: SupportedProducts.FirefoxESRNext,
         },
         {
           title: 'Firefox developer edition (Not recommended)',
+          description: 'Tracks firefox beta, with a few config tweaks',
           value: SupportedProducts.FirefoxDev,
         },
         {
           title: 'Firefox beta (Not recommended)',
+          description: 'Updates every 4 weeks. It will have unresolved bugs',
           value: SupportedProducts.FirefoxBeta,
         },
         {
           title: 'Firefox Nightly (Not recommended)',
+          description:
+            'Updates daily, with many bugs. Practically impossible to track',
           value: SupportedProducts.FirefoxNightly,
         },
       ],

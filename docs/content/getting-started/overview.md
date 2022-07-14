@@ -31,14 +31,13 @@ yarn global add gluon-build@next
 # Note: Linux and mac users may have to run the above command with sudo
 ```
 
-Now create a git repo and clone it to your local machine. Then run `gluon setup-project` inside of that repo. This will ask you a variety of questions in relation to your project setup. Firstly, the release of the browser you want to bind to.
+Now create a git repo and clone it to your local machine. Then run the following:
 
-- `Firefox nightly`: Updates every 12 hours, making it almost impossible to keep up to date **(not recommended)**
-- `Firefox beta`: Updates every 4 weeks. It will have unresolved bugs **(not recommended)**
-- `Firefox developer edition`: Tracks firefox beta **(not recommended)**
-- `Firefox stable`: Releases around every 4 weeks, however has most of the bugs from beta fixed
-- `Firefox extended support release (newer)`: The latest extended support release. Releases around once every 8 stable cycles (mozilla isn't clear on this). Receives regular small security patches and bug fixes, but no large breaking changes (e.g. [proton](https://www.omgubuntu.co.uk/2021/02/try-firefox-proton-redesign-ubuntu)) between releases.
-- `Firefox extended support release (newer)`: The oldest supported extended support release. Maximum security and stability, but will lose support sooner than the newer extended support release.
+```sh
+gluon setup-project
+```
+
+This will ask you a variety of questions in relation to your project setup. Firstly, the release of the browser you want to bind to.
 
 Pulse Browser currently uses the stable releases, and keeping up to date can be a struggle with a small development team.
 
