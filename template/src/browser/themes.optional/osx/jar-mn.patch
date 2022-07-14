@@ -1,0 +1,13 @@
+diff --git a/browser/themes/osx/jar.mn b/browser/themes/osx/jar.mn
+index 6245c67a8d2957e301f9888603f504ce091fb70c..0288241dcb3e9e4603df36b04e1f6b476e935a30 100644
+--- a/browser/themes/osx/jar.mn
++++ b/browser/themes/osx/jar.mn
+@@ -6,7 +6,7 @@ browser.jar:
+ % skin browser classic/1.0 %skin/classic/browser/
+ #include ../shared/jar.inc.mn
+   skin/classic/browser/sanitizeDialog.css
+-  skin/classic/browser/browser.css
++* skin/classic/browser/browser.css
+   skin/classic/browser/browser-custom-colors.css     (../shared/browser-custom-colors.css)
+   skin/classic/browser/pageInfo.css
+   skin/classic/browser/customizableui/panelUI.css    (customizableui/panelUI.css)
