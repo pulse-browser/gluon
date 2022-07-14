@@ -31,7 +31,7 @@ import {
   walkDirectory,
   windowsPathToUnix,
 } from '../../utils'
-import { templateDir } from '../setupProject'
+import { templateDir } from '../setup-project'
 import { IMelonPatch } from './command'
 
 // =============================================================================

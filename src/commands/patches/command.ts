@@ -13,7 +13,7 @@ import { existsSync, writeFileSync } from 'fs'
 import { patchCountFile } from '../../middleware/patch-check'
 import { checkHash } from '../../utils'
 import { log } from '../../log'
-import { templateDir } from '../setupProject'
+import { templateDir } from '../setup-project'
 
 type ListrTaskGroup = Listr.ListrTask<unknown>
 
