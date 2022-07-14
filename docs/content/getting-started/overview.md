@@ -39,15 +39,40 @@ gluon setup-project
 
 This will ask you a variety of questions in relation to your project setup. Firstly, the release of the browser you want to bind to.
 
-Pulse Browser currently uses the stable releases, and keeping up to date can be a struggle with a small development team.
+```
+? Select a product to fork › - Use arrow-keys. Return to submit.
+❯   Firefox stable
+    Firefox extended support (older)
+    Firefox extended support (newer)
+    Firefox developer edition (Not recommended)
+    Firefox beta (Not recommended)
+```
 
-Then next is the version of the browser you want to use. By default melon will populate this with the latest version available, which we recommend using.
+You can change what version you are bound to at any time. Pulse Browser currently uses the stable releases, but if you want a lower workload, the newer Extended Support releases might be good for you.
 
-Next it will ask for the name of your browser. Avoid references to Firefox or other Mozilla brands if you can.
+Then next is the version of the browser you want to use. By default melon will populate this with the latest version available, which we recommend using. Simply click enter to accept.
+
+```
+? Enter the version of this product › 102.0.1
+```
+
+Next it will ask for the name of your browser. Avoid references to Firefox or other Mozilla brands, as this is likely to lead to trademark and copyright issues down the road.
+
+```
+? Enter a product name › Gluon Example Browser
+```
 
 Vendor is the company (or solo developer) who is creating the browser.
 
+```
+? Enter a vendor › Fushra
+```
+
 The appid follows reverse dns naming conventions. For example, Fushra owns the domain `fushra.com`, so our browser is `com.fushra.browser.desktop`. If you do not have a domain, you can use your username / psudomim as the appid, e.g. `trickypr.watermelon`.
+
+```
+? Enter an appid › dev.gluon.example
+```
 
 Next you need to chose a starting template for your browser. You can go with userchrome, where you apply css changes to firefox or custom html, where you have to write everything (tabs, navigation, search boxes) yourself. We generally recommend userchrome for new users, as it has the lowest learning curve. Additionally, you can chose to use no template.
 
