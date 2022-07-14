@@ -19,6 +19,11 @@ body {
   max-width: 800px;
 }
 
+iframe#youtube {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+}
+
 @keyframes fade-in {
   0% {
     opacity: 0;
