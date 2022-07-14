@@ -117,3 +117,34 @@ Now you can finally start the browser!
 ```sh
 gluon run
 ```
+
+## Common errors
+
+Here are some common errors that you might run into whilst running `gluon build` and some potential fixes.
+
+### Anything to do with `wasm-ld`
+
+On Arch linux, there were two errors that were thrown:
+
+```
+Executable "wasm-ld" doesn't exist!
+wasm-ld: error: cannot open /usr/lib/clang/{CLANG_VERSION}/lib/wasi/libclang_rt.builtins-wasm32.a: No such file or directory
+```
+
+On Linux, I fixed the first error by installing `ldd`:
+
+```sh
+apt-get install lld-7 # Debian
+apt-get install lld-8 # Ubuntu
+apk add lld # Alpine
+pacman -S lld # Arch
+dnf install lld # Fedora
+```
+
+The second error was fixed by installing the associated wasm libraries:
+
+```sh
+sudo pacman -Syu wasi-libc wasi-libc++ wasi-compiler-rt
+```
+
+You will need to port the above command to your distrobution. If you do not care about the improved security of sandboxed libraries, you can simply disable them by adding the following to ``
