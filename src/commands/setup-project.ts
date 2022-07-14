@@ -143,7 +143,6 @@ export async function setupProject(): Promise<void> {
       binaryName,
       version: { product, version },
       buildOptions: {
-        generateBranding: false,
         windowsUseSymbolicLinks: false,
       },
     }

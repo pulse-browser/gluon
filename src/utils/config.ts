@@ -140,7 +140,6 @@ export interface Config {
     version?: string
   }
   buildOptions: {
-    generateBranding: boolean
     windowsUseSymbolicLinks: boolean
   }
   addons: Record<string, AddonInfo>
@@ -168,7 +167,6 @@ export const defaultConfig: Config = {
     product: SupportedProducts.Firefox,
   },
   buildOptions: {
-    generateBranding: true,
     windowsUseSymbolicLinks: false,
   },
   addons: {},
