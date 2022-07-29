@@ -54,7 +54,7 @@ ac_add_options --disable-tests
 ac_add_options --with-branding=browser/branding/${brand}
 
 # Config for updates
-ac_add_options --disable-verify-mar
+ac_add_options --enable-unverified-updates
 ac_add_options --enable-update-channel=${brand}
 export MOZ_APPUPDATE_HOST=${
     config.updateHostname || 'localhost:7648 # This should not resolve'

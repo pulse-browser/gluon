@@ -2,20 +2,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import { existsSync } from 'fs'
-import {
-  copyFile,
-  mkdir,
-  readdir,
-  readFile,
-  stat,
-  unlink,
-  writeFile,
-} from 'fs/promises'
-import { dirname, join, resolve } from 'path'
-import { parse } from 'ini'
-import { create } from 'xmlbuilder2'
-import { createHash } from 'crypto'
-import { isAppleSilicon } from 'is-apple-silicon'
+import { copyFile, mkdir, readdir, unlink } from 'fs/promises'
+import { join, resolve } from 'path'
 
 import { bin_name, config } from '..'
 import { DIST_DIR, ENGINE_DIR, OBJ_DIR } from '../constants'
@@ -24,8 +12,6 @@ import {
   configDispatch,
   dispatch,
   dynamicConfig,
-  ensureEmpty,
-  ReleaseInfo,
   windowsPathToUnix,
 } from '../utils'
 import { generateBrowserUpdateFiles } from './updates/browser'
