@@ -8,6 +8,7 @@ import { ensureSymlink } from 'fs-extra'
 import { copyFile } from 'fs/promises'
 import { dirname, resolve } from 'path'
 import rimraf from 'rimraf'
+import glob from 'tiny-glob'
 
 import { appendToFileSync, mkdirp } from '../../utils'
 import { config } from '../..'
@@ -70,11 +71,13 @@ export interface ICopyPatch extends IMelonPatch {
 // =============================================================================
 // Exports
 
-export function get(): ICopyPatch[] {
-  const files = sync('**/*', {
-    nodir: true,
-    cwd: SRC_DIR,
-  }).filter(
+export async function get(): Promise<ICopyPatch[]> {
+  const files = (
+    await glob('**/*', {
+      filesOnly: true,
+      cwd: SRC_DIR,
+    })
+  ).filter(
     (f) => !(f.endsWith('.patch') || f.split('/').includes('node_modules'))
   )
 

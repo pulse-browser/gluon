@@ -1,18 +1,19 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
-import { sync } from 'glob'
-import { ENGINE_DIR, SRC_DIR } from '../../constants'
+import { join } from 'path'
+import { existsSync } from 'fs'
+import glob from 'tiny-glob'
 
+import { ENGINE_DIR, SRC_DIR } from '../../constants'
 import * as gitPatch from './gitPatch'
 import * as copyPatch from './copyPatches'
 import * as brandingPatch from './brandingPatch'
-import { join } from 'path'
-import { existsSync, writeFileSync } from 'fs'
 import { patchCountFile } from '../../middleware/patch-check'
 import { checkHash } from '../../utils'
 import { templateDir } from '../setupProject'
 import { Task, TaskList } from '../../utils/taskList'
+import { writeFile } from 'fs/promises'
 
 export interface IMelonPatch {
   name: string
@@ -70,20 +71,23 @@ function importMelonPatches(): Task {
   )
 }
 
-function importFolders(): Task {
+async function importFolders(): Promise<Task> {
   return patchMethod(
     'folder',
-    copyPatch.get(),
+    await copyPatch.get(),
     async (patch) => await copyPatch.apply(patch.src)
   )
 }
 
-function importGitPatch(): Task {
-  const patches = sync('**/*.patch', { nodir: true, cwd: SRC_DIR }).map(
-    (path) => join(SRC_DIR, path)
-  )
+async function importGitPatch(): Promise<Task> {
+  const patches = (
+    await glob('**/*.patch', {
+      filesOnly: true,
+      cwd: SRC_DIR,
+    })
+  ).map((path) => join(SRC_DIR, path))
 
-  writeFileSync(patchCountFile, patches.length.toString())
+  await writeFile(patchCountFile, patches.length.toString())
 
   return patchMethod<gitPatch.IGitPatch>(
     'git',
@@ -92,11 +96,13 @@ function importGitPatch(): Task {
   )
 }
 
-function importInternalPatch(): Task {
-  const patches = sync('*.patch', {
-    nodir: true,
-    cwd: join(templateDir, 'patches.optional'),
-  }).map((path) => ({
+async function importInternalPatch(): Promise<Task> {
+  const patches = (
+    await glob('*.patch', {
+      filesOnly: true,
+      cwd: join(templateDir, 'patches.optional'),
+    })
+  ).map((path) => ({
     name: path,
     path: join(templateDir, 'patches.optional', path),
   }))
@@ -110,9 +116,9 @@ function importInternalPatch(): Task {
 
 export async function applyPatches(): Promise<void> {
   await new TaskList([
-    importInternalPatch(),
+    await importInternalPatch(),
     importMelonPatches(),
-    importFolders(),
-    importGitPatch(),
+    await importFolders(),
+    await importGitPatch(),
   ]).run()
 }
