@@ -2,7 +2,6 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import { sync } from 'glob'
-import Listr from 'listr'
 import { ENGINE_DIR, SRC_DIR } from '../../constants'
 
 import * as gitPatch from './gitPatch'
@@ -12,29 +11,26 @@ import { join } from 'path'
 import { existsSync, writeFileSync } from 'fs'
 import { patchCountFile } from '../../middleware/patch-check'
 import { checkHash } from '../../utils'
-import { log } from '../../log'
 import { templateDir } from '../setupProject'
-
-type ListrTaskGroup = Listr.ListrTask<unknown>
+import { Task, TaskList } from '../../utils/taskList'
 
 export interface IMelonPatch {
   name: string
-  skip?: (
-    ctx: unknown
-  ) => string | boolean | void | Promise<string | boolean | undefined>
+  skip?: () => boolean | Promise<boolean>
 }
 
 function patchMethod<T extends IMelonPatch>(
   name: string,
   patches: T[],
   patchFn: (patch: T, index: number) => Promise<void>
-): ListrTaskGroup {
+): Task {
   return {
-    title: `Apply ${patches.length} ${name} patches`,
+    name: `Apply ${patches.length} ${name} patches`,
+    long: true,
     task: () =>
-      new Listr(
+      new TaskList(
         patches.map((patch, index) => ({
-          title: `Apply ${patch.name}`,
+          name: `Apply ${patch.name}`,
           task: () => patchFn(patch, index),
           skip: patch.skip,
         }))
@@ -42,7 +38,7 @@ function patchMethod<T extends IMelonPatch>(
   }
 }
 
-function importMelonPatches(): ListrTaskGroup {
+function importMelonPatches(): Task {
   return patchMethod(
     'branding',
     [
@@ -63,10 +59,10 @@ function importMelonPatches(): ListrTaskGroup {
             (await macosInstallerCheck) &&
             existsSync(join(ENGINE_DIR, 'browser/branding', name))
           ) {
-            return `${name} has already been applied`
+            return true
           }
 
-          return
+          return false
         },
       })) as brandingPatch.IBrandingPatch[]),
     ],
@@ -74,7 +70,7 @@ function importMelonPatches(): ListrTaskGroup {
   )
 }
 
-function importFolders(): ListrTaskGroup {
+function importFolders(): Task {
   return patchMethod(
     'folder',
     copyPatch.get(),
@@ -82,7 +78,7 @@ function importFolders(): ListrTaskGroup {
   )
 }
 
-function importGitPatch(): ListrTaskGroup {
+function importGitPatch(): Task {
   const patches = sync('**/*.patch', { nodir: true, cwd: SRC_DIR }).map(
     (path) => join(SRC_DIR, path)
   )
@@ -96,7 +92,7 @@ function importGitPatch(): ListrTaskGroup {
   )
 }
 
-function importInternalPatch(): ListrTaskGroup {
+function importInternalPatch(): Task {
   const patches = sync('*.patch', {
     nodir: true,
     cwd: join(templateDir, 'patches.optional'),
@@ -113,15 +109,10 @@ function importInternalPatch(): ListrTaskGroup {
 }
 
 export async function applyPatches(): Promise<void> {
-  await new Listr(
-    [
-      importInternalPatch(),
-      importMelonPatches(),
-      importFolders(),
-      importGitPatch(),
-    ],
-    {
-      renderer: log.isDebug ? 'verbose' : 'default',
-    }
-  ).run()
+  await new TaskList([
+    importInternalPatch(),
+    importMelonPatches(),
+    importFolders(),
+    importGitPatch(),
+  ]).run()
 }
