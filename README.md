@@ -34,7 +34,7 @@ yarn global add gluon-build
 
 ## Documentation
 
-Documentation is available on [Github pages](https://lepton-browser.github.io/build/) or in the docs folder of this repository.
+Documentation is available on [docs.gluon.dev](https://docs.gluon.dev) or in the docs folder of this repository.
 
 ## Licencing notes
 
