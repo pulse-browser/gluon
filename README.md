@@ -1,7 +1,7 @@
 <div align="center">
 
 <p align="center">
-  <img width="98" src="https://twemoji.maxcdn.com/v/13.0.1/svg/1f4e6.svg"/>
+  <img width="98" src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Package/3D/package_3d.png"/>
 </p>
 
 # Gluon
@@ -52,10 +52,22 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 This program downloads and modifies Firefox. [Follow their license](https://hg.mozilla.org/mozilla-central/file/tip/LICENSE) when distributing your program.
 
-### Tweemoji
+### Logo
 
-The package icon is from tweemoji.
+The package icon is from [Microsoft's Fluent Emoji](https://github.com/microsoft/fluentui-emoji). There is an [ongoing conversation](https://github.com/microsoft/fluentui-emoji/issues/18) regarding the license.
 
-Copyright 2020 Twitter, Inc and other contributors
-Code licensed under the MIT License: http://opensource.org/licenses/MIT
-Graphics licensed under CC-BY 4.0: https://creativecommons.org/licenses/by/4.0/
+```
+MIT License
+
+Copyright (c) Microsoft Corporation.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+```
