@@ -19,25 +19,18 @@ You will first need to add a `brands` key within your `gluon.json`. For example:
       "backgroundColor": "#2B2A33",
       "brandShorterName": "Pulse",
       "brandShortName": "Pulse Browser",
-      "brandFullName": "Pulse Browser",
-      "release": {
-        "displayVersion": "1.0.0",
-        "github": {
-          "repo": "pulse-browser/browser"
-        },
-        "x86": {
-          "windowsMar": "windows.mar",
-          "macosMar": "macosIntel.mar",
-          "linuxMar": "linux.mar"
-        }
-      }
+      "brandFullName": "Pulse Browser"
     }
   },
   ...
 }
 ```
 
-More information regarding the available keys for this config object can be found in the [reference section](/reference/config/#brands). When you add or change a brand, you will need to reimport your changes and specify the brand to target using `gluon set brand`.
+More information regarding the available keys for this config object can be found in the [reference section](/reference/config/#brands).
+
+You will then need to create the folder `config/branding/<brand_name>`. In here, you will need to add a high-resolution `logo.png` (which will then be downscaled on import) and a `MacOSInstaller.svg` file, which will be used as the background for the macOS dmg file.
+
+When you add or change a brand, you will need to reimport your changes and specify the brand to target using `gluon set brand`.
 
 ## Specifying which brand to target
 
