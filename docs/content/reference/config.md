@@ -237,6 +237,14 @@ export interface ReleaseInfo {
   }
 }
 
+export interface BrandInfo {
+  backgroundColor: string
+  brandShorterName: string
+  brandShortName: string
+  brandFullName: string
+  release: ReleaseInfo
+}
+
 type brands = Record<string, BrandInfo>
 ```
 
