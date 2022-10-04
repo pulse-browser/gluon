@@ -9,7 +9,12 @@ import { BUILD_TARGETS, CONFIGS_DIR, ENGINE_DIR } from '../constants'
 import { internalMozconfg } from '../constants/mozconfig'
 import { log } from '../log'
 import { patchCheck } from '../middleware/patch-check'
-import { configDispatch, dynamicConfig, stringTemplate } from '../utils'
+import {
+  BrandInfo,
+  configDispatch,
+  dynamicConfig,
+  stringTemplate,
+} from '../utils'
 
 const platform: Record<string, string> = {
   win32: 'windows',
@@ -30,7 +35,7 @@ const applyConfig = async (os: string) => {
     changeset = stdout.trim()
   } catch (e) {
     log.warning(
-      'Melon expects that you are building your browser with git as your version control'
+      'Gluon expects that you are building your browser with git as your version control'
     )
     log.warning(
       'If you are using some other version control system, please migrate to git'
@@ -96,8 +101,8 @@ const applyConfig = async (os: string) => {
 
   // We need to install the browser display version inside of browser/config/version.txt
   // and browser/config/version_display.txt
-  const brandingConfig = config.brands[brandingKey]
-  const version = brandingConfig.release.displayVersion || '1.0.0'
+  const brandingConfig: BrandInfo | undefined = config.brands[brandingKey]
+  const version = brandingConfig?.release?.displayVersion || '1.0.0'
 
   log.debug(`Writing ${version} to the browser version files`)
   writeFileSync(join(ENGINE_DIR, 'browser/config/version.txt'), version)

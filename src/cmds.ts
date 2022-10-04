@@ -132,7 +132,7 @@ export const commands: Cmd[] = [
     cmd: 'setup-project',
     description: 'Sets up a gluon project for the first time',
     requestController: async () =>
-      (await import('./commands/setupProject')).setupProject,
+      (await import('./commands/setup-project')).setupProject,
   },
   {
     cmd: 'status',

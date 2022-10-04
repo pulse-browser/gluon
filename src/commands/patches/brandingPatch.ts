@@ -31,7 +31,7 @@ import {
   walkDirectory,
   windowsPathToUnix,
 } from '../../utils'
-import { templateDir } from '../setupProject'
+import { templateDir } from '../setup-project'
 import { IMelonPatch } from './command'
 
 // =============================================================================
@@ -222,6 +222,8 @@ export interface IBrandingPatch extends IMelonPatch {
 }
 
 export function get(): string[] {
+  if (!existsSync(BRANDING_DIR)) return []
+
   return readdirSync(BRANDING_DIR).filter((file) =>
     lstatSync(join(BRANDING_DIR, file)).isDirectory()
   )

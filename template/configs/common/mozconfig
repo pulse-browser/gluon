@@ -1,12 +1,9 @@
-ac_add_options --with-branding=${brandingDir}
 ac_add_options --with-app-name=${binName}
 export MOZ_USER_DIR="${name}"
 export MOZ_APP_VENDOR="${vendor}"
-export MOZ_APP_BASENAME=Dot
+export MOZ_APP_BASENAME=${binName}
 export MOZ_APP_PROFILE=${binName}
 export MOZ_APP_DISPLAYNAME="${name}"
-export MOZ_BRANDING_DIRECTORY=${brandingDir}
-export MOZ_OFFICIAL_BRANDING_DIRECTORY=${brandingDir}
 export MOZ_MACBUNDLE_ID=${appId}
 export MOZ_DISTRIBUTION_ID=${appId}
 
