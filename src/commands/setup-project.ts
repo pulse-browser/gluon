@@ -168,8 +168,8 @@ export async function setupProject(): Promise<void> {
       `You can start downloading the Firefox source code by running |${bin_name} download|`,
       'Or you can follow the getting started guide at https://docs.gluon.dev/getting-started/overview/'
     )
-  } catch (e) {
-    log.error(e)
+  } catch (error) {
+    log.error(error)
   }
 }
 
