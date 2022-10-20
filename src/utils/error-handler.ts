@@ -27,7 +27,7 @@ export const errorHandler = (error: Error, isUnhandledRej: boolean): never => {
   if (error.stack || isUnhandledRej) {
     const stack: string[] | undefined = error.stack?.split('\n')
 
-    if (!stack) return
+    if (!stack) process.exit(1)
 
     stack.shift()
     stack.shift()
