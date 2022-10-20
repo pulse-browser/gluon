@@ -1,10 +1,9 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
-import { premove } from 'premove'
 import { existsSync } from 'fs'
 import { lstatSync, readFileSync } from 'fs'
-import { ensureSymlink } from 'fs-extra'
+import { ensureSymlink, remove } from 'fs-extra'
 import { copyFile } from 'fs/promises'
 import { dirname, resolve } from 'path'
 import glob from 'tiny-glob'
@@ -26,7 +25,7 @@ export const copyManual = async (name: string): Promise<void> => {
     existsSync(resolve(ENGINE_DIR, ...getChunked(name))) &&
     !lstatSync(resolve(ENGINE_DIR, ...getChunked(name))).isSymbolicLink()
   ) {
-    await premove(resolve(ENGINE_DIR, ...getChunked(name)))
+    await remove(resolve(ENGINE_DIR, ...getChunked(name)))
   }
 
   if (
