@@ -33,27 +33,45 @@ export async function resolveAddonDownloadUrl(
       return addon.url
 
     case 'amo':
-      return (
-        await axios.get(
-          `https://addons.mozilla.org/api/v4/addons/addon/${addon.amoId}/versions/`
+      try {
+        return (
+          await axios.get(
+            `https://addons.mozilla.org/api/v4/addons/addon/${addon.amoId}/versions/`
+          )
+        ).data.results[0].files[0].url
+      } catch (e) {
+        log.warning(
+          'The following error occured whilst fetching amo addon metadata'
         )
-      ).data.results[0].files[0].url
+        log.error(e)
+
+        return ''
+      }
 
     case 'github':
-      return (
-        (
-          ((
-            await axios.get(
-              `https://api.github.com/repos/${addon.repo}/releases/tags/${addon.version}`
-            )
-          ).data.assets as {
-            url: string
-            browser_download_url: string
-            name: string
-          }[]) || []
-        ).find((asset) => isMatch(asset.name, addon.fileGlob))
-          ?.browser_download_url || 'failed'
-      )
+      try {
+        return (
+          (
+            ((
+              await axios.get(
+                `https://api.github.com/repos/${addon.repo}/releases/tags/${addon.version}`
+              )
+            ).data.assets as {
+              url: string
+              browser_download_url: string
+              name: string
+            }[]) || []
+          ).find((asset) => isMatch(asset.name, addon.fileGlob))
+            ?.browser_download_url || 'failed'
+        )
+      } catch (e) {
+        log.warning(
+          'The following error occured whilst fetching github metadata'
+        )
+        log.error(e)
+
+        return ''
+      }
   }
 }
 

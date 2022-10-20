@@ -6,6 +6,7 @@ import { createWriteStream } from 'fs'
 import axios from 'axios'
 import cliProgress from 'cli-progress'
 import { Duplex } from 'stream'
+import { log } from '../log'
 
 export async function downloadFileToLocation(
   url: string,
@@ -43,7 +44,12 @@ export async function downloadFileToLocation(
         receivedBytes += chunk.length
       })
       data.pipe(writer)
-      data.on('error', (err: unknown) => reject(err))
+      data.on('error', (err: unknown) => {
+        log.warning(
+          `An error occured whilst downloading ${url}. It might be ignored`
+        )
+        reject(err)
+      })
 
       const progressInterval = setInterval(
         () => progressBar.update(receivedBytes),

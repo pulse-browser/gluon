@@ -2,6 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import axios from 'axios'
+import { log } from '../log'
 import { SupportedProducts } from './config'
 
 const firefoxTargets = JSON.parse(`{
@@ -16,9 +17,16 @@ const firefoxTargets = JSON.parse(`{
 export const getLatestFF = async (
   product: SupportedProducts = SupportedProducts.Firefox
 ): Promise<string> => {
-  const { data } = await axios.get(
-    'https://product-details.mozilla.org/1.0/firefox_versions.json'
-  )
+  try {
+    const { data } = await axios.get(
+      'https://product-details.mozilla.org/1.0/firefox_versions.json'
+    )
 
-  return data[firefoxTargets[product]]
+    return data[firefoxTargets[product]]
+  } catch (e) {
+    log.warning('Failed to get latest firefox version with error:')
+    log.error(e)
+
+    return ''
+  }
 }
