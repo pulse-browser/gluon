@@ -18,7 +18,7 @@ import { generateBrowserUpdateFiles } from './updates/browser'
 
 const machPath = resolve(ENGINE_DIR, 'mach')
 
-export const melonPackage = async () => {
+export const gluonPackage = async () => {
   const brandingKey = dynamicConfig.get('brand') as string
   const brandingDetails = config.brands[brandingKey]
 

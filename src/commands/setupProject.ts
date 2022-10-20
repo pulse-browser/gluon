@@ -43,12 +43,8 @@ export async function setupProject(): Promise<void> {
       choices: [
         { title: 'Firefox stable', value: SupportedProducts.Firefox },
         {
-          title: 'Firefox extended support (older)',
+          title: 'Firefox extended support',
           value: SupportedProducts.FirefoxESR,
-        },
-        {
-          title: 'Firefox extended support (newer)',
-          value: SupportedProducts.FirefoxESRNext,
         },
         {
           title: 'Firefox developer edition (Not recommended)',

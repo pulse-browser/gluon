@@ -7,6 +7,7 @@
 
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { join } from 'path'
+import { BIN_NAME } from '../constants'
 
 import { log } from '../log'
 
@@ -217,7 +218,7 @@ export function getConfig(): Config {
     fileParsed = JSON.parse(fileContents)
   } catch (e) {
     // Report the error to the user
-    log.error(`Error parsing melon config file located at ${configPath}`)
+    log.error(`Error parsing ${BIN_NAME} config file located at ${configPath}`)
     log.error(e)
     process.exit(1)
   }

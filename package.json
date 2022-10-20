@@ -5,7 +5,6 @@
   "main": "index.js",
   "reveal": true,
   "bin": {
-    "melon": "./dist/index.js",
     "gluon": "./dist/index.js"
   },
   "scripts": {

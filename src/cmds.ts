@@ -115,7 +115,7 @@ export const commands: Cmd[] = [
     aliases: ['pack'],
     description: 'Package the browser for distribution.',
     requestController: async () =>
-      (await import('./commands/package')).melonPackage,
+      (await import('./commands/package')).gluonPackage,
   },
   {
     cmd: 'reset',
