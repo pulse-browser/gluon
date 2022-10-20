@@ -18,7 +18,6 @@ let hasWarnedAboutConfig = false
 export enum SupportedProducts {
   Firefox = 'firefox',
   FirefoxESR = 'firefox-esr',
-  FirefoxESRNext = 'firefox-esr-next',
   FirefoxDev = 'firefox-dev',
   FirefoxBeta = 'firefox-beta',
   FirefoxNightly = 'firefox-nightly',
@@ -27,7 +26,6 @@ export enum SupportedProducts {
 export const validProducts = [
   SupportedProducts.Firefox,
   SupportedProducts.FirefoxESR,
-  SupportedProducts.FirefoxESRNext,
   SupportedProducts.FirefoxDev,
   SupportedProducts.FirefoxBeta,
   SupportedProducts.FirefoxNightly,

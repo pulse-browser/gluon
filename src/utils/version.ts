@@ -10,7 +10,6 @@ const firefoxTargets = JSON.parse(`{
   "${SupportedProducts.FirefoxBeta}": "LATEST_FIREFOX_DEVEL_VERSION",
   "${SupportedProducts.FirefoxDev}": "FIREFOX_DEVEDITION",
   "${SupportedProducts.FirefoxESR}": "FIREFOX_ESR",
-  "${SupportedProducts.FirefoxESRNext}": "FIREFOX_ESR_NEXT",
   "${SupportedProducts.FirefoxNightly}": "FIREFOX_NIGHTLY"
 }`)
 
