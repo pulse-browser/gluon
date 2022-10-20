@@ -1,12 +1,12 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
-import { readFile, writeFile } from 'fs/promises'
-import { join } from 'path'
+import { readFile, writeFile } from 'node:fs/promises'
+import { join } from 'node:path'
 
 import { SRC_DIR } from '../constants'
 import { walkDirectory } from '../utils/fs'
-import { Task, TaskList } from '../utils/taskList'
+import { Task, TaskList } from '../utils/task-list'
 
 const ignoredFiles = new RegExp('.*\\.(json|patch|md|jpeg|png|gif|tiff|ico)')
 const licenseIgnore = new RegExp('(//|#) Ignore license in this file', 'g')
@@ -32,7 +32,7 @@ const fixableFiles = [
 ]
 
 export async function isValidLicense(path: string): Promise<boolean> {
-  const file = (await readFile(path)).toString()
+  const file = await readFile(path, { encoding: 'utf8' })
   const contents = file.split('\n')
 
   // We need to grab the top 5 lines just in case there are newlines in the
@@ -58,7 +58,8 @@ export function createTask(path: string, noFix: boolean): Task {
     skip: () => ignoredFiles.test(path),
     name: path.replace(SRC_DIR, ''),
     task: async () => {
-      const contents = (await readFile(path)).toString().split('\n')
+      const contents = await readFile(path, { encoding: 'utf8' })
+      const contentsSplitNewline = contents.split('\n')
       const hasLicense = await isValidLicense(path)
 
       if (hasLicense) {
@@ -73,11 +74,12 @@ export function createTask(path: string, noFix: boolean): Task {
         )
       }
 
-      const mpl = (
-        await readFile(join(__dirname, 'license-check.txt'))
-      ).toString()
+      const mplHeader = // eslint-disable-next-line unicorn/prefer-module
+        await readFile(join(__dirname, 'license-check.txt'), {
+          encoding: 'utf8',
+        })
       const { comment, commentOpen, commentClose } = fixable
-      let header = mpl
+      let header = mplHeader
         .split('\n')
         .map((ln) => (comment || '') + ln)
         .join('\n')
@@ -86,7 +88,7 @@ export function createTask(path: string, noFix: boolean): Task {
         header = commentOpen + header + commentClose
       }
 
-      await writeFile(path, header + '\n' + contents.join('\n'))
+      await writeFile(path, header + '\n' + contentsSplitNewline.join('\n'))
     },
   }
 }

@@ -8,15 +8,15 @@ export function stringTemplate(
   template: string,
   variables: { [key: string]: string | number }
 ): string {
-  let temp = template
+  let temporary = template
 
   for (const variable in variables) {
     // Replace only replaces the first instance of a string. We want to
     // replace all instances
-    while (temp.includes(`\${${variable}}`)) {
-      temp = temp.replace(`\${${variable}}`, variables[variable].toString())
+    while (temporary.includes(`\${${variable}}`)) {
+      temporary = temporary.replace(`\${${variable}}`, variables[variable].toString())
     }
   }
 
-  return temp
+  return temporary
 }

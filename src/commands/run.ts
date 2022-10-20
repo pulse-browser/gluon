@@ -1,27 +1,29 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
-import { existsSync, readdirSync } from 'fs'
-import { resolve } from 'path'
+import { existsSync, readdirSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { bin_name } from '..'
 import { ENGINE_DIR } from '../constants'
 import { log } from '../log'
 import { config, dispatch } from '../utils'
 
 export const run = async (chrome?: string) => {
-  const dirs = readdirSync(ENGINE_DIR)
-  const objDirname = dirs.find((dir) => dir.startsWith('obj-'))
+  const directories = readdirSync(ENGINE_DIR)
+  const objectDirname = directories.find((directory) =>
+    directory.startsWith('obj-')
+  )
 
-  if (!objDirname) {
+  if (!objectDirname) {
     throw new Error(`${config.name} needs to be built before you can do this.`)
   }
 
-  const objDir = resolve(ENGINE_DIR, objDirname)
+  const objectDirectory = resolve(ENGINE_DIR, objectDirname)
 
-  if (existsSync(objDir)) {
+  if (existsSync(objectDirectory)) {
     dispatch(
       './mach',
-      ['run'].concat(chrome ? ['-chrome', chrome] : []),
+      ['run', ...(chrome ? ['-chrome', chrome] : [])],
       ENGINE_DIR,
       true
     )

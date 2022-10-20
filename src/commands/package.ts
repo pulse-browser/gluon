@@ -1,9 +1,9 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
-import { existsSync } from 'fs'
-import { copyFile, mkdir, readdir, unlink } from 'fs/promises'
-import { join, resolve } from 'path'
+import { existsSync } from 'node:fs'
+import { copyFile, mkdir, readdir, unlink } from 'node:fs/promises'
+import { join, resolve } from 'node:path'
 
 import { bin_name, config } from '..'
 import { DIST_DIR, ENGINE_DIR, OBJ_DIR } from '../constants'
@@ -37,15 +37,15 @@ export const gluonPackage = async () => {
     log.error(`Cannot locate the 'mach' binary within ${ENGINE_DIR}`)
   }
 
-  const args = ['package']
+  const arguments_ = ['package']
 
   log.info(
     `Packaging \`${config.binaryName}\` with args ${JSON.stringify(
-      args.slice(1, 0)
+      arguments_.slice(1, 0)
     )}...`
   )
 
-  await dispatch(machPath, args, ENGINE_DIR, true)
+  await dispatch(machPath, arguments_, ENGINE_DIR, true)
 
   log.info('Copying results up')
 
@@ -53,31 +53,41 @@ export const gluonPackage = async () => {
   if (!existsSync(DIST_DIR)) await mkdir(DIST_DIR, { recursive: true })
 
   log.debug('Indexing files to copy')
-  const files = (await readdir(join(OBJ_DIR, 'dist'), { withFileTypes: true }))
+  const filesInMozillaDistrobution = await readdir(join(OBJ_DIR, 'dist'), {
+    withFileTypes: true,
+  })
+  const files = filesInMozillaDistrobution
     .filter((entry) => entry.isFile())
     .map((entry) => entry.name)
 
   for (const file of files) {
-    const destFile = join(DIST_DIR, file)
+    const destinationFile = join(DIST_DIR, file)
     log.debug(`Copying ${file}`)
-    if (existsSync(destFile)) await unlink(destFile)
-    await copyFile(join(OBJ_DIR, 'dist', file), destFile)
+    if (existsSync(destinationFile)) await unlink(destinationFile)
+    await copyFile(join(OBJ_DIR, 'dist', file), destinationFile)
   }
 
   // Windows has some special dist files that are available within the dist
   // directory.
   if (process.platform == 'win32') {
-    const installerDistDirectory = join(OBJ_DIR, 'dist', 'install', 'sea')
+    const installerDistributionDirectory = join(
+      OBJ_DIR,
+      'dist',
+      'install',
+      'sea'
+    )
 
-    if (!existsSync(installerDistDirectory)) {
+    if (!existsSync(installerDistributionDirectory)) {
       log.error(
-        `Could not find windows installer files located at '${installerDistDirectory}'`
+        `Could not find windows installer files located at '${installerDistributionDirectory}'`
       )
     }
 
-    const windowsInstallerFiles = (
-      await readdir(installerDistDirectory, { withFileTypes: true })
+    const installerDistributionDirectoryContents = await readdir(
+      installerDistributionDirectory,
+      { withFileTypes: true }
     )
+    const windowsInstallerFiles = installerDistributionDirectoryContents
       .filter((entry) => entry.isFile())
       .map((entry) => entry.name)
 
@@ -96,10 +106,13 @@ export const gluonPackage = async () => {
       }
 
       // Actually copy
-      const destFile = join(DIST_DIR, newFileName)
+      const destinationFile = join(DIST_DIR, newFileName)
       log.debug(`Copying ${file}`)
-      if (existsSync(destFile)) await unlink(destFile)
-      await copyFile(join(installerDistDirectory, file), destFile)
+      if (existsSync(destinationFile)) await unlink(destinationFile)
+      await copyFile(
+        join(installerDistributionDirectory, file),
+        destinationFile
+      )
     }
   }
 
@@ -137,18 +150,10 @@ async function createMarFile(version: string, channel: string) {
   // On macos this should be
   // <obj dir>/dist/${binaryName}/${brandFullName}.app and on everything else,
   // the contents of the folder <obj dir>/dist/${binaryName}
-  let binary: string
-
-  if (process.platform == 'darwin') {
-    binary = join(
-      OBJ_DIR,
-      'dist',
-      config.binaryName,
-      `${getCurrentBrandName()}.app`
-    )
-  } else {
-    binary = join(OBJ_DIR, 'dist', config.binaryName)
-  }
+  const binary =
+    process.platform == 'darwin'
+      ? join(OBJ_DIR, 'dist', config.binaryName, `${getCurrentBrandName()}.app`)
+      : join(OBJ_DIR, 'dist', config.binaryName)
 
   const marPath = windowsPathToUnix(join(DIST_DIR, 'output.mar'))
   await configDispatch('./tools/update-packaging/make_full_update.sh', {

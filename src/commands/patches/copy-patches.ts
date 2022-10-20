@@ -1,11 +1,11 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
-import { existsSync } from 'fs'
-import { lstatSync, readFileSync } from 'fs'
+import { existsSync } from 'node:fs'
+import { lstatSync, readFileSync } from 'node:fs'
 import { ensureSymlink, remove } from 'fs-extra'
-import { copyFile } from 'fs/promises'
-import { dirname, resolve } from 'path'
+import { copyFile } from 'node:fs/promises'
+import { dirname, resolve } from 'node:path'
 import glob from 'tiny-glob'
 
 import { appendToFileSync, mkdirp } from '../../utils'
@@ -70,21 +70,20 @@ export interface ICopyPatch extends IMelonPatch {
 // Exports
 
 export async function get(): Promise<ICopyPatch[]> {
-  const files = (
-    await glob('**/*', {
-      filesOnly: true,
-      cwd: SRC_DIR,
-    })
-  ).filter(
+  const allFilesInSource = await glob('**/*', {
+    filesOnly: true,
+    cwd: SRC_DIR,
+  })
+  const files = allFilesInSource.filter(
     (f) => !(f.endsWith('.patch') || f.split('/').includes('node_modules'))
   )
 
   const manualPatches: ICopyPatch[] = []
 
-  files.map((i) => {
-    const group = i.split('/')[0]
+  files.map((index) => {
+    const group = index.split('/')[0]
 
-    if (!manualPatches.find((m) => m.name == group)) {
+    if (!manualPatches.some((m) => m.name == group)) {
       manualPatches.push({
         name: group,
         src: files.filter((f) => f.split('/')[0] == group),
@@ -95,8 +94,8 @@ export async function get(): Promise<ICopyPatch[]> {
   return manualPatches
 }
 
-export async function apply(src: string[]): Promise<void> {
-  for (const item of src) {
+export async function apply(source: string[]): Promise<void> {
+  for (const item of source) {
     await copyManual(item)
   }
 }

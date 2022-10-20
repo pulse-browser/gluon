@@ -21,9 +21,9 @@
 // Adapted from the `command-exists` node module
 // https://github.com/mathisonian/command-exists
 
-import { execSync } from 'child_process'
-import { accessSync, constants } from 'fs'
-import path from 'path'
+import { execSync } from 'node:child_process'
+import { accessSync, constants } from 'node:fs'
+import path from 'node:path'
 
 const onWindows = process.platform == 'win32'
 
@@ -31,7 +31,7 @@ const fileNotExistsSync = (commandName: string): boolean => {
   try {
     accessSync(commandName, constants.F_OK)
     return false
-  } catch (e) {
+  } catch {
     return true
   }
 }
@@ -40,7 +40,7 @@ const localExecutableSync = (commandName: string): boolean => {
   try {
     accessSync(commandName, constants.F_OK | constants.X_OK)
     return true
-  } catch (e) {
+  } catch {
     return false
   }
 }
@@ -60,7 +60,7 @@ const commandExistsUnixSync = function (
           '; exit 0; }'
       )
       return !!stdout
-    } catch (error) {
+    } catch {
       return false
     }
   }
@@ -73,7 +73,7 @@ const commandExistsWindowsSync = function (
 ): boolean {
   // Regex from Julio from: https://stackoverflow.com/questions/51494579/regex-windows-path-validator
   if (
-    !/^(?!(?:.*\s|.*\.|\W+)$)(?:[a-zA-Z]:)?(?:(?:[^<>:"|?*\n])+(?:\/\/|\/|\\\\|\\)?)+$/m.test(
+    !/^(?!(?:.*\s|.*\.|\W+)$)(?:[A-Za-z]:)?(?:[^\n"*:<>?|]+(?:\/\/|\/|\\\\|\\)?)+$/m.test(
       commandName
     )
   ) {
@@ -82,7 +82,7 @@ const commandExistsWindowsSync = function (
   try {
     const stdout = execSync('where ' + cleanedCommandName, { stdio: [] })
     return !!stdout
-  } catch (error) {
+  } catch {
     return false
   }
 }
@@ -91,7 +91,7 @@ function cleanInput(toBeCleaned: string): string {
   // Windows has a different cleaning process to Unix, so we should go through
   // that process first
   if (onWindows) {
-    const isPathName = /[\\]/.test(toBeCleaned)
+    const isPathName = /\\/.test(toBeCleaned)
     if (isPathName) {
       const dirname = '"' + path.dirname(toBeCleaned) + '"'
       const basename = '"' + path.basename(toBeCleaned) + '"'
@@ -102,7 +102,7 @@ function cleanInput(toBeCleaned: string): string {
   }
 
   // Otherwise go through the unix cleaning process
-  if (/[^A-Za-z0-9_\\/:=-]/.test(toBeCleaned)) {
+  if (/[^\w/:=\\-]/.test(toBeCleaned)) {
     toBeCleaned = "'" + toBeCleaned.replace(/'/g, "'\\''") + "'"
     toBeCleaned = toBeCleaned
       .replace(/^(?:'')+/g, '') // unduplicate single-quote at the beginning
@@ -114,9 +114,5 @@ function cleanInput(toBeCleaned: string): string {
 
 export function commandExistsSync(commandName: string): boolean {
   const cleanedCommandName = cleanInput(commandName)
-  if (onWindows) {
-    return commandExistsWindowsSync(commandName, cleanedCommandName)
-  } else {
-    return commandExistsUnixSync(commandName, cleanedCommandName)
-  }
+  return onWindows ? commandExistsWindowsSync(commandName, cleanedCommandName) : commandExistsUnixSync(commandName, cleanedCommandName);
 }

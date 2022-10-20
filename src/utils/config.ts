@@ -5,21 +5,21 @@
  * Responsible for loading, parsing and checking the config file for melon
  */
 
-import { existsSync, readFileSync, writeFileSync } from 'fs'
-import { join } from 'path'
+import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { BIN_NAME } from '../constants'
 
 import { log } from '../log'
 
-export const projectDir = process.cwd()
-export const configPath = join(projectDir, 'gluon.json')
+export const projectDirectory = process.cwd()
+export const configPath = join(projectDirectory, 'gluon.json')
 
 let hasWarnedAboutConfig = false
 
 export enum SupportedProducts {
   Firefox = 'firefox',
   FirefoxESR = 'firefox-esr',
-  FirefoxDev = 'firefox-dev',
+  FirefoxDevelopment = 'firefox-dev',
   FirefoxBeta = 'firefox-beta',
   FirefoxNightly = 'firefox-nightly',
 }
@@ -27,7 +27,7 @@ export enum SupportedProducts {
 export const validProducts = [
   SupportedProducts.Firefox,
   SupportedProducts.FirefoxESR,
-  SupportedProducts.FirefoxDev,
+  SupportedProducts.FirefoxDevelopment,
   SupportedProducts.FirefoxBeta,
   SupportedProducts.FirefoxNightly,
 ]
@@ -216,10 +216,10 @@ export function getConfig(): Config {
   try {
     // Try to parse the contents of the file. May not be valid JSON
     fileParsed = JSON.parse(fileContents)
-  } catch (e) {
+  } catch (error) {
     // Report the error to the user
     log.error(`Error parsing ${BIN_NAME} config file located at ${configPath}`)
-    log.error(e)
+    log.error(error)
     process.exit(1)
   }
 
@@ -295,7 +295,7 @@ export function getConfig(): Config {
 }
 
 export function saveConfig() {
-  writeFileSync(configPath, JSON.stringify(config, null, 2))
+  writeFileSync(configPath, JSON.stringify(config, undefined, 2))
 }
 
 export const config = getConfig()

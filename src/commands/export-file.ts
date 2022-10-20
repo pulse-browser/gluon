@@ -2,11 +2,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import execa from 'execa'
-import { existsSync, writeFileSync } from 'fs'
-import { basename, resolve } from 'path'
+import { existsSync, writeFileSync } from 'node:fs'
+import { basename, resolve } from 'node:path'
 import { log } from '../log'
 import { ENGINE_DIR, SRC_DIR } from '../constants'
-import { delay, ensureDir } from '../utils'
+import { delay, ensureDirectory } from '../utils'
 
 export const getPatchName = (file: string): string =>
   `${basename(file).replace(/\./g, '-')}.patch`
@@ -36,7 +36,7 @@ export const exportFile = async (file: string): Promise<void> => {
   const name = getPatchName(file)
   const patchPath = file.replace(/\./g, '-').split('/').slice(0, -1)
 
-  await ensureDir(resolve(SRC_DIR, ...patchPath))
+  await ensureDirectory(resolve(SRC_DIR, ...patchPath))
 
   if (proc.stdout.length >= 8000) {
     log.warning('')

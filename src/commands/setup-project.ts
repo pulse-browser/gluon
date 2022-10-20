@@ -1,9 +1,9 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
-import { writeFileSync, existsSync, mkdirSync, readFileSync } from 'fs'
-import { copyFile } from 'fs/promises'
-import { join, dirname } from 'path'
+import { writeFileSync, existsSync, mkdirSync, readFileSync } from 'node:fs'
+import { copyFile } from 'node:fs/promises'
+import { join, dirname } from 'node:path'
 
 import prompts from 'prompts'
 
@@ -13,7 +13,7 @@ import {
   configPath,
   delay,
   getLatestFF,
-  projectDir,
+  projectDirectory,
   SupportedProducts,
   walkDirectory,
 } from '../utils'
@@ -48,7 +48,7 @@ export async function setupProject(): Promise<void> {
         },
         {
           title: 'Firefox developer edition (Not recommended)',
-          value: SupportedProducts.FirefoxDev,
+          value: SupportedProducts.FirefoxDevelopment,
         },
         {
           title: 'Firefox beta (Not recommended)',
@@ -136,10 +136,10 @@ export async function setupProject(): Promise<void> {
       await copyOptional(['browser/themes'])
     }
 
-    writeFileSync(configPath, JSON.stringify(config, null, 2))
+    writeFileSync(configPath, JSON.stringify(config, undefined, 2))
 
     // Append important stuff to gitignore
-    const gitignore = join(projectDir, '.gitignore')
+    const gitignore = join(projectDirectory, '.gitignore')
     let gitignoreContents = ''
 
     if (existsSync(gitignore)) {
@@ -149,48 +149,64 @@ export async function setupProject(): Promise<void> {
     gitignoreContents += '\n.dotbuild/\nengine/\nfirefox-*/\nnode_modules/\n'
 
     writeFileSync(gitignore, gitignoreContents)
-  } catch (e) {
-    console.log(e)
+  } catch (error) {
+    console.log(error)
   }
 }
 
 // =============================================================================
 // Filesystem templating
 
-export const templateDir = join(__dirname, '../..', 'template')
+// eslint-disable-next-line unicorn/prefer-module
+export const templateDirectory = join(__dirname, '../..', 'template')
 
+/**
+ * Copy files from the template directory that have .optional in their path,
+ * based on the function parameters
+ *
+ * @param files The files that should be coppied
+ */
 async function copyOptional(files: string[]) {
-  await Promise.all(
-    (
-      await walkDirectory(templateDir)
+  const directoryContents = await walkDirectory(templateDirectory)
+
+  for (const file of directoryContents) {
+    if (
+      !file.includes('.optional') &&
+      !files
+        .map((induvidualFile) => file.includes(induvidualFile))
+        .some(Boolean)
     )
-      .filter((f) => f.includes('.optional'))
-      .filter((f) => files.map((file) => f.includes(file)).some((b) => b))
-      .map(async (file) => {
-        const out = join(projectDir, file.replace(templateDir, '')).replace(
-          '.optional',
-          ''
-        )
-        if (!existsSync(out)) {
-          mkdirSync(dirname(out), { recursive: true })
-          await copyFile(file, out)
-        }
-      })
-  )
+      continue
+
+    const outLocation = join(
+      projectDirectory,
+      file.replace(templateDirectory, '')
+    ).replace('.optional', '')
+
+    if (!existsSync(outLocation)) {
+      mkdirSync(dirname(outLocation), { recursive: true })
+      await copyFile(file, outLocation)
+    }
+  }
 }
 
+/**
+ * Copy all non-optional files from the template directory
+ */
 async function copyRequired() {
-  await Promise.all(
-    (
-      await walkDirectory(templateDir)
+  const directoryContents = await walkDirectory(templateDirectory)
+
+  for (const file of directoryContents) {
+    if (file.includes('.optional')) continue
+
+    const outLocation = join(
+      projectDirectory,
+      file.replace(templateDirectory, '')
     )
-      .filter((f) => !f.includes('.optional'))
-      .map(async (file) => {
-        const out = join(projectDir, file.replace(templateDir, ''))
-        if (!existsSync(out)) {
-          mkdirSync(dirname(out), { recursive: true })
-          await copyFile(file, out)
-        }
-      })
-  )
+
+    if (!existsSync(outLocation)) {
+      mkdirSync(dirname(outLocation), { recursive: true })
+      await copyFile(file, outLocation)
+    }
+  }
 }

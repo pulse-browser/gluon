@@ -8,9 +8,9 @@ import {
   openSync,
   rmSync,
   writeSync,
-} from 'fs'
-import { mkdir, readdir, stat, symlink } from 'fs/promises'
-import { join, isAbsolute, dirname, relative } from 'path'
+} from 'node:fs'
+import { mkdir, readdir, stat } from 'node:fs/promises'
+import { join, isAbsolute } from 'node:path'
 
 import { log } from '../log'
 
@@ -24,19 +24,19 @@ import { log } from '../log'
 export const windowsPathToUnix = (path: string): string =>
   process.platform == 'win32' ? path.replace(/\\/g, '/') : path
 
-export async function walkDirectory(dirName: string): Promise<string[]> {
+export async function walkDirectory(directory: string): Promise<string[]> {
   const output = []
 
-  if (!isAbsolute(dirName)) {
+  if (!isAbsolute(directory)) {
     log.askForReport()
     log.error('Please provide an absolute input to walkDirectory')
   }
 
   try {
-    const directoryContents = await readdir(dirName)
+    const directoryContents = await readdir(directory)
 
     for (const file of directoryContents) {
-      const fullPath = join(dirName, file)
+      const fullPath = join(directory, file)
       const fStat = await stat(fullPath)
 
       if (fStat.isDirectory()) {
@@ -47,9 +47,9 @@ export async function walkDirectory(dirName: string): Promise<string[]> {
         output.push(fullPath)
       }
     }
-  } catch (e) {
+  } catch (error) {
     log.askForReport()
-    log.error(e)
+    log.error(error)
   }
 
   return output
@@ -57,21 +57,21 @@ export async function walkDirectory(dirName: string): Promise<string[]> {
 
 export type TreeType = { [property: string]: string[] | TreeType }
 
-export async function walkDirectoryTree(dirName: string): Promise<TreeType> {
+export async function walkDirectoryTree(directory: string): Promise<TreeType> {
   const output: TreeType = {}
 
-  if (!isAbsolute(dirName)) {
+  if (!isAbsolute(directory)) {
     log.askForReport()
     log.error('Please provide an absolute input to walkDirectory')
   }
 
   try {
-    const directoryContents = await readdir(dirName)
+    const directoryContents = await readdir(directory)
 
     const currentOut = []
 
     for (const file of directoryContents) {
-      const fullPath = join(dirName, file)
+      const fullPath = join(directory, file)
       const fStat = await stat(fullPath)
 
       if (fStat.isDirectory()) {
@@ -82,84 +82,32 @@ export async function walkDirectoryTree(dirName: string): Promise<TreeType> {
     }
 
     output['.'] = currentOut
-  } catch (e) {
+  } catch (error) {
     log.askForReport()
-    log.error(e)
+    log.error(error)
   }
 
   return output
 }
 
-export async function ensureDir(dirName: string): Promise<void> {
-  if (!existsSync(dirName)) {
-    await mkdirp(dirName)
+export async function ensureDirectory(directory: string): Promise<void> {
+  if (!existsSync(directory)) {
+    await mkdirp(directory)
   }
 }
 
-export function mkdirp(dirName: string): Promise<string | undefined> {
-  return mkdir(dirName, { recursive: true })
+export function mkdirp(directory: string): Promise<string | undefined> {
+  return mkdir(directory, { recursive: true })
 }
 
-export function mkdirpSync(dirName: string): string | undefined {
-  return mkdirSync(dirName, { recursive: true })
+export function mkdirpSync(directory: string): string | undefined {
+  return mkdirSync(directory, { recursive: true })
 }
 
 export function appendToFileSync(fileName: string, content: string): void {
   const file = openSync(fileName, 'a')
   writeSync(file, content)
   closeSync(file)
-}
-
-export async function createSymlink(
-  srcPath: string,
-  destPath: string,
-  type?: string
-): Promise<void> {
-  if (existsSync(destPath)) return
-
-  const { toDest: src } = symlinkPaths(srcPath, destPath)
-
-  const dir = dirname(destPath)
-  const exists = existsSync(dir)
-  if (exists) return await symlink(src, destPath, type)
-  await mkdirp(dir)
-  return await symlink(src, destPath, type)
-}
-
-/**
- * Adapted from fs-extra
- * @param srcPath
- * @param destPath
- * @returns
- */
-export function symlinkPaths(
-  srcPath: string,
-  destPath: string
-): { toCwd: string; toDest: string } {
-  if (isAbsolute(srcPath)) {
-    if (!existsSync(srcPath)) throw new Error('absolute srcpath does not exist')
-
-    return {
-      toCwd: srcPath,
-      toDest: srcPath,
-    }
-  } else {
-    const dstdir = dirname(destPath)
-    const relativeToDst = join(dstdir, srcPath)
-    if (existsSync(relativeToDst))
-      return {
-        toCwd: relativeToDst,
-        toDest: srcPath,
-      }
-    else {
-      if (!existsSync(srcPath))
-        throw new Error('relative srcpath does not exist')
-      return {
-        toCwd: srcPath,
-        toDest: relative(dstdir, srcPath),
-      }
-    }
-  }
 }
 
 export function filesExist(files: string[]): boolean {
@@ -175,5 +123,6 @@ export function ensureEmpty(path: string) {
 }
 
 export async function getSize(path: string): Promise<number> {
-  return (await stat(path)).size
+  const fileInfo = await stat(path)
+  return fileInfo.size
 }

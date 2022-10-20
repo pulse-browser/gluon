@@ -1,19 +1,19 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
-import { join } from 'path'
-import { existsSync } from 'fs'
+import { join } from 'node:path'
+import { existsSync } from 'node:fs'
 import glob from 'tiny-glob'
 
 import { ENGINE_DIR, SRC_DIR } from '../../constants'
-import * as gitPatch from './gitPatch'
-import * as copyPatch from './copyPatches'
-import * as brandingPatch from './brandingPatch'
+import * as gitPatch from './git-patch'
+import * as copyPatch from './copy-patches'
+import * as brandingPatch from './branding-patch'
 import { patchCountFile } from '../../middleware/patch-check'
 import { checkHash } from '../../utils'
-import { templateDir } from '../setupProject'
-import { Task, TaskList } from '../../utils/taskList'
-import { writeFile } from 'fs/promises'
+import { templateDirectory } from '../setup-project'
+import { Task, TaskList } from '../../utils/task-list'
+import { writeFile } from 'node:fs/promises'
 
 export interface IMelonPatch {
   name: string
@@ -23,7 +23,7 @@ export interface IMelonPatch {
 function patchMethod<T extends IMelonPatch>(
   name: string,
   patches: T[],
-  patchFn: (patch: T, index: number) => Promise<void>
+  patchFunction: (patch: T, index: number) => Promise<void>
 ): Task {
   return {
     name: `Apply ${patches.length} ${name} patches`,
@@ -32,7 +32,7 @@ function patchMethod<T extends IMelonPatch>(
       new TaskList(
         patches.map((patch, index) => ({
           name: `Apply ${patch.name}`,
-          task: () => patchFn(patch, index),
+          task: () => patchFunction(patch, index),
           skip: patch.skip,
         }))
       ),
@@ -80,12 +80,11 @@ async function importFolders(): Promise<Task> {
 }
 
 async function importGitPatch(): Promise<Task> {
-  const patches = (
-    await glob('**/*.patch', {
-      filesOnly: true,
-      cwd: SRC_DIR,
-    })
-  ).map((path) => join(SRC_DIR, path))
+  let patches = await glob('**/*.patch', {
+    filesOnly: true,
+    cwd: SRC_DIR,
+  })
+  patches = patches.map((path) => join(SRC_DIR, path))
 
   await writeFile(patchCountFile, patches.length.toString())
 
@@ -97,19 +96,18 @@ async function importGitPatch(): Promise<Task> {
 }
 
 async function importInternalPatch(): Promise<Task> {
-  const patches = (
-    await glob('*.patch', {
-      filesOnly: true,
-      cwd: join(templateDir, 'patches.optional'),
-    })
-  ).map((path) => ({
+  const patches = await glob('*.patch', {
+    filesOnly: true,
+    cwd: join(templateDirectory, 'patches.optional'),
+  })
+  const structuredPatches = patches.map((path) => ({
     name: path,
-    path: join(templateDir, 'patches.optional', path),
+    path: join(templateDirectory, 'patches.optional', path),
   }))
 
   return patchMethod<gitPatch.IGitPatch>(
     'gluon',
-    patches,
+    structuredPatches,
     async (patch) => await gitPatch.apply(patch.path)
   )
 }

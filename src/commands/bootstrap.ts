@@ -10,11 +10,11 @@ import { configDispatch } from '../utils'
 export const bootstrap = async () => {
   log.info(`Bootstrapping ${config.name}...`)
 
-  const args = ['--application-choice', 'browser']
+  const arguments_ = ['--application-choice', 'browser']
 
   console.debug(`Passing through to |mach bootstrap|`)
   await configDispatch('./mach', {
-    args: ['bootstrap', ...args],
+    args: ['bootstrap', ...arguments_],
     cwd: ENGINE_DIR,
   })
 }

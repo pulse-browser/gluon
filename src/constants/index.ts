@@ -2,8 +2,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import execa from 'execa'
-import { existsSync, mkdirSync, readdirSync } from 'fs'
-import { resolve } from 'path'
+import { existsSync, mkdirSync, readdirSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { log } from '../log'
 
 export const BIN_NAME = 'gluon'
@@ -63,13 +63,13 @@ export const OBJ_DIR = resolve(ENGINE_DIR, `obj-${CONFIG_GUESS}`)
 
 // TODO: Remove this, it is unused
 export const FTL_STRING_LINE_REGEX =
-  /(([a-zA-Z0-9-]*|\.[a-z-]*) =(.*|\.)|\[[a-zA-Z0-9]*\].*(\n\s?\s?})?|\*\[[a-zA-Z0-9]*\] .*(\n\s?\s?})?)/gm
+  /(([\dA-Za-z-]*|\.[a-z-]*) =(.*|\.)|\[[\dA-Za-z]*].*(\n\s?\s?})?|\*\[[\dA-Za-z]*] .*(\n\s?\s?})?)/gm
 
 // =================
 // Windows constants
 // =================
 
-export let BASH_PATH: string | null = null
+export let BASH_PATH: string | undefined
 
 // All windows specific code should be located inside of this if statement
 if (process.platform == 'win32') {

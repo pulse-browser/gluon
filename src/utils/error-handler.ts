@@ -2,12 +2,12 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import chalk from 'chalk'
-import { readFileSync } from 'fs'
-import { resolve } from 'path'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { MELON_DIR } from '../constants'
 import { log } from '../log'
 
-export const errorHandler = (err: Error, isUnhandledRej: boolean): void => {
+export const errorHandler = (error: Error, isUnhandledRej: boolean): never => {
   let cc = readFileSync(resolve(MELON_DIR, 'command')).toString()
   cc = cc.replace(/(\r\n|\n|\r)/gm, '')
 
@@ -21,11 +21,11 @@ export const errorHandler = (err: Error, isUnhandledRej: boolean): void => {
   console.log(
     `\n\t`,
     isUnhandledRej
-      ? err.toString().replace(/\n/g, '\n\t ')
-      : err.message.replace(/\n/g, '\n\t ')
+      ? error.toString().replace(/\n/g, '\n\t ')
+      : error.message.replace(/\n/g, '\n\t ')
   )
-  if (err.stack || isUnhandledRej) {
-    const stack: string[] | undefined = err.stack?.split('\n')
+  if (error.stack || isUnhandledRej) {
+    const stack: string[] | undefined = error.stack?.split('\n')
 
     if (!stack) return
 

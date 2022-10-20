@@ -10,10 +10,10 @@ import {
   readFileSync,
   writeFileSync,
   copyFileSync,
-} from 'fs'
-import { copyFile, readFile, rm, writeFile } from 'fs/promises'
+} from 'node:fs'
+import { copyFile, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { every } from 'modern-async'
-import { dirname, extname, join } from 'path'
+import { dirname, extname, join } from 'node:path'
 import sharp from 'sharp'
 import pngToIco from 'png-to-ico'
 import asyncIcns from 'async-icns'
@@ -31,7 +31,7 @@ import {
   walkDirectory,
   windowsPathToUnix,
 } from '../../utils'
-import { templateDir } from '../setupProject'
+import { templateDirectory } from '../setup-project'
 import { IMelonPatch } from './command'
 
 // =============================================================================
@@ -74,7 +74,7 @@ function constructConfig(name: string) {
     brandingVendor: config.vendor,
 
     ...defaultBrandsConfig,
-    ...(config.brands[name] || {}),
+    ...config.brands[name],
   }
 }
 
@@ -111,15 +111,15 @@ async function setupImages(configPath: string, outputPath: string) {
   // TODO: Custom MacOS icon support
   if (process.platform == 'darwin') {
     log.debug('Generating Mac Icons')
-    const tmp = join(MELON_TMP_DIR, 'macos_icon_info.iconset')
+    const temporary = join(MELON_TMP_DIR, 'macos_icon_info.iconset')
 
-    if (existsSync(tmp)) await rm(tmp, { recursive: true })
+    if (existsSync(temporary)) await rm(temporary, { recursive: true })
 
     asyncIcns.convert({
       input: join(configPath, 'logo.png'),
       output: join(outputPath, 'firefox.icns'),
       sizes: [16, 32, 64, 128, 256, 512],
-      tmpDirectory: tmp,
+      tmpDirectory: temporary,
     })
   }
 
@@ -155,22 +155,32 @@ async function setupLocale(
     brandingVendor: string
   }
 ) {
-  // eslint-disable-next-line @typescript-eslint/no-extra-semi
-  ;(await walkDirectory(join(templateDir, 'branding.optional')))
-    .map((file) =>
-      windowsPathToUnix(file).replace(
-        windowsPathToUnix(join(templateDir, 'branding.optional') + '/'),
-        ''
-      )
-    )
-    .map((file) => [
-      readFileSync(join(templateDir, 'branding.optional', file)).toString(),
-      join(outputPath, file),
-    ])
-    .forEach(([contents, path]) => {
-      mkdirSync(dirname(path), { recursive: true })
-      writeFileSync(path, stringTemplate(contents, brandingConfig))
+  for (const file of await walkDirectory(
+    join(templateDirectory, 'branding.optional')
+  )) {
+    const fileContents = await readFile(windowsPathToUnix(file), {
+      encoding: 'utf8',
     })
+
+    const universalPath =
+      // We want to avoid the pain that windows is going to throw at us with its
+      // weird paths
+      windowsPathToUnix(file)
+        // We want to remove all of the extra folders that surround this from the
+        // template folder
+        .replace(
+          windowsPathToUnix(join(templateDirectory, 'branding.optional') + '/'),
+          ''
+        )
+
+    const sourceFolderPath = join(outputPath, universalPath)
+
+    await mkdir(dirname(sourceFolderPath), { recursive: true })
+    await writeFile(
+      sourceFolderPath,
+      stringTemplate(fileContents, brandingConfig)
+    )
+  }
 }
 
 async function copyMozFiles(
@@ -184,7 +194,8 @@ async function copyMozFiles(
     brandingVendor: string
   }
 ) {
-  const files = (await walkDirectory(BRANDING_FF)).filter(
+  const firefoxBrandingDirectoryContents = await walkDirectory(BRANDING_FF)
+  const files = firefoxBrandingDirectoryContents.filter(
     (file) => !existsSync(join(outputPath, file.replace(BRANDING_FF, '')))
   )
 
@@ -192,7 +203,7 @@ async function copyMozFiles(
 
   const everythingElse = files.filter((file) => !css.includes(file))
 
-  css
+  for (const [contents, path] of css
     .map((filePath) => [
       readFileSync(filePath).toString(),
       join(outputPath, filePath.replace(BRANDING_FF, '')),
@@ -201,17 +212,16 @@ async function copyMozFiles(
       contents.replace(CSS_REPLACE_REGEX, 'var(--theme-bg)') +
         `:root { --theme-bg: ${brandingConfig.backgroundColor} }`,
       path,
-    ])
-    .forEach(([contents, path]) => {
-      mkdirSync(dirname(path), { recursive: true })
-      writeFileSync(path, contents)
-    })
+    ])) {
+    mkdirSync(dirname(path), { recursive: true })
+    writeFileSync(path, contents)
+  }
 
   // Copy everything else from the default firefox branding directory
-  everythingElse.forEach((file) => {
+  for (const file of everythingElse) {
     mkdirpSync(dirname(join(outputPath, file.replace(BRANDING_FF, ''))))
     copyFileSync(file, join(outputPath, file.replace(BRANDING_FF, '')))
-  })
+  }
 }
 
 // =============================================================================

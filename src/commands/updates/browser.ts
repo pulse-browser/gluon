@@ -1,8 +1,8 @@
-import { existsSync } from 'fs'
-import { readFile, writeFile } from 'fs/promises'
+import { existsSync } from 'node:fs'
+import { readFile, writeFile } from 'node:fs/promises'
 import { parse } from 'ini'
 import { isAppleSilicon } from 'is-apple-silicon'
-import { dirname, join } from 'path'
+import { dirname, join } from 'node:path'
 import { create } from 'xmlbuilder2'
 import { bin_name, config } from '../..'
 import { DIST_DIR, OBJ_DIR } from '../../constants'
@@ -41,7 +41,8 @@ export async function getPlatformConfig() {
   if (!existsSync(platformINI))
     platformINI = join(OBJ_DIR, 'dist', 'bin', 'platform.ini')
 
-  return parse((await readFile(platformINI)).toString())
+  const iniContents = await readFile(platformINI)
+  return parse(iniContents.toString())
 }
 
 function getReleaseMarName(releaseInfo: ReleaseInfo): string | undefined {
@@ -52,12 +53,15 @@ function getReleaseMarName(releaseInfo: ReleaseInfo): string | undefined {
   }
 
   switch (process.platform) {
-    case 'win32':
+    case 'win32': {
       return releaseInfo.x86?.windowsMar
-    case 'darwin':
+    }
+    case 'darwin': {
       return releaseInfo.x86?.macosMar
-    case 'linux':
+    }
+    case 'linux': {
       return releaseInfo.x86?.linuxMar
+    }
   }
 }
 
@@ -84,7 +88,7 @@ async function writeUpdateFileToDisk(
   channel: string,
   updateObject: {
     updates: {
-      update: Record<string, any>
+      update: Record<string, string | undefined>
     }
   }
 ) {

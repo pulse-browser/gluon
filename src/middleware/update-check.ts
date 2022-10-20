@@ -15,9 +15,9 @@ export const updateCheck = async (): Promise<void> => {
       log.warning(
         `Latest version of Firefox (${version}) does not match frozen version (${firefoxVersion}).`
       )
-  } catch (e) {
+  } catch (error) {
     log.warning(`Failed to check for updates.`)
     log.askForReport()
-    log.error(e)
+    log.error(error)
   }
 }

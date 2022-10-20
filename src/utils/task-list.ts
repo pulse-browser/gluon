@@ -15,10 +15,10 @@ export interface Task {
 export class TaskList {
   tasks: Task[]
   loggingStyle: LoggingMode = 'normal'
-  loggingIndentation: string = ''
+  loggingIndentation = ''
   loggingOnError: LoggingErrorMode = 'throw'
 
-  error: Error | null = null
+  error?: Error
 
   constructor(tasks: Task[]) {
     this.tasks = tasks
@@ -49,22 +49,27 @@ export class TaskList {
     const prefixTemplate = `[${type.toUpperCase()}]`
 
     switch (type) {
-      case 'start':
+      case 'start': {
         prefix += kleur.bold().gray(prefixTemplate)
         break
-      case 'finish':
+      }
+      case 'finish': {
         prefix += kleur.bold().green(prefixTemplate)
         break
-      case 'fail':
+      }
+      case 'fail': {
         prefix += kleur.bold().red(prefixTemplate)
         break
-      case 'skip':
+      }
+      case 'skip': {
         prefix += kleur.bold().yellow(prefixTemplate)
         break
-      case 'info':
+      }
+      case 'info': {
         prefix += '  '
         prefix += kleur.bold().cyan(prefixTemplate)
         break
+      }
     }
 
     console.log(`${prefix} ${name}`)
@@ -94,17 +99,17 @@ export class TaskList {
 
           await result.indent(this.loggingIndentation + '  ').run()
         }
-      } catch (e) {
+      } catch (error) {
         if (this.loggingOnError == 'throw') {
           this.log('fail', task.name)
-          throw e
+          throw error
         }
 
         if (this.loggingOnError == 'inline') {
-          this.log('fail', `${task.name}: ${e}`)
+          this.log('fail', `${task.name}: ${error}`)
         }
 
-        this.error = e as Error
+        this.error = error as Error
       }
 
       this.log('finish', task.name)

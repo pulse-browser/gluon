@@ -11,7 +11,7 @@ export interface Cmd {
    * writing, is getting a touch long
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  requestController: () => Promise<(...args: any) => void>
+  requestController: () => Promise<(...arguments_: any) => void>
 
   options?: CmdOption[]
   aliases?: string[]

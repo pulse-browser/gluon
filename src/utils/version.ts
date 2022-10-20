@@ -8,7 +8,7 @@ import { SupportedProducts } from './config'
 const firefoxTargets = JSON.parse(`{
   "${SupportedProducts.Firefox}": "LATEST_FIREFOX_VERSION",
   "${SupportedProducts.FirefoxBeta}": "LATEST_FIREFOX_DEVEL_VERSION",
-  "${SupportedProducts.FirefoxDev}": "FIREFOX_DEVEDITION",
+  "${SupportedProducts.FirefoxDevelopment}": "FIREFOX_DEVEDITION",
   "${SupportedProducts.FirefoxESR}": "FIREFOX_ESR",
   "${SupportedProducts.FirefoxNightly}": "FIREFOX_NIGHTLY"
 }`)
@@ -22,9 +22,9 @@ export const getLatestFF = async (
     )
 
     return data[firefoxTargets[product]]
-  } catch (e) {
+  } catch (error) {
     log.warning('Failed to get latest firefox version with error:')
-    log.error(e)
+    log.error(error)
 
     return ''
   }
