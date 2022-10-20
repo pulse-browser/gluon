@@ -6,6 +6,7 @@ import { copyFile } from 'node:fs/promises'
 import { join, dirname } from 'node:path'
 
 import prompts from 'prompts'
+import { bin_name } from '..'
 
 import { log } from '../log'
 import {
@@ -41,21 +42,31 @@ export async function setupProject(): Promise<void> {
       name: 'product',
       message: 'Select a product to fork',
       choices: [
-        { title: 'Firefox stable', value: SupportedProducts.Firefox },
         {
-          title: 'Firefox extended support',
+          title: 'Firefox stable',
+          description: 'Releases around every 4 weeks, fairly stable',
+          value: SupportedProducts.Firefox,
+        },
+        {
+          title: 'Firefox extended support (older)',
+          description:
+            'The extended support version of Firefox. Will receive security updates for a longer period of time and less frequent, bigger, feature updates',
           value: SupportedProducts.FirefoxESR,
         },
         {
           title: 'Firefox developer edition (Not recommended)',
+          description: 'Tracks firefox beta, with a few config tweaks',
           value: SupportedProducts.FirefoxDevelopment,
         },
         {
           title: 'Firefox beta (Not recommended)',
+          description: 'Updates every 4 weeks. It will have unresolved bugs',
           value: SupportedProducts.FirefoxBeta,
         },
         {
           title: 'Firefox Nightly (Not recommended)',
+          description:
+            'Updates daily, with many bugs. Practically impossible to track',
           value: SupportedProducts.FirefoxNightly,
         },
       ],
@@ -65,7 +76,7 @@ export async function setupProject(): Promise<void> {
 
     const productVersion = await getLatestFF(product)
 
-    const { version, name, appId, vendor, ui } = await prompts([
+    const { version, name, appId, vendor, ui, binaryName } = await prompts([
       {
         type: 'text',
         name: 'version',
@@ -77,6 +88,12 @@ export async function setupProject(): Promise<void> {
         name: 'name',
         message: 'Enter a product name',
         initial: 'Example browser',
+      },
+      {
+        type: 'text',
+        name: 'binaryName',
+        message: 'Enter the name of the binary',
+        initial: 'example-browser',
       },
       {
         type: 'text',
@@ -99,16 +116,16 @@ export async function setupProject(): Promise<void> {
         choices: [
           {
             title: 'None',
+            description:
+              'No files for the ui will be created, we will let you find that out on your own',
             value: 'none',
           },
           {
-            title: 'User Chrome (custom browser css, simplest)',
+            title: 'UserChrome',
             value: 'uc',
           },
-          {
-            title: 'Custom html',
-            value: 'html',
-          },
+          // TODO: We also need to add extension based theming like the version
+          // used in Pulse Browser
         ],
       },
     ])
@@ -117,22 +134,16 @@ export async function setupProject(): Promise<void> {
       name,
       vendor,
       appId,
+      binaryName,
       version: { product, version },
       buildOptions: {
-        generateBranding: false,
         windowsUseSymbolicLinks: false,
       },
     }
 
     await copyRequired()
 
-    if (ui === 'html') {
-      await copyOptional([
-        'customui',
-        'toolkit-mozbuild.patch',
-        'confvars-sh.patch',
-      ])
-    } else if (ui === 'uc') {
+    if (ui === 'uc') {
       await copyOptional(['browser/themes'])
     }
 
@@ -146,11 +157,19 @@ export async function setupProject(): Promise<void> {
       gitignoreContents = readFileSync(gitignore).toString()
     }
 
-    gitignoreContents += '\n.dotbuild/\nengine/\nfirefox-*/\nnode_modules/\n'
+    gitignoreContents +=
+      '\n.dotbuild/\n.gluon\nengine/\nfirefox-*/\nnode_modules/\n'
 
     writeFileSync(gitignore, gitignoreContents)
-  } catch (error) {
-    console.log(error)
+
+    log.success(
+      'Project setup complete!',
+      '',
+      `You can start downloading the Firefox source code by running |${bin_name} download|`,
+      'Or you can follow the getting started guide at https://docs.gluon.dev/getting-started/overview/'
+    )
+  } catch (e) {
+    log.error(e)
   }
 }
 

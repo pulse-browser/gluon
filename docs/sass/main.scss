@@ -19,6 +19,11 @@ body {
   max-width: 800px;
 }
 
+iframe#youtube {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+}
+
 @keyframes fade-in {
   0% {
     opacity: 0;
@@ -93,6 +98,11 @@ pre {
       z-index: 1;
     }
   }
+}
+
+.language-filesystem {
+  // Compact should be as compressed as possible
+  line-height: 0.95em;
 }
 
 code {

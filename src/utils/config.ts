@@ -68,6 +68,14 @@ export interface ReleaseInfo {
   }
 }
 
+export interface BrandInfo {
+  backgroundColor: string
+  brandShorterName: string
+  brandShortName: string
+  brandFullName: string
+  release: ReleaseInfo
+}
+
 export interface GithubAddonInfo {
   platform: 'github'
   id: string
@@ -131,20 +139,10 @@ export interface Config {
     version?: string
   }
   buildOptions: {
-    generateBranding: boolean
     windowsUseSymbolicLinks: boolean
   }
   addons: Record<string, AddonInfo>
-  brands: Record<
-    string,
-    {
-      backgroundColor: string
-      brandShorterName: string
-      brandShortName: string
-      brandFullName: string
-      release: ReleaseInfo
-    }
-  >
+  brands: Record<string, BrandInfo>
 }
 
 export const defaultBrandsConfig = {
@@ -168,7 +166,6 @@ export const defaultConfig: Config = {
     product: SupportedProducts.Firefox,
   },
   buildOptions: {
-    generateBranding: true,
     windowsUseSymbolicLinks: false,
   },
   addons: {},

@@ -1,0 +1,13 @@
+diff --git a/browser/themes/shared/browser-shared.css b/browser/themes/shared/browser-shared.css
+index 946807ef8623b49c2ad9c72374a38be2942ca012..1ceda5f77b57d34d841e141bf5ac531b68f44189 100644
+--- a/browser/themes/shared/browser-shared.css
++++ b/browser/themes/shared/browser-shared.css
+@@ -24,6 +24,8 @@
+ 
+ @namespace html url("http://www.w3.org/1999/xhtml");
+ 
++%include ../custom/shared/shared.inc.css
++
+ :root {
+   --toolbar-bgcolor: var(--toolbar-non-lwt-bgcolor);
+   --toolbar-bgimage: var(--toolbar-non-lwt-bgimage);

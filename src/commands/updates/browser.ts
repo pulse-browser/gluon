@@ -169,7 +169,7 @@ export async function generateBrowserUpdateFiles() {
           '@type': 'complete',
           '@URL': completeMarURL,
           '@hashFunction': 'sha512',
-          '@hashValue': marHash,
+          '@hashValue': await marHash,
           '@size': await getSize(marPath),
         },
       },

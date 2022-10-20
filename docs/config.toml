@@ -19,7 +19,7 @@ build_search_index = true
 highlight_code = true
 
 [extra]
-logo = "https://twemoji.maxcdn.com/v/13.0.1/svg/1f4e6.svg"
+logo = "https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Package/3D/package_3d.png"
 release = "https://api.github.com/repos/pulse-browser/gluon/releases/latest"
 
 [author]

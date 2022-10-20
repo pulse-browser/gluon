@@ -1,5 +1,5 @@
 +++
-title = "Overview"
+title = "Setting up your project"
 weight = 5
 +++
 
@@ -31,26 +31,62 @@ yarn global add gluon-build@next
 # Note: Linux and mac users may have to run the above command with sudo
 ```
 
-Now create a git repo and clone it to your local machine. Then run `gluon setup-project` inside of that repo. This will ask you a variety of questions in relation to your project setup. Firstly, the release of the browser you want to bind to.
+Now create a git repo and clone it to your local machine. Then run the following:
 
-- `Firefox nightly`: Updates every 12 hours, making it almost impossible to keep up to date **(not recommended)**
-- `Firefox beta`: Updates every 4 weeks. It will have unresolved bugs **(not recommended)**
-- `Firefox developer edition`: Tracks firefox beta **(not recommended)**
-- `Firefox stable`: Releases around every 4 weeks, however has most of the bugs from beta fixed
-- `Firefox extended support release (newer)`: The latest extended support release. Releases around once every 8 stable cycles (mozilla isn't clear on this). Receives regular small security patches and bug fixes, but no large breaking changes (e.g. [proton](https://www.omgubuntu.co.uk/2021/02/try-firefox-proton-redesign-ubuntu)) between releases.
-- `Firefox extended support release (newer)`: The oldest supported extended support release. Maximum security and stability, but will lose support sooner than the newer extended support release.
+```sh
+gluon setup-project
+```
 
-Pulse Browser currently uses the stable releases, and keeping up to date can be a struggle with a small development team.
+This will ask you a variety of questions in relation to your project setup. Firstly, the release of the browser you want to bind to.
 
-Then next is the version of the browser you want to use. By default melon will populate this with the latest version available, which we recommend using.
+```
+? Select a product to fork › - Use arrow-keys. Return to submit.
+❯   Firefox stable
+    Firefox extended support (older)
+    Firefox extended support (newer)
+    Firefox developer edition (Not recommended)
+    Firefox beta (Not recommended)
+```
 
-Next it will ask for the name of your browser. Avoid references to Firefox or other Mozilla brands if you can.
+You can change what version you are bound to at any time. Pulse Browser currently uses the stable releases, but if you want a lower workload, the newer Extended Support releases might be good for you.
+
+Then next is the version of the browser you want to use. By default melon will populate this with the latest version available, which we recommend using. Simply click enter to accept.
+
+```
+? Enter the version of this product › 102.0.1
+```
+
+Next it will ask for the name of your browser. Avoid references to Firefox or other Mozilla brands, as this is likely to lead to trademark and copyright issues down the road.
+
+```
+? Enter a product name › Gluon Example Browser
+```
+
+The binary name is the name that your program will be run from. We recommend that you add `-browser` to the end to [avoid conflicts with common utilities](https://github.com/dothq/browser/issues/604).
+
+```
+? Enter the name of the binary › gluon-example-browser
+```
 
 Vendor is the company (or solo developer) who is creating the browser.
 
+```
+? Enter a vendor › Fushra
+```
+
 The appid follows reverse dns naming conventions. For example, Fushra owns the domain `fushra.com`, so our browser is `com.fushra.browser.desktop`. If you do not have a domain, you can use your username / psudomim as the appid, e.g. `trickypr.watermelon`.
 
-Next you need to chose a starting template for your browser. You can go with userchrome, where you apply css changes to firefox or custom html, where you have to write everything (tabs, navigation, search boxes) yourself. We generally recommend userchrome for new users, as it has the lowest learning curve. Additionally, you can chose to use no template.
+```
+? Enter an appid › dev.gluon.example
+```
+
+Next you need to chose a starting template for your browser. If you know what you are doing, you can go with `None` and configure it how you like. Otherwise, we recommend you stick with `UserChrome`.
+
+```
+? Select a ui mode template › - Use arrow-keys. Return to submit.
+    None
+❯   User Chrome (custom browser css, simplest)
+```
 
 Now you have created the directory structure for your project, you can build it for the first time. First, ask melon to download the firefox source.
 
@@ -81,3 +117,34 @@ Now you can finally start the browser!
 ```sh
 gluon run
 ```
+
+## Common errors
+
+Here are some common errors that you might run into whilst running `gluon build` and some potential fixes.
+
+### Anything to do with `wasm-ld`
+
+On Arch linux, there were two errors that were thrown:
+
+```
+Executable "wasm-ld" doesn't exist!
+wasm-ld: error: cannot open /usr/lib/clang/{CLANG_VERSION}/lib/wasi/libclang_rt.builtins-wasm32.a: No such file or directory
+```
+
+On Linux, I fixed the first error by installing `ldd`:
+
+```sh
+apt-get install lld-7 # Debian
+apt-get install lld-8 # Ubuntu
+apk add lld # Alpine
+pacman -S lld # Arch
+dnf install lld # Fedora
+```
+
+The second error was fixed by installing the associated wasm libraries:
+
+```sh
+sudo pacman -Syu wasi-libc wasi-libc++ wasi-compiler-rt
+```
+
+You will need to port the above command to your distrobution. If you do not care about the improved security of sandboxed libraries, you can simply disable them by adding the following to ``
