@@ -1,6 +1,6 @@
 {
   "name": "gluon-build",
-  "version": "1.0.0-a.2",
+  "version": "1.0.0-rc.1",
   "description": "🍉 Build Firefox-based browsers with ease",
   "main": "index.js",
   "reveal": true,
