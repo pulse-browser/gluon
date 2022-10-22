@@ -2,8 +2,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import execa from 'execa'
-import { existsSync, statSync } from 'fs'
-import { resolve } from 'path'
+import { existsSync, statSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { log } from '../log'
 import { ENGINE_DIR } from '../constants'
 
@@ -17,7 +17,7 @@ export const discard = async (file: string): Promise<void> => {
 
   try {
     await execa('git', ['restore', file], { cwd: ENGINE_DIR })
-  } catch (e) {
+  } catch {
     log.warning(`The file ${file} was not changed`)
   }
 }

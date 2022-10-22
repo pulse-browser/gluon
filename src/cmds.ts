@@ -1,6 +1,9 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+/* eslint-disable unicorn/no-await-expression-member */
+
 import { Cmd } from './types'
 
 export const commands: Cmd[] = [
@@ -115,7 +118,7 @@ export const commands: Cmd[] = [
     aliases: ['pack'],
     description: 'Package the browser for distribution.',
     requestController: async () =>
-      (await import('./commands/package')).melonPackage,
+      (await import('./commands/package')).gluonPackage,
   },
   {
     cmd: 'reset',

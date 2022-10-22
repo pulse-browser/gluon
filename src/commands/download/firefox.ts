@@ -1,12 +1,12 @@
 import execa from 'execa'
-import { existsSync } from 'fs'
-import { dirname, resolve } from 'path'
+import { existsSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
 import { bin_name } from '../..'
 import { BASH_PATH, ENGINE_DIR, MELON_TMP_DIR } from '../../constants'
 import { log } from '../../log'
-import { commandExistsSync } from '../../utils/commandExists'
+import { commandExistsSync } from '../../utils/command-exists'
 import { downloadFileToLocation } from '../../utils/download'
-import { ensureDir, windowsPathToUnix } from '../../utils/fs'
+import { ensureDirectory, windowsPathToUnix } from '../../utils/fs'
 import { init } from '../init'
 
 export function shouldSetupFirefoxSource() {
@@ -30,7 +30,7 @@ export async function setupFirefoxSource(version: string) {
 async function unpackFirefoxSource(name: string): Promise<void> {
   log.info(`Unpacking Firefox...`)
 
-  ensureDir(ENGINE_DIR)
+  ensureDirectory(ENGINE_DIR)
 
   let tarExec = 'tar'
 
@@ -56,12 +56,12 @@ async function unpackFirefoxSource(name: string): Promise<void> {
     tarExec,
     [
       '--strip-components=1',
-      process.platform == 'win32' ? '--force-local' : null,
+      process.platform == 'win32' ? '--force-local' : undefined,
       '-xf',
       windowsPathToUnix(resolve(MELON_TMP_DIR, name)),
       '-C',
       windowsPathToUnix(ENGINE_DIR),
-    ].filter((x) => x) as string[],
+    ].filter(Boolean) as string[],
     {
       // HACK: Use bash shell on windows to get a sane version of tar that works
       shell: BASH_PATH || false,
@@ -80,7 +80,7 @@ async function downloadFirefoxSource(version: string) {
 
   log.info(`Locating Firefox release ${version}...`)
 
-  await ensureDir(dirname(fsSaveLocation))
+  await ensureDirectory(dirname(fsSaveLocation))
 
   if (existsSync(fsSaveLocation)) {
     log.info('Using cached download')

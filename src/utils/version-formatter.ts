@@ -7,8 +7,8 @@ export const versionFormatter = (
   options: ({ name: string; value: string } | null | string)[]
 ): string => {
   const spacesValue = Math.max(
-    ...options.map((arg) =>
-      typeof arg === 'string' ? 0 : arg?.value?.length || 0
+    ...options.map((argument) =>
+      typeof argument === 'string' ? 0 : argument?.value?.length || 0
     )
   )
 

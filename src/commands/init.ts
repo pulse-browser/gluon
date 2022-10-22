@@ -2,8 +2,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import { Command } from 'commander'
-import { existsSync, readFileSync } from 'fs'
-import { resolve } from 'path'
+import { existsSync, readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { bin_name } from '..'
 import { log } from '../log'
 import { config, configDispatch } from '../utils'
@@ -11,9 +11,9 @@ import { config, configDispatch } from '../utils'
 export const init = async (directory: Command | string): Promise<void> => {
   const cwd = process.cwd()
 
-  const dir = resolve(cwd as string, directory.toString())
+  const absoluteInitDirectory = resolve(cwd as string, directory.toString())
 
-  if (!existsSync(dir)) {
+  if (!existsSync(absoluteInitDirectory)) {
     log.error(
       `Directory "${directory}" not found.\nCheck the directory exists and run |${bin_name} init| again.`
     )
@@ -36,30 +36,31 @@ export const init = async (directory: Command | string): Promise<void> => {
 
   version = version.trim().replace(/\\n/g, '')
 
-  // TODO: Use bash on windows, this may significantly improve performance. Still needs testing though
+  // TODO: Use bash on windows, this may significantly improve performance.
+  // Still needs testing though
   log.info('Initializing git, this may take some time')
 
   await configDispatch('git', {
     args: ['init'],
-    cwd: dir,
+    cwd: absoluteInitDirectory,
     shell: 'unix',
   })
 
   await configDispatch('git', {
     args: ['init'],
-    cwd: dir,
+    cwd: absoluteInitDirectory,
     shell: 'unix',
   })
 
   await configDispatch('git', {
     args: ['checkout', '--orphan', version],
-    cwd: dir,
+    cwd: absoluteInitDirectory,
     shell: 'unix',
   })
 
   await configDispatch('git', {
     args: ['add', '-f', '.'],
-    cwd: dir,
+    cwd: absoluteInitDirectory,
     shell: 'unix',
   })
 
@@ -67,13 +68,13 @@ export const init = async (directory: Command | string): Promise<void> => {
 
   await configDispatch('git', {
     args: ['commit', '-aqm', `"Firefox ${version}"`],
-    cwd: dir,
+    cwd: absoluteInitDirectory,
     shell: 'unix',
   })
 
   await configDispatch('git', {
     args: ['checkout', '-b', config.name.toLowerCase().replace(/\s/g, '_')],
-    cwd: dir,
+    cwd: absoluteInitDirectory,
     shell: 'unix',
   })
 }

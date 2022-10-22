@@ -1,48 +1,45 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
-import { sync } from 'glob'
-import Listr from 'listr'
-import { ENGINE_DIR, SRC_DIR } from '../../constants'
+import { join } from 'node:path'
+import { existsSync } from 'node:fs'
+import glob from 'tiny-glob'
 
-import * as gitPatch from './gitPatch'
-import * as copyPatch from './copyPatches'
-import * as brandingPatch from './brandingPatch'
-import { join } from 'path'
-import { existsSync, writeFileSync } from 'fs'
+import { ENGINE_DIR, SRC_DIR } from '../../constants'
+import * as gitPatch from './git-patch'
+import * as copyPatch from './copy-patches'
+import * as brandingPatch from './branding-patch'
 import { patchCountFile } from '../../middleware/patch-check'
 import { checkHash } from '../../utils'
-import { log } from '../../log'
-import { templateDir } from '../setup-project'
-
-type ListrTaskGroup = Listr.ListrTask<unknown>
+import { templateDirectory } from '../setup-project'
+import { Task, TaskList } from '../../utils/task-list'
+import { writeFile } from 'node:fs/promises'
 
 export interface IMelonPatch {
   name: string
-  skip?: (
-    ctx: unknown
-  ) => string | boolean | void | Promise<string | boolean | undefined>
+  skip?: () => boolean | Promise<boolean>
 }
 
 function patchMethod<T extends IMelonPatch>(
   name: string,
   patches: T[],
-  patchFn: (patch: T, index: number) => Promise<void>
-): ListrTaskGroup {
+  patchFunction: (patch: T, index: number) => Promise<void>
+): Task {
   return {
-    title: `Apply ${patches.length} ${name} patches`,
+    name: `Apply ${patches.length} ${name} patches`,
+    long: true,
     task: () =>
-      new Listr(
+      new TaskList(
         patches.map((patch, index) => ({
-          title: `Apply ${patch.name}`,
-          task: () => patchFn(patch, index),
+          name: `Apply ${patch.name}`,
+          task: () => patchFunction(patch, index),
           skip: patch.skip,
         }))
       ),
   }
 }
 
-function importMelonPatches(): ListrTaskGroup {
+function importMelonPatches(): Task {
   return patchMethod(
     'branding',
     [
@@ -63,10 +60,10 @@ function importMelonPatches(): ListrTaskGroup {
             (await macosInstallerCheck) &&
             existsSync(join(ENGINE_DIR, 'browser/branding', name))
           ) {
-            return `${name} has already been applied`
+            return true
           }
 
-          return
+          return false
         },
       })) as brandingPatch.IBrandingPatch[]),
     ],
@@ -74,20 +71,22 @@ function importMelonPatches(): ListrTaskGroup {
   )
 }
 
-function importFolders(): ListrTaskGroup {
+async function importFolders(): Promise<Task> {
   return patchMethod(
     'folder',
-    copyPatch.get(),
+    await copyPatch.get(),
     async (patch) => await copyPatch.apply(patch.src)
   )
 }
 
-function importGitPatch(): ListrTaskGroup {
-  const patches = sync('**/*.patch', { nodir: true, cwd: SRC_DIR }).map(
-    (path) => join(SRC_DIR, path)
-  )
+async function importGitPatch(): Promise<Task> {
+  let patches = await glob('**/*.patch', {
+    filesOnly: true,
+    cwd: SRC_DIR,
+  })
+  patches = patches.map((path) => join(SRC_DIR, path))
 
-  writeFileSync(patchCountFile, patches.length.toString())
+  await writeFile(patchCountFile, patches.length.toString())
 
   return patchMethod<gitPatch.IGitPatch>(
     'git',
@@ -96,32 +95,28 @@ function importGitPatch(): ListrTaskGroup {
   )
 }
 
-function importInternalPatch(): ListrTaskGroup {
-  const patches = sync('*.patch', {
-    nodir: true,
-    cwd: join(templateDir, 'patches.optional'),
-  }).map((path) => ({
+async function importInternalPatch(): Promise<Task> {
+  const patches = await glob('*.patch', {
+    filesOnly: true,
+    cwd: join(templateDirectory, 'patches.optional'),
+  })
+  const structuredPatches = patches.map((path) => ({
     name: path,
-    path: join(templateDir, 'patches.optional', path),
+    path: join(templateDirectory, 'patches.optional', path),
   }))
 
   return patchMethod<gitPatch.IGitPatch>(
     'gluon',
-    patches,
+    structuredPatches,
     async (patch) => await gitPatch.apply(patch.path)
   )
 }
 
 export async function applyPatches(): Promise<void> {
-  await new Listr(
-    [
-      importInternalPatch(),
-      importMelonPatches(),
-      importFolders(),
-      importGitPatch(),
-    ],
-    {
-      renderer: log.isDebug ? 'verbose' : 'default',
-    }
-  ).run()
+  await new TaskList([
+    await importInternalPatch(),
+    importMelonPatches(),
+    await importFolders(),
+    await importGitPatch(),
+  ]).run()
 }

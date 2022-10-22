@@ -2,8 +2,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import execa from 'execa'
-import { existsSync, readFileSync, writeFileSync } from 'fs'
-import { join, resolve } from 'path'
+import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { join, resolve } from 'node:path'
 import { bin_name, config } from '..'
 import { BUILD_TARGETS, CONFIGS_DIR, ENGINE_DIR } from '../constants'
 import { internalMozconfg } from '../constants/mozconfig'
@@ -33,7 +33,7 @@ const applyConfig = async (os: string) => {
     // Retrieve changeset
     const { stdout } = await execa('git', ['rev-parse', 'HEAD'])
     changeset = stdout.trim()
-  } catch (e) {
+  } catch (error) {
     log.warning(
       'Gluon expects that you are building your browser with git as your version control'
     )
@@ -43,15 +43,15 @@ const applyConfig = async (os: string) => {
     log.warning('Otherwise, you can setup git in this folder by running:')
     log.warning('   |git init|')
 
-    throw e
+    throw error
   }
 
   const templateOptions = {
     name: config.name,
     vendor: config.name,
     appId: config.appId,
-    brandingDir: existsSync(join(ENGINE_DIR, 'branding', 'melon'))
-      ? 'branding/melon'
+    brandingDir: existsSync(join(ENGINE_DIR, 'branding', 'gluon'))
+      ? 'branding/gluon'
       : 'branding/unofficial',
     binName: config.binaryName,
     changeset,

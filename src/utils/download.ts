@@ -1,11 +1,12 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
-import { createWriteStream } from 'fs'
+import { createWriteStream } from 'node:fs'
 
 import axios from 'axios'
 import cliProgress from 'cli-progress'
-import { Duplex } from 'stream'
+import { Duplex } from 'node:stream'
+import { log } from '../log'
 
 export async function downloadFileToLocation(
   url: string,
@@ -43,7 +44,12 @@ export async function downloadFileToLocation(
         receivedBytes += chunk.length
       })
       data.pipe(writer)
-      data.on('error', (err: unknown) => reject(err))
+      data.on('error', (error: unknown) => {
+        log.warning(
+          `An error occured whilst downloading ${url}. It might be ignored`
+        )
+        reject(error)
+      })
 
       const progressInterval = setInterval(
         () => progressBar.update(receivedBytes),

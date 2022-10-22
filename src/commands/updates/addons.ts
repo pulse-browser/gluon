@@ -1,8 +1,13 @@
-import { stat, writeFile } from 'fs/promises'
-import { dirname, join } from 'path'
+import { writeFile } from 'node:fs/promises'
+import { dirname, join } from 'node:path'
 import { create } from 'xmlbuilder2'
 import { DIST_DIR } from '../../constants'
-import { dynamicConfig, ensureDir, generateHash, getSize } from '../../utils'
+import {
+  dynamicConfig,
+  ensureDirectory,
+  generateHash,
+  getSize,
+} from '../../utils'
 import {
   downloadAddon,
   getAddons,
@@ -45,6 +50,6 @@ export async function generateAddonUpdateFiles() {
     'update.xml'
   )
 
-  await ensureDir(dirname(path))
+  await ensureDirectory(dirname(path))
   await writeFile(path, root.end({ prettyPrint: true }))
 }

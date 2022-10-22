@@ -1,5 +1,5 @@
-import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs'
-import { join } from 'path'
+import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { isMatch } from 'picomatch'
 
 import { config } from '../..'
@@ -10,7 +10,7 @@ import {
   AddonInfo,
   configDispatch,
   delay,
-  ensureDir,
+  ensureDirectory,
   walkDirectoryTree,
   windowsPathToUnix,
 } from '../../utils'
@@ -29,31 +29,52 @@ export async function resolveAddonDownloadUrl(
   addon: AddonInfo
 ): Promise<string> {
   switch (addon.platform) {
-    case 'url':
+    case 'url': {
       return addon.url
+    }
 
-    case 'amo':
-      return (
-        await axios.get(
+    case 'amo': {
+      try {
+        const mozillaData = await axios.get(
           `https://addons.mozilla.org/api/v4/addons/addon/${addon.amoId}/versions/`
         )
-      ).data.results[0].files[0].url
 
-    case 'github':
-      return (
-        (
-          ((
-            await axios.get(
-              `https://api.github.com/repos/${addon.repo}/releases/tags/${addon.version}`
-            )
-          ).data.assets as {
-            url: string
-            browser_download_url: string
-            name: string
-          }[]) || []
-        ).find((asset) => isMatch(asset.name, addon.fileGlob))
-          ?.browser_download_url || 'failed'
-      )
+        return mozillaData.data.results[0].files[0].url
+      } catch (error) {
+        log.warning(
+          'The following error occured whilst fetching amo addon metadata'
+        )
+        log.error(error)
+
+        return ''
+      }
+    }
+
+    case 'github': {
+      try {
+        const githubData = await axios.get(
+          `https://api.github.com/repos/${addon.repo}/releases/tags/${addon.version}`
+        )
+
+        return (
+          (
+            (githubData.data.assets as {
+              url: string
+              browser_download_url: string
+              name: string
+            }[]) || []
+          ).find((asset) => isMatch(asset.name, addon.fileGlob))
+            ?.browser_download_url || 'failed'
+        )
+      } catch (error) {
+        log.warning(
+          'The following error occured whilst fetching github metadata'
+        )
+        log.error(error)
+
+        return ''
+      }
+    }
   }
 }
 
@@ -61,7 +82,7 @@ export async function downloadAddon(
   url: string,
   addon: AddonInfo & { name: string }
 ): Promise<string> {
-  const tempFile = join(MELON_TMP_DIR, addon.name + '.xpi')
+  const temporaryFile = join(MELON_TMP_DIR, addon.name + '.xpi')
 
   log.info(`Download addon from ${url}`)
 
@@ -73,23 +94,23 @@ export async function downloadAddon(
       // it
     } else {
       const cache = extensionCache.unwrap()
-      if (cache.url == url && existsSync(tempFile)) {
+      if (cache.url == url && existsSync(temporaryFile)) {
         log.info(`Using cached version of ${addon.name}`)
-        return tempFile
+        return temporaryFile
       }
     }
   }
 
-  if (existsSync(tempFile)) {
-    unlinkSync(tempFile)
+  if (existsSync(temporaryFile)) {
+    unlinkSync(temporaryFile)
   }
 
-  await downloadFileToLocation(url, tempFile)
+  await downloadFileToLocation(url, temporaryFile)
 
   // I do not know why, but this delay causes unzip to work reliably
   await delay(200)
 
-  return tempFile
+  return temporaryFile
 }
 
 export async function unpackAddon(
@@ -110,7 +131,7 @@ export async function unpackAddon(
   // I do not know why, but this delay causes unzip to work reliably
   await delay(200)
 
-  ensureDir(outPath)
+  ensureDirectory(outPath)
 
   await configDispatch('unzip', {
     args: [windowsPathToUnix(path), '-d', windowsPathToUnix(outPath)],

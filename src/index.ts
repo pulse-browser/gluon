@@ -4,19 +4,19 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import commander, { Command } from 'commander'
-import { existsSync, readFileSync } from 'fs'
-import { resolve } from 'path'
+import { existsSync, readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 
 import { errorHandler, config as configInited, versionFormatter } from './utils'
 import { commands } from './cmds'
 import { BIN_NAME, ENGINE_DIR } from './constants'
 import { updateCheck } from './middleware/update-check'
-import { registerCommand } from './middleware/registerCommand'
+import { registerCommand } from './middleware/register-command'
 import { log } from './log'
 
 // We have to use a dynamic require here, otherwise the typescript compiler
 // mucks up the directory structure
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-var-requires, unicorn/prefer-module
 const { version: gluonVersion } = require('../package.json')
 
 export const config = configInited
@@ -76,14 +76,13 @@ async function middleware(command: commander.Command) {
   registerCommand(command.name())
 }
 
-commands.forEach((command) => {
-  if (command.flags) {
-    if (
-      command.flags.platforms &&
-      !command.flags.platforms.includes(process.platform)
-    ) {
-      return
-    }
+for (const command of commands) {
+  if (
+    command.flags &&
+    command.flags.platforms &&
+    !command.flags.platforms.includes(process.platform)
+  ) {
+    continue
   }
 
   let buildCommand = program
@@ -92,11 +91,11 @@ commands.forEach((command) => {
     .aliases(command?.aliases || [])
 
   // Register all of the required options
-  command?.options?.forEach((opt) => {
+  for (const opt of command?.options || []) {
     buildCommand = buildCommand.option(opt.arg, opt.description)
-  })
+  }
 
-  buildCommand = buildCommand.action(async (...args) => {
+  buildCommand = buildCommand.action(async (...arguments_) => {
     // Start loading the controller in the background whilst middleware is
     // executing
     const controller = command.requestController()
@@ -107,12 +106,12 @@ commands.forEach((command) => {
 
     // Finish loading the controller and execute it
     // eslint-disable-next-line @typescript-eslint/no-extra-semi
-    ;(await controller)(...args)
+    ;(await controller)(...arguments_)
   })
-})
+}
 
 process
   .on('uncaughtException', errorHandler)
-  .on('unhandledException', (err) => errorHandler(err, true))
+  .on('unhandledException', (error) => errorHandler(error, true))
 
 program.parse(process.argv)

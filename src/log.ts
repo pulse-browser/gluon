@@ -4,6 +4,9 @@
 import chalk from 'chalk'
 import prompts from 'prompts'
 
+const formatToDoubleDigit = (r: number) =>
+  r.toString().length == 1 ? `0${r}` : r
+
 class Log {
   private startTime: number
 
@@ -26,15 +29,15 @@ class Log {
     const mins = Math.floor((elapsedTime / (60 * 1000)) % 60)
     const hours = Math.floor((elapsedTime / (60 * 60 * 1000)) % 24)
 
-    const format = (r: number) => (r.toString().length == 1 ? `0${r}` : r)
-
-    return `${format(hours)}:${format(mins)}:${format(secs)}`
+    return `${formatToDoubleDigit(hours)}:${formatToDoubleDigit(
+      mins
+    )}:${formatToDoubleDigit(secs)}`
   }
 
-  set isDebug(val: boolean) {
-    log.debug(`Logger debug mode has been ${val ? 'enabled' : 'disabled'}`)
-    this._isDebug = val
-    log.debug(`Logger debug mode has been ${val ? 'enabled' : 'disabled'}`)
+  set isDebug(value: boolean) {
+    log.debug(`Logger debug mode has been ${value ? 'enabled' : 'disabled'}`)
+    this._isDebug = value
+    log.debug(`Logger debug mode has been ${value ? 'enabled' : 'disabled'}`)
   }
 
   get isDebug() {
@@ -46,8 +49,8 @@ class Log {
    *
    * @param args The information you want to provide to the user
    */
-  debug(...args: unknown[]): void {
-    if (this.isDebug) console.debug(...args)
+  debug(...arguments_: unknown[]): void {
+    if (this.isDebug) console.debug(...arguments_)
   }
 
   /**
@@ -57,8 +60,8 @@ class Log {
    *
    * @param args The information you want to provide to the user
    */
-  info(...args: unknown[]): void {
-    console.info(chalk.blueBright.bold(this.getDiff()), ...args)
+  info(...arguments_: unknown[]): void {
+    console.info(chalk.blueBright.bold(this.getDiff()), ...arguments_)
   }
 
   /**
@@ -68,8 +71,8 @@ class Log {
    *
    * @param args The information you want to provide to the user
    */
-  warning(...args: unknown[]): void {
-    console.warn(chalk.yellowBright.bold(' WARNING'), ...args)
+  warning(...arguments_: unknown[]): void {
+    console.warn(chalk.yellowBright.bold(' WARNING'), ...arguments_)
   }
 
   /**
@@ -78,8 +81,8 @@ class Log {
    *
    * @param args The information you want to provide to the user
    */
-  async hardWarning(...args: unknown[]): Promise<void> {
-    console.info('', chalk.bgRed.bold('WARNING'), ...args)
+  async hardWarning(...arguments_: unknown[]): Promise<void> {
+    console.info('', chalk.bgRed.bold('WARNING'), ...arguments_)
 
     const { answer } = await prompts({
       type: 'confirm',
@@ -95,9 +98,12 @@ class Log {
    *
    * @param args The information you want to provide to the user
    */
-  success(...args: unknown[]): void {
+  success(...arguments_: unknown[]): void {
     console.log()
-    console.log(`\n${chalk.greenBright.bold('SUCCESS')}`, args.join('\n\t'))
+    console.log(
+      `\n${chalk.greenBright.bold('SUCCESS')}`,
+      arguments_.join('\n\t')
+    )
   }
 
   /**
@@ -105,11 +111,11 @@ class Log {
    *
    * @param args The error you want to throw or a type that you want to convert to an error
    */
-  error(...args: (Error | unknown)[]): never {
-    throw args[0] instanceof Error
-      ? args[0]
+  error(...arguments_: (Error | unknown)[]): never {
+    throw arguments_[0] instanceof Error
+      ? arguments_[0]
       : new Error(
-          ...args.map((a) =>
+          ...arguments_.map((a) =>
             typeof a !== 'undefined' ? (a as object).toString() : a
           )
         )

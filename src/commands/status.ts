@@ -1,9 +1,9 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
-import { existsSync } from 'fs'
+import { existsSync } from 'node:fs'
 import { log } from '../log'
-import { ENGINE_DIR } from '../constants'
+import { BIN_NAME, ENGINE_DIR } from '../constants'
 import { dispatch, hasConfig } from '../utils'
 
 export const status = async (): Promise<void> => {
@@ -12,7 +12,7 @@ export const status = async (): Promise<void> => {
 
   if (!configExists && !engineExists) {
     log.info(
-      "Melon doesn't appear to be setup for this project. You can set it up by running |melon setup-project|"
+      `Gluon doesn't appear to be setup for this project. You can set it up by running |${BIN_NAME} setup-project|`
     )
 
     return
@@ -25,7 +25,7 @@ export const status = async (): Promise<void> => {
     return
   } else {
     log.info(
-      "It appears that melon has been configured, but you haven't run |melon download|"
+      `It appears that ${BIN_NAME} has been configured, but you haven't run |${BIN_NAME} download|`
     )
 
     return

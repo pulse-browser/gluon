@@ -36,26 +36,29 @@ export const configDispatch = (
   if (config?.shell) {
     switch (config.shell) {
       // Don't change anything if we are using the default shell
-      case 'default':
+      case 'default': {
         break
+      }
 
-      case 'unix':
+      case 'unix': {
         // Bash path provides a unix shell on windows
         shell = BASH_PATH || false
         break
+      }
 
-      default:
+      default: {
         log.error(`dispatch() does not understand the shell '${shell}'`)
         break
+      }
     }
   }
 
   const handle = (data: string | Error, killOnError?: boolean) => {
-    const d = data.toString()
+    const dataAsString = data.toString()
 
-    d.split('\n').forEach((line: string) => {
-      if (line.length !== 0) logger(removeTimestamp(line))
-    })
+    for (const line of dataAsString.split('\n')) {
+      if (line.length > 0) logger(removeTimestamp(line))
+    }
 
     if (killOnError) {
       log.error('Command failed. See error above.')
@@ -67,7 +70,7 @@ export const configDispatch = (
       cwd: config?.cwd || process.cwd(),
       shell: shell,
       env: {
-        ...(config?.env || {}),
+        ...config?.env,
         ...process.env,
       },
     })
@@ -89,13 +92,13 @@ export const configDispatch = (
  */
 export const dispatch = (
   cmd: string,
-  args?: string[],
+  arguments_?: string[],
   cwd?: string,
   killOnError?: boolean,
   logger = (data: string) => log.info(data)
 ): Promise<boolean> => {
   return configDispatch(cmd, {
-    args: args,
+    args: arguments_,
     cwd: cwd,
     killOnError: killOnError,
     logger: logger,
