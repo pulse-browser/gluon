@@ -5,6 +5,7 @@ src/
 !dist/
 docs/
 site/
+tests/
 
 .prettierrc.json
 gluon.json
