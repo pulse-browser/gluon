@@ -105,8 +105,8 @@ export const commands: Cmd[] = [
     aliases: ['lc'],
     options: [
       {
-        arg: '-n, --no-fix',
-        description: "Do not add MPL-2.0 headers to files that don't have it",
+        arg: '--fix',
+        description: "Will add MPL-2.0 headers to files that don't have it",
       },
     ],
     description: 'Check the src directory for the absence of MPL-2.0 header.',
