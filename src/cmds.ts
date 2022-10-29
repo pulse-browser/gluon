@@ -70,6 +70,14 @@ export const commands: Cmd[] = [
       (await import('./commands/download')).download,
   },
   {
+    cmd: 'update',
+    aliases: ['update-ff'],
+    description: 'Update Firefox to latest version.',
+    requestController: async () =>
+      (await import('./commands/update')).update,
+    disableMiddleware: true,
+  },
+  {
     cmd: 'execute',
     description: 'Execute a command inside the engine directory.',
     requestController: async () => (await import('./commands/execute')).execute,

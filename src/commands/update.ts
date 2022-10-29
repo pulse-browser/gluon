@@ -8,21 +8,15 @@ import { log } from '../log'
 import {
   downloadInternals
 } from './download/firefox'
+import { getLatestFF } from '../utils'
 
-export const download = async (): Promise<void> => {
-  const version = config.version.version
-
-  // If gFFVersion isn't specified, provide legible error
-  if (!version) {
-    log.error(
-      'You have not specified a version of firefox in your config file. This is required to build a firefox fork'
-    )
-    process.exit(1)
-  }
+export const update = async (): Promise<void> => {
+  const version = await getLatestFF(config.version.product)
 
   await downloadInternals(version)
 
   log.success(
+    `Firefox has sucessfully been updated to ${version}.`,
     `You should be ready to make changes to ${config.name}.`,
     '',
     `You should import the patches next, run |${bin_name} import|.`,
