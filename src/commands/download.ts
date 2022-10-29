@@ -6,18 +6,8 @@ import { bin_name, config } from '..'
 import { log } from '../log'
 
 import {
-  setupFirefoxSource,
-  shouldSetupFirefoxSource,
+  downloadInternals
 } from './download/firefox'
-import {
-  addAddonsToMozBuild,
-  downloadAddon,
-  generateAddonMozBuild,
-  getAddons,
-  initializeAddon,
-  resolveAddonDownloadUrl,
-  unpackAddon,
-} from './download/addon'
 
 export const download = async (): Promise<void> => {
   const version = config.version.version
@@ -30,20 +20,7 @@ export const download = async (): Promise<void> => {
     process.exit(1)
   }
 
-  if (shouldSetupFirefoxSource()) {
-    await setupFirefoxSource(version)
-  }
-
-  for (const addon of getAddons()) {
-    const downloadUrl = await resolveAddonDownloadUrl(addon)
-    const downloadedXPI = await downloadAddon(downloadUrl, addon)
-
-    await unpackAddon(downloadedXPI, addon)
-    await generateAddonMozBuild(addon)
-    await initializeAddon(addon)
-  }
-
-  await addAddonsToMozBuild(getAddons())
+  await downloadInternals(version)
 
   log.success(
     `You should be ready to make changes to ${config.name}.`,

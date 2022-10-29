@@ -1,5 +1,5 @@
 import execa from 'execa'
-import { existsSync } from 'node:fs'
+import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { bin_name } from '../..'
 import { BASH_PATH, ENGINE_DIR, MELON_TMP_DIR } from '../../constants'
@@ -8,6 +8,17 @@ import { commandExistsSync } from '../../utils/command-exists'
 import { downloadFileToLocation } from '../../utils/download'
 import { ensureDirectory, windowsPathToUnix } from '../../utils/fs'
 import { init } from '../init'
+import { config } from '../..'
+import {
+  addAddonsToMozBuild,
+  downloadAddon,
+  generateAddonMozBuild,
+  getAddons,
+  initializeAddon,
+  resolveAddonDownloadUrl,
+  unpackAddon,
+} from './addon'
+import { configPath } from '../../utils'
 
 export function shouldSetupFirefoxSource() {
   return !(
@@ -97,4 +108,34 @@ async function downloadFirefoxSource(version: string) {
 
   await downloadFileToLocation(url, resolve(MELON_TMP_DIR, filename))
   return filename
+}
+
+export async function downloadInternals(version: string) {
+  // If gFFVersion isn't specified, provide legible error
+  if (!version) {
+    log.error(
+      'You have not specified a version of firefox in your config file. This is required to build a firefox fork.'
+    )
+    process.exit(1)
+  }
+
+  if (existsSync(ENGINE_DIR)) {
+    log.info("Deleting engine/")
+    rmSync(ENGINE_DIR)
+    await setupFirefoxSource(version)
+  }
+
+  for (const addon of getAddons()) {
+    const downloadUrl = await resolveAddonDownloadUrl(addon)
+    const downloadedXPI = await downloadAddon(downloadUrl, addon)
+
+    await unpackAddon(downloadedXPI, addon)
+    await generateAddonMozBuild(addon)
+    await initializeAddon(addon)
+  }
+
+  await addAddonsToMozBuild(getAddons())
+
+  config.version.version = version
+  writeFileSync(configPath, JSON.stringify(config, undefined, 2))
 }
