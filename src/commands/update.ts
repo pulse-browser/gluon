@@ -42,7 +42,7 @@ export const update = async (): Promise<void> => {
     log.info('Download Firefox ' + version)
     await setupFirefoxSource(version)
   } else {
-    log.error('Firefox is missing, run |gluon download| instead.')
+    log.error(`Firefox is missing, run |${bin_name} download| instead.`)
     process.exit(1)
   }
 
