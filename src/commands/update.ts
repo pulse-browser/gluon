@@ -28,7 +28,7 @@ export const update = async (): Promise<void> => {
   // If gFFVersion isn't specified, provide legible error
   if (!version) {
     log.error(
-      'You have not specified a version of firefox in your config file. This is required to build a firefox fork'
+      'You have not specified a version of firefox in your config file. This is required to build a firefox fork.'
     )
     process.exit(1)
   }
@@ -41,6 +41,9 @@ export const update = async (): Promise<void> => {
     })
     log.info('Download Firefox ' + version)
     await setupFirefoxSource(version)
+  } else {
+    log.error('Firefox is missing, run |gluon download| instead.')
+    process.exit(1)
   }
 
   for (const addon of getAddons()) {
