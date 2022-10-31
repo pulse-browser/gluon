@@ -158,7 +158,7 @@ export async function setupProject(): Promise<void> {
     }
 
     gitignoreContents +=
-      '\n.dotbuild/\n.gluon\nengine/\nfirefox-*/\nnode_modules/\n'
+      '\n.dotbuild/\n.gluon/\nengine/\nfirefox-*/\nnode_modules/\n'
 
     writeFileSync(gitignore, gitignoreContents)
 
