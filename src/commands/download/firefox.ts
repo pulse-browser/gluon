@@ -19,6 +19,7 @@ import {
   unpackAddon,
 } from './addon'
 import { configPath } from '../../utils'
+import { readdir } from 'node:fs/promises'
 
 export function shouldSetupFirefoxSource() {
   return !(
@@ -111,7 +112,7 @@ async function downloadFirefoxSource(version: string) {
 }
 
 export async function downloadInternals(version: string) {
-  // If gFFVersion isn't specified, provide legible error
+  // Provide a legible error if there is no version specified
   if (!version) {
     log.error(
       'You have not specified a version of firefox in your config file. This is required to build a firefox fork.'
@@ -119,9 +120,15 @@ export async function downloadInternals(version: string) {
     process.exit(1)
   }
 
-  if (existsSync(ENGINE_DIR)) {
-    log.info("Deleting engine/")
-    rmSync(ENGINE_DIR)
+  // If the engine directory is empty, we should delete its contents
+  const engineIsEmpty = await readdir(ENGINE_DIR).then((files) => files.length === 0)
+  if (existsSync(ENGINE_DIR) && engineIsEmpty) {
+    log.info("'engine/' is empty, deleting contents...")
+    rmSync(ENGINE_DIR, { recursive: true })
+
+  }
+
+  if (!existsSync(ENGINE_DIR)) {
     await setupFirefoxSource(version)
   }
 
