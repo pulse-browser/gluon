@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Improved error handling and logging for the download command
+
 ## [1.0.0-rc.2]
 
 ### Fixed
