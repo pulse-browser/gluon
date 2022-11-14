@@ -14,6 +14,7 @@ The first thing you will need to do is install Microsoft's c++ build tools. You 
 - **In the _Workloads_ tab**
   - Desktop development with C++
 - **In the _Individual components_ tab**
+  - MSVC v143 - VS 2022 C++ x64/x86 build tools.
   - Windows 10 SDK (at least 10.0.19041.0).
   - C++ ATL for v143 build tools (x86 and x64).
 
