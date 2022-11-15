@@ -62,7 +62,12 @@ export async function resolveAddonDownloadUrl(
     case 'github': {
       try {
         const githubData = await axios.get(
-          `https://api.github.com/repos/${addon.repo}/releases/tags/${addon.version}`
+          `https://api.github.com/repos/${addon.repo}/releases/tags/${addon.version}`,
+          {
+            headers: {
+              UserAgent: 'gluon-build -> addon downloader'
+            }
+          }
         )
 
         const assets: GithubReleaseAssets = githubData.data.assets
