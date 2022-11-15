@@ -21,7 +21,7 @@ The first thing you will need to do is install Microsoft's c++ build tools. You 
 > **Note:**
 > If this guide ever gets out of date, you can get the latest build requirements from [Mozilla's docs](https://firefox-source-docs.mozilla.org/setup/windows_build.html#system-preparation)
 
-You will need to install [MozillaBuild](https://ftp.mozilla.org/pub/mozilla.org/mozilla/libraries/win32/MozillaBuildSetup-Latest.exe). Next, [install Git](https://git-scm.com/download/win). You will need to set the following specific options on install to ensure high performance:
+You will need to install [MozillaBuild](https://ftp.mozilla.org/pub/mozilla/libraries/win32/MozillaBuildSetup-Latest.exe). Next, [install Git](https://git-scm.com/download/win). You will need to set the following specific options on install to ensure high performance:
 
 - Configuring the line ending conversions must be: Checkout as-is, commit as-is
 - Enable experimental built-in file system monitor
