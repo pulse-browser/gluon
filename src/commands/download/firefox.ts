@@ -1,6 +1,8 @@
 import execa from 'execa'
 import { existsSync, rmSync, writeFileSync } from 'node:fs'
+import { readdir } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
+
 import { bin_name } from '../..'
 import { BASH_PATH, ENGINE_DIR, MELON_TMP_DIR } from '../../constants'
 import { log } from '../../log'
@@ -19,7 +21,6 @@ import {
   unpackAddon,
 } from './addon'
 import { configPath } from '../../utils'
-import { readdir } from 'node:fs/promises'
 
 export function shouldSetupFirefoxSource() {
   return !(
@@ -111,13 +112,18 @@ async function downloadFirefoxSource(version: string) {
   return filename
 }
 
-export async function downloadInternals(version: string) {
+export async function downloadInternals({ version, force }: { version: string, force?: boolean }) {
   // Provide a legible error if there is no version specified
   if (!version) {
     log.error(
       'You have not specified a version of firefox in your config file. This is required to build a firefox fork.'
     )
     process.exit(1)
+  }
+
+  if (force && existsSync(ENGINE_DIR)) {
+    log.info('Removing existing workspace')
+    rmSync(ENGINE_DIR, { recursive: true })
   }
 
   // If the engine directory is empty, we should delete it.

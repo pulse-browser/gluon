@@ -64,8 +64,14 @@ export const commands: Cmd[] = [
     requestController: async () => (await import('./commands/discard')).discard,
   },
   {
-    cmd: 'download [ffVersion]',
+    cmd: 'download',
     description: 'Download Firefox.',
+    options: [
+      {
+        arg: '--force',
+        description: 'Delete the engine directory if it already exists',
+      }
+    ],
     requestController: async () =>
       (await import('./commands/download')).download,
   },
