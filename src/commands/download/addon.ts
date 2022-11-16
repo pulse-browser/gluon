@@ -1,4 +1,9 @@
-import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
+import {
+  existsSync,
+  readFileSync,
+  unlinkSync,
+  writeFileSync,
+} from 'node:fs'
 import { join } from 'node:path'
 import { isMatch } from 'picomatch'
 
@@ -18,6 +23,10 @@ import { downloadFileToLocation } from '../../utils/download'
 import { readItem } from '../../utils/store'
 import { discard } from '../discard'
 import axios from 'axios'
+
+type GithubReleaseAssets =
+  | { url: string; browser_download_url: string; name: string }[]
+  | null
 
 export const getAddons = (): (AddonInfo & { name: string })[] =>
   Object.keys(config.addons).map((addon) => ({
@@ -53,22 +62,36 @@ export async function resolveAddonDownloadUrl(
     case 'github': {
       try {
         const githubData = await axios.get(
-          `https://api.github.com/repos/${addon.repo}/releases/tags/${addon.version}`
+          `https://api.github.com/repos/${addon.repo}/releases/tags/${addon.version}`,
+          {
+            headers: {
+              UserAgent: 'gluon-build -> addon downloader'
+            }
+          }
         )
 
+        const assets: GithubReleaseAssets = githubData.data.assets
+
+        if (!assets)
+          throw `The GitHub releases api did not return any assets for ${addon.repo} -> ${addon.version}.`
+
+        const matchingFile = assets.find((asset) =>
+          isMatch(asset.name, addon.fileGlob)
+        )
+        const fileDownloadUrl = matchingFile?.browser_download_url
+
+        if (!matchingFile)
+          throw `The GitHub releases api did not provide any files that matched '${addon.fileGlob}'`
+        if (!fileDownloadUrl)
+          throw `The GitHub releases api did not provide a download url for '${matchingFile.name}'`
+
         return (
-          (
-            (githubData.data.assets as {
-              url: string
-              browser_download_url: string
-              name: string
-            }[]) || []
-          ).find((asset) => isMatch(asset.name, addon.fileGlob))
-            ?.browser_download_url || 'failed'
+          fileDownloadUrl ||
+          '{Release file does not include a file matching the glob}'
         )
       } catch (error) {
         log.warning(
-          'The following error occured whilst fetching github metadata'
+          'The following error occurred whilst fetching github metadata'
         )
         log.error(error)
 

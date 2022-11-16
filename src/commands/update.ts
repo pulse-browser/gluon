@@ -4,7 +4,6 @@
 
 import { bin_name, config } from '..'
 import { log } from '../log'
-
 import {
   downloadInternals
 } from './download/firefox'
@@ -13,10 +12,12 @@ import { getLatestFF } from '../utils'
 export const update = async (): Promise<void> => {
   const version = await getLatestFF(config.version.product)
 
-  await downloadInternals(version)
+  // We are using force here to delete the engine directory if it already
+  // exists to make way for the new version.
+  await downloadInternals({version, force: true})
 
   log.success(
-    `Firefox has sucessfully been updated to ${version}.`,
+    `Firefox has successfully been updated to ${version}.`,
     `You should be ready to make changes to ${config.name}.`,
     '',
     `You should import the patches next, run |${bin_name} import|.`,

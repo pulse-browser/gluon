@@ -4,12 +4,15 @@
 
 import { bin_name, config } from '..'
 import { log } from '../log'
-
 import {
   downloadInternals
 } from './download/firefox'
 
-export const download = async (): Promise<void> => {
+type Options = {
+  force?: boolean
+}
+
+export const download = async (options: Options): Promise<void> => {
   const version = config.version.version
 
   // If gFFVersion isn't specified, provide legible error
@@ -20,7 +23,7 @@ export const download = async (): Promise<void> => {
     process.exit(1)
   }
 
-  await downloadInternals(version)
+  await downloadInternals({version, force: options.force})
 
   log.success(
     `You should be ready to make changes to ${config.name}.`,

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Improved error handling and logging for the download command
+- `download`: The `engine/` directory will only be deleted if it is empty. Otherwise it will skip. Justification can be found in [#27](https://github.com/pulse-browser/gluon/issues/27)
+
 ## [1.0.0-rc.2]
 
 ### Fixed
