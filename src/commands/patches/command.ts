@@ -11,7 +11,6 @@ import * as copyPatch from './copy-patches'
 import * as brandingPatch from './branding-patch'
 import { patchCountFile } from '../../middleware/patch-check'
 import { checkHash } from '../../utils'
-import { templateDirectory } from '../setup-project'
 import { Task, TaskList } from '../../utils/task-list'
 import { writeFile } from 'node:fs/promises'
 
