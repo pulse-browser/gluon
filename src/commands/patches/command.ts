@@ -5,7 +5,7 @@ import { join } from 'node:path'
 import { existsSync } from 'node:fs'
 import glob from 'tiny-glob'
 
-import { ENGINE_DIR, SRC_DIR } from '../../constants'
+import { ENGINE_DIR, PATCHES_DIR, SRC_DIR } from '../../constants'
 import * as gitPatch from './git-patch'
 import * as copyPatch from './copy-patches'
 import * as brandingPatch from './branding-patch'
@@ -98,11 +98,11 @@ async function importGitPatch(): Promise<Task> {
 async function importInternalPatch(): Promise<Task> {
   const patches = await glob('*.patch', {
     filesOnly: true,
-    cwd: join(templateDirectory, 'patches.optional'),
+    cwd: PATCHES_DIR,
   })
   const structuredPatches = patches.map((path) => ({
     name: path,
-    path: join(templateDirectory, 'patches.optional', path),
+    path: join(PATCHES_DIR, path),
   }))
 
   return patchMethod<gitPatch.IGitPatch>(
