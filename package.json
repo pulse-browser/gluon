@@ -17,7 +17,7 @@
     "docs:install": "",
     "docs:build": "zola --root docs/ build",
     "docs:dev": "zola --root docs/ serve",
-    "self": "node ./dist/index.js"
+    "self": "cd testing && node ../dist/index.js"
   },
   "repository": {
     "type": "git",
