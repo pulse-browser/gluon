@@ -11,6 +11,11 @@ import { getLatestFF } from '../utils'
 
 export const update = async (): Promise<void> => {
   const version = await getLatestFF(config.version.product)
+  
+  if (version == config.version.product.version) {
+      log.error(`Firefox is already the latest version.`)
+      process.exit(1)
+    
 
   // We are using force here to delete the engine directory if it already
   // exists to make way for the new version.
