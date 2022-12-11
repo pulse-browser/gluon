@@ -15,6 +15,7 @@ export const update = async (): Promise<void> => {
   if (version == config.version.product.version) {
       log.error(`Firefox is already the latest version.`)
       process.exit(1)
+  }
     
 
   // We are using force here to delete the engine directory if it already
