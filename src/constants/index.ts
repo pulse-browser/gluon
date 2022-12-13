@@ -19,7 +19,13 @@ export const PATCH_ARGS = [
 
 export const ENGINE_DIR = resolve(process.cwd(), 'engine')
 export const SRC_DIR = resolve(process.cwd(), 'src')
-export const PATCHES_DIR = resolve(process.cwd(), 'patches')
+// eslint-disable-next-line unicorn/prefer-module
+export const PATCHES_DIR = resolve(
+  __dirname,
+  '../..',
+  'template',
+  'patches.optional'
+)
 export const COMMON_DIR = resolve(process.cwd(), 'common')
 export const CONFIGS_DIR = resolve(process.cwd(), 'configs')
 export const MELON_DIR = resolve(process.cwd(), '.gluon')

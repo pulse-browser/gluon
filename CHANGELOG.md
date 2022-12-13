@@ -7,24 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `update`: Update will abort if already up to date
+
+## [1.0.0-rc.3]
+
+### Fixed
+
+- Template is now valid for firefox 107
+
 ### Changed
+
 - Improved error handling and logging for the download command
 - `download`: The `engine/` directory will only be deleted if it is empty. Otherwise it will skip. Justification can be found in [#27](https://github.com/pulse-browser/gluon/issues/27)
 
 ## [1.0.0-rc.2]
 
 ### Fixed
+
 - `license-check`: Correct definition of `--fix`
 
 ## [1.0.0-rc.1]
 
 ### Added
+
 - CLI Related:
-    - `config`: Allow you to specify environment-specific config
-    - `package`: Generate update manifests
-    - `config`: Different build modes using `buildMode` key
-    - `ci`: A command for configuring everything on CI with one command
-    - ``
+  - `config`: Allow you to specify environment-specific config
+  - `package`: Generate update manifests
+  - `config`: Different build modes using `buildMode` key
+  - `ci`: A command for configuring everything on CI with one command
 
 ### Changed
 
@@ -32,15 +44,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `mozconfig`: Update the update-signing to match mozilla's new system
 - `perf`: Reduced dependencies somewhat
 - CLI:
-    - `setup-project`: Asks for binary name
+  - `setup-project`: Asks for binary name
 - Config
-    - `firefox version`: Remove `ESR_NEXT`. Mozilla no longer provides this information via their API
-    - `addons`: Addons now can be specified by provider. This allows for [bot update notifications](https://github.com/pulse-browser/update-bot). For migration example, see [this commit](https://github.com/pulse-browser/browser/commit/2ca3b2606299ef03e2adbcf43974bbe6ec8c2eea)
+  - `firefox version`: Remove `ESR_NEXT`. Mozilla no longer provides this information via their API
+  - `addons`: Addons now can be specified by provider. This allows for [bot update notifications](https://github.com/pulse-browser/update-bot). For migration example, see [this commit](https://github.com/pulse-browser/browser/commit/2ca3b2606299ef03e2adbcf43974bbe6ec8c2eea)
 
 ### Fixed
+
 - `.gluon` is included in generated gitignore
 
 ### Removed
+
 - `setup-project`: HTML template has been removed. Use [motherhen](https://github.com/ajvincent/motherhen) or [Quark Runtime (wip)](https://github.com/quark-platform/runtime)
 
 ## [1.0.0-a.2]
@@ -49,6 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial beta release
 
+[1.0.0-rc.3]: https://github.com/pulse-browser/gluon/compare/v1.0.0-rc.2...v1.0.0-rc.3
 [1.0.0-rc.2]: https://github.com/pulse-browser/gluon/compare/v1.0.0-rc.1...v1.0.0-rc.2
 [1.0.0-rc.1]: https://github.com/pulse-browser/gluon/compare/v1.0.0-a.2...v1.0.0-rc.1
 [1.0.0-a.2]: https://github.com/pulse-browser/gluon/compare/v1.0.0-a.1...v1.0.0-a.2

@@ -6,7 +6,7 @@ import { copyFile } from 'node:fs/promises'
 import { join, dirname } from 'node:path'
 
 import prompts from 'prompts'
-import { bin_name } from '..'
+import { BIN_NAME } from '../constants'
 
 import { log } from '../log'
 import {
@@ -165,7 +165,7 @@ export async function setupProject(): Promise<void> {
     log.success(
       'Project setup complete!',
       '',
-      `You can start downloading the Firefox source code by running |${bin_name} download|`,
+      `You can start downloading the Firefox source code by running |${BIN_NAME} download|`,
       'Or you can follow the getting started guide at https://docs.gluon.dev/getting-started/overview/'
     )
   } catch (error) {
@@ -187,15 +187,8 @@ export const templateDirectory = join(__dirname, '../..', 'template')
  */
 async function copyOptional(files: string[]) {
   const directoryContents = await walkDirectory(templateDirectory)
-
   for (const file of directoryContents) {
-    if (
-      !file.includes('.optional') &&
-      !files
-        .map((induvidualFile) => file.includes(induvidualFile))
-        .some(Boolean)
-    )
-      continue
+    if (shouldSkipOptionalCopy(file, files)) continue
 
     const outLocation = join(
       projectDirectory,
@@ -210,6 +203,26 @@ async function copyOptional(files: string[]) {
 }
 
 /**
+ * Used to determine if a file should be copied or not. This is exported only so
+ * that it can be unit tested
+ *
+ * @param file The file that should be copied
+ * @param files A list of files / directories that we want to match to
+ * @returns If the file should be skipped
+ *
+ * @private
+ */
+export function shouldSkipOptionalCopy(file: string, files: string[]): boolean {
+  // We want to skip copying this file if:
+  // - It is not optional
+  // - It is not in the files array
+  return (
+    !file.includes('.optional') ||
+    !files.map((f) => file.includes(f)).some(Boolean)
+  )
+}
+
+/**
  * Copy all non-optional files from the template directory
  */
 async function copyRequired() {
@@ -217,7 +230,6 @@ async function copyRequired() {
 
   for (const file of directoryContents) {
     if (file.includes('.optional')) continue
-
     const outLocation = join(
       projectDirectory,
       file.replace(templateDirectory, '')
