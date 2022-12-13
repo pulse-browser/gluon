@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `update`: Update will abort if already up to date
+
 ## [1.0.0-rc.3]
 
 ### Fixed
