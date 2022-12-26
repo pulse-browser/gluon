@@ -1,0 +1,170 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+      <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://docs.gluon.dev/main.css">
+      
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+        <title></title> 
+    </head>
+    <body>
+
+      
+    <script>
+         fetch('https://api.github.com/repos/pulse-browser/gluon/releases/latest')
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            let release_name = data.name;
+            let html_url = data.html_url;
+            release.innerHTML = `<a href='${html_url}'>${release_name}</a>`;
+          });
+    </script>
+      
+    <main>
+
+      
+
+        <nav>
+          
+            
+            <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Package/3D/package_3d.png" alt="" />
+
+            
+            
+          
+
+          
+            <div id="release"></div>
+          
+  
+  <a href="javascript:void(0);" onclick="burger()" id="mobile" class="ms-Icon--GlobalNavButton"></a>
+    <div id="trees">
+               
+            
+                 
+            
+ 
+        <input class="tree-toggle" type="checkbox" id="getting-started" 
+         />
+        <label class="tree-toggle-label" for="getting-started">Getting Started</label>
+                        
+        <ul class="subtree">
+                
+                                <li >
+                                    <a href="https://docs.gluon.dev/getting-started/overview/">Setting up your project</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/getting-started/filestructure/">Understanding the file structure</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/getting-started/userchrome/">Customizing Your Browser&#x27;s UI</a>
+                                </li>
+
+                            
+    
+    </ul>         
+    
+                 
+            
+ 
+        <input class="tree-toggle" type="checkbox" id="guides" 
+         />
+        <label class="tree-toggle-label" for="guides">Guides</label>
+                        
+        <ul class="subtree">
+                
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/windows/">Preparing Windows</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/removingpocket/">Removing pocket</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/includingaddons/">Including addons</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/branding/">Branding your browser</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/autoupdates/">Automatic updates</a>
+                                </li>
+
+                            
+    
+    </ul>         
+    
+                 
+            
+ 
+        <input class="tree-toggle" type="checkbox" id="reference" 
+         />
+        <label class="tree-toggle-label" for="reference">Reference</label>
+                        
+        <ul class="subtree">
+                
+                                <li >
+                                    <a href="https://docs.gluon.dev/reference/config/">`gluon.json` Reference</a>
+                                </li>
+
+                            
+    
+    </ul>         
+    
+    </div>    
+  </nav>
+    
+
+<article>
+ 
+  
+  <div id="on_right">
+    <span id="search-ico" class="ms-Icon--Search"></span>
+  </div>
+    <div class="search-container">
+          <input id="search" type="search" placeholder="Search as you type...">
+            <div class="search-results">
+              <div class="search-results__header"></div>
+                <ul class="search-results__items"></ul>
+              </div>
+    </div>
+         
+
+  <div id="wrap">
+    
+      <h2 id="welcome-to-the-gluon-docs">Welcome to the Gluon docs&nbsp;<a class="anchor" href="#welcome-to-the-gluon-docs">&#xE732;</a></h2>
+<p>If you are new here, you should read the <a href="./getting-started/overview/">Getting Started</a> guide.</p>
+
+    
+  </div>
+
+</article>
+</main>
+
+  
+  <script type="text/javascript" src="https://docs.gluon.dev/elasticlunr.min.js" defer></script>
+  <script type="text/javascript" src="https://docs.gluon.dev/search_index.en.js" defer></script>
+  <script type="text/javascript" src="https://docs.gluon.dev/js.js" defer></script>
+  
+
+</body>
+</html>

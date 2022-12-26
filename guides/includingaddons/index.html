@@ -1,0 +1,245 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+      <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://docs.gluon.dev/main.css">
+      
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+        <title> Including addons |  </title> 
+    </head>
+    <body>
+
+      
+    <script>
+         fetch('https://api.github.com/repos/pulse-browser/gluon/releases/latest')
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            let release_name = data.name;
+            let html_url = data.html_url;
+            release.innerHTML = `<a href='${html_url}'>${release_name}</a>`;
+          });
+    </script>
+      
+    <main>
+
+      
+
+        <nav>
+          
+            <a href="https:&#x2F;&#x2F;docs.gluon.dev">
+            <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Package/3D/package_3d.png" alt="" />
+                </a>
+            
+            
+          
+
+          
+            <div id="release"></div>
+          
+  
+  <a href="javascript:void(0);" onclick="burger()" id="mobile" class="ms-Icon--GlobalNavButton"></a>
+    <div id="trees">
+               
+            
+                 
+            
+ 
+        <input class="tree-toggle" type="checkbox" id="getting-started" 
+         />
+        <label class="tree-toggle-label" for="getting-started">Getting Started</label>
+                        
+        <ul class="subtree">
+                
+                                <li >
+                                    <a href="https://docs.gluon.dev/getting-started/overview/">Setting up your project</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/getting-started/filestructure/">Understanding the file structure</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/getting-started/userchrome/">Customizing Your Browser&#x27;s UI</a>
+                                </li>
+
+                            
+    
+    </ul>         
+    
+                 
+            
+ 
+        <input class="tree-toggle" type="checkbox" id="guides" 
+        checked />
+        <label class="tree-toggle-label" for="guides">Guides</label>
+                        
+        <ul class="subtree">
+                
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/windows/">Preparing Windows</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/removingpocket/">Removing pocket</a>
+                                </li>
+
+                            
+    
+                                <li class="active">
+                                    <a href="https://docs.gluon.dev/guides/includingaddons/">Including addons</a>
+                                </li>
+
+                             
+                                
+  
+  
+    
+    
+      
+      
+    
+  
+
+  
+
+                        
+    
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/branding/">Branding your browser</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/autoupdates/">Automatic updates</a>
+                                </li>
+
+                            
+    
+    </ul>         
+    
+                 
+            
+ 
+        <input class="tree-toggle" type="checkbox" id="reference" 
+         />
+        <label class="tree-toggle-label" for="reference">Reference</label>
+                        
+        <ul class="subtree">
+                
+                                <li >
+                                    <a href="https://docs.gluon.dev/reference/config/">`gluon.json` Reference</a>
+                                </li>
+
+                            
+    
+    </ul>         
+    
+    </div>    
+  </nav>
+    
+
+<article>
+ 
+  
+  <div id="on_right">
+    <span id="search-ico" class="ms-Icon--Search"></span>
+  </div>
+    <div class="search-container">
+          <input id="search" type="search" placeholder="Search as you type...">
+            <div class="search-results">
+              <div class="search-results__header"></div>
+                <ul class="search-results__items"></ul>
+              </div>
+    </div>
+         
+
+  <div id="wrap">
+     <h1 id="including-addons">Including addons</h1>
+<p>Gluon provides an automated system for including extensions in your project. The addons are downloaded and included during the <code>download</code> build step. Addons can be included in the project config (<code>gluon.json</code>).</p>
+<pre style="background-color:#2b303b;">
+<code class="language-json" data-lang="json"><span style="color:#c0c5ce;">{
+  </span><span style="color:#65737e;">// Your options here
+  </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">addons</span><span style="color:#c0c5ce;">&quot;: {
+    &quot;</span><span style="color:#a3be8c;">ublock</span><span style="color:#c0c5ce;">&quot;: {
+      &quot;</span><span style="color:#a3be8c;">id</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">uBlock0@raymondhill.net</span><span style="color:#c0c5ce;">&quot;,
+      &quot;</span><span style="color:#a3be8c;">url</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">https://github.com/gorhill/uBlock/releases/download/1.39.0/uBlock0_1.39.0.firefox.xpi</span><span style="color:#c0c5ce;">&quot;
+    }
+  }
+}
+</span></code></pre>
+<p>Note that the <code>id</code> is the gecko application id specified in the <code>manifest.json</code>.</p>
+<pre style="background-color:#2b303b;">
+<code class="language-json" data-lang="json"><span style="color:#c0c5ce;">{
+  </span><span style="color:#65737e;">// ...
+
+  </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">browser_specific_settings</span><span style="color:#c0c5ce;">&quot;: {
+    &quot;</span><span style="color:#a3be8c;">gecko</span><span style="color:#c0c5ce;">&quot;: {
+      &quot;</span><span style="color:#a3be8c;">id</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">uBlock0@raymondhill.net</span><span style="color:#c0c5ce;">&quot;,
+      &quot;</span><span style="color:#a3be8c;">strict_min_version</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">60.0</span><span style="color:#c0c5ce;">&quot;
+    }
+  }
+
+  </span><span style="color:#65737e;">// ...
+</span><span style="color:#c0c5ce;">}
+</span></code></pre><h2 id="specifying-location-in-customizable-ui">Specifying location in customizable ui</h2>
+<p>By default, when an addon with a toolbar button, it will placed next to the hamburger menu. However, you may want to place it somewhere else. To do this, you must change the customizable ui in a similar way to how you would to remove pocket.</p>
+<p>You are going to want to open <code>engine/browser/components/customizableui/CustomizableUI.jsm</code>. At the top, you want to import the <code>ExtensionCommon</code> module.</p>
+<pre style="background-color:#2b303b;">
+<code class="language-js" data-lang="js"><span style="color:#b48ead;">const </span><span style="color:#c0c5ce;">{ </span><span style="color:#bf616a;">makeWidgetId </span><span style="color:#c0c5ce;">} = </span><span style="color:#bf616a;">ChromeUtils</span><span style="color:#c0c5ce;">.</span><span style="color:#8fa1b3;">import</span><span style="color:#c0c5ce;">(
+  &#39;</span><span style="color:#a3be8c;">resource://gre/modules/ExtensionCommon.jsm</span><span style="color:#c0c5ce;">&#39;
+).</span><span style="color:#bf616a;">ExtensionCommon
+</span></code></pre>
+<p>Then, at the top add a constant with the id of the addon at the top of the file, for example:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-js" data-lang="js"><span style="color:#b48ead;">const </span><span style="color:#bf616a;">kUBlockOriginID </span><span style="color:#c0c5ce;">= &#39;</span><span style="color:#a3be8c;">uBlock0@raymondhill.net</span><span style="color:#c0c5ce;">&#39;
+</span></code></pre>
+<p>Now, you can go down to the <code>navbarPlacements</code> array (around line 240) and add</p>
+<pre style="background-color:#2b303b;">
+<code class="language-js" data-lang="js"><span style="color:#c0c5ce;">`</span><span style="color:#a3be8c;">${</span><span style="color:#8fa1b3;">makeWidgetId</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">kUBlockOriginID</span><span style="color:#a3be8c;">)}-browser-action</span><span style="color:#c0c5ce;">`,
+</span></code></pre>
+<p>To the array where you want the icon to appear, for example:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-js" data-lang="js"><span style="color:#b48ead;">let </span><span style="color:#bf616a;">navbarPlacements </span><span style="color:#c0c5ce;">= [
+  &#39;</span><span style="color:#a3be8c;">back-button</span><span style="color:#c0c5ce;">&#39;,
+  &#39;</span><span style="color:#a3be8c;">forward-button</span><span style="color:#c0c5ce;">&#39;,
+  &#39;</span><span style="color:#a3be8c;">stop-reload-button</span><span style="color:#c0c5ce;">&#39;,
+  </span><span style="color:#bf616a;">Services</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">policies</span><span style="color:#c0c5ce;">.</span><span style="color:#8fa1b3;">isAllowed</span><span style="color:#c0c5ce;">(&#39;</span><span style="color:#a3be8c;">removeHomeButtonByDefault</span><span style="color:#c0c5ce;">&#39;)
+    ? </span><span style="color:#d08770;">null
+    </span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">home-button</span><span style="color:#c0c5ce;">&#39;,
+  &#39;</span><span style="color:#a3be8c;">spring</span><span style="color:#c0c5ce;">&#39;,
+  `</span><span style="color:#a3be8c;">${</span><span style="color:#8fa1b3;">makeWidgetId</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">kUBlockOriginID</span><span style="color:#a3be8c;">)}-browser-action</span><span style="color:#c0c5ce;">`,
+  &#39;</span><span style="color:#a3be8c;">urlbar-container</span><span style="color:#c0c5ce;">&#39;,
+  &#39;</span><span style="color:#a3be8c;">spring</span><span style="color:#c0c5ce;">&#39;,
+  &#39;</span><span style="color:#a3be8c;">save-to-pocket-button</span><span style="color:#c0c5ce;">&#39;,
+  &#39;</span><span style="color:#a3be8c;">downloads-button</span><span style="color:#c0c5ce;">&#39;,
+  </span><span style="color:#bf616a;">AppConstants</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">MOZ_DEV_EDITION </span><span style="color:#c0c5ce;">? &#39;</span><span style="color:#a3be8c;">developer-button</span><span style="color:#c0c5ce;">&#39; : </span><span style="color:#d08770;">null</span><span style="color:#c0c5ce;">,
+  &#39;</span><span style="color:#a3be8c;">fxa-toolbar-menu-button</span><span style="color:#c0c5ce;">&#39;,
+].</span><span style="color:#8fa1b3;">filter</span><span style="color:#c0c5ce;">((</span><span style="color:#bf616a;">name</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#bf616a;">name</span><span style="color:#c0c5ce;">)
+</span></code></pre>
+<p>Finally, export the changes you have made:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-sh" data-lang="sh"><span style="color:#bf616a;">gluon</span><span style="color:#c0c5ce;"> export-file browser/components/customizableui/CustomizableUI.jsm
+</span></code></pre> 
+  </div>
+
+</article>
+</main>
+
+  
+  <script type="text/javascript" src="https://docs.gluon.dev/elasticlunr.min.js" defer></script>
+  <script type="text/javascript" src="https://docs.gluon.dev/search_index.en.js" defer></script>
+  <script type="text/javascript" src="https://docs.gluon.dev/js.js" defer></script>
+  
+
+</body>
+</html>

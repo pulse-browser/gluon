@@ -1,0 +1,325 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+      <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://docs.gluon.dev/main.css">
+      
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+        <title> Setting up your project |  </title> 
+    </head>
+    <body>
+
+      
+    <script>
+         fetch('https://api.github.com/repos/pulse-browser/gluon/releases/latest')
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            let release_name = data.name;
+            let html_url = data.html_url;
+            release.innerHTML = `<a href='${html_url}'>${release_name}</a>`;
+          });
+    </script>
+      
+    <main>
+
+      
+
+        <nav>
+          
+            <a href="https:&#x2F;&#x2F;docs.gluon.dev">
+            <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Package/3D/package_3d.png" alt="" />
+                </a>
+            
+            
+          
+
+          
+            <div id="release"></div>
+          
+  
+  <a href="javascript:void(0);" onclick="burger()" id="mobile" class="ms-Icon--GlobalNavButton"></a>
+    <div id="trees">
+               
+            
+                 
+            
+ 
+        <input class="tree-toggle" type="checkbox" id="getting-started" 
+        checked />
+        <label class="tree-toggle-label" for="getting-started">Getting Started</label>
+                        
+        <ul class="subtree">
+                
+                                <li class="active">
+                                    <a href="https://docs.gluon.dev/getting-started/overview/">Setting up your project</a>
+                                </li>
+
+                             
+                                
+  
+  
+    
+    
+      
+      
+    
+      
+      
+    
+      
+      
+    
+      
+      
+    
+  
+    
+    
+      
+      
+    
+  
+
+  
+      <ul id="toc">
+        
+          <li><a href="https://docs.gluon.dev/getting-started/overview/#getting-started-with-gluon">Getting started with gluon</a>
+          
+          <ul>        
+            
+            <li><a href="https://docs.gluon.dev/getting-started/overview/#what-is-gluon">What is gluon</a></li>
+            
+            <li><a href="https://docs.gluon.dev/getting-started/overview/#getting-help">Getting help</a></li>
+            
+            <li><a href="https://docs.gluon.dev/getting-started/overview/#system-requirements">System requirements</a></li>
+            
+            <li><a href="https://docs.gluon.dev/getting-started/overview/#getting-started">Getting started</a></li>
+            
+         </ul>
+    
+        </li>
+    
+          <li><a href="https://docs.gluon.dev/getting-started/overview/#common-errors">Common errors</a>
+          
+          <ul>        
+            
+            <li><a href="https://docs.gluon.dev/getting-started/overview/#anything-to-do-with-wasm-ld">Anything to do with wasm-ld</a></li>
+            
+         </ul>
+    
+        </li>
+    
+      </ul>
+    
+
+                        
+    
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/getting-started/filestructure/">Understanding the file structure</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/getting-started/userchrome/">Customizing Your Browser&#x27;s UI</a>
+                                </li>
+
+                            
+    
+    </ul>         
+    
+                 
+            
+ 
+        <input class="tree-toggle" type="checkbox" id="guides" 
+         />
+        <label class="tree-toggle-label" for="guides">Guides</label>
+                        
+        <ul class="subtree">
+                
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/windows/">Preparing Windows</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/removingpocket/">Removing pocket</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/includingaddons/">Including addons</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/branding/">Branding your browser</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/autoupdates/">Automatic updates</a>
+                                </li>
+
+                            
+    
+    </ul>         
+    
+                 
+            
+ 
+        <input class="tree-toggle" type="checkbox" id="reference" 
+         />
+        <label class="tree-toggle-label" for="reference">Reference</label>
+                        
+        <ul class="subtree">
+                
+                                <li >
+                                    <a href="https://docs.gluon.dev/reference/config/">`gluon.json` Reference</a>
+                                </li>
+
+                            
+    
+    </ul>         
+    
+    </div>    
+  </nav>
+    
+
+<article>
+ 
+  
+  <div id="on_right">
+    <span id="search-ico" class="ms-Icon--Search"></span>
+  </div>
+    <div class="search-container">
+          <input id="search" type="search" placeholder="Search as you type...">
+            <div class="search-results">
+              <div class="search-results__header"></div>
+                <ul class="search-results__items"></ul>
+              </div>
+    </div>
+         
+
+  <div id="wrap">
+     <h2 id="getting-started-with-gluon">Getting started with gluon</h2>
+<h3 id="what-is-gluon">What is gluon</h3>
+<p>Gluon is a build tool and documentation for creating firefox-based browsers. Its goal is to simplify the process of creating web browsers to encourage competition and development within the space.</p>
+<h3 id="getting-help">Getting help</h3>
+<p>If you are having problems with following these instructions, or with gluon in general, please contact us. You can <a href="https://github.com/pulse-browser/gluon/discussions/new">create a discussion on github</a>, ping @trickypr on the <a href="https://discord.gg/xNkretH7sD">Fushra Discord</a>.</p>
+<h3 id="system-requirements">System requirements</h3>
+<ul>
+<li><strong>OS</strong>: Linux and MacOS (If you are using windows, take a look at the <a href="../windows/">Windows Guide</a>)</li>
+<li><strong>Gluon dependencies</strong>: NodeJS and npm</li>
+<li><strong>Browser dependencies</strong>: Will be handled by bootstrapping</li>
+</ul>
+<h3 id="getting-started">Getting started</h3>
+<p>The first thing you are going to need to do is to install Gluon. As it is a nodejs program it can be installed through npm or yarn.</p>
+<pre style="background-color:#2b303b;">
+<code class="language-sh" data-lang="sh"><span style="color:#bf616a;">npm</span><span style="color:#c0c5ce;"> install</span><span style="color:#bf616a;"> -g</span><span style="color:#c0c5ce;"> gluon-build@next
+</span><span style="color:#65737e;"># or
+</span><span style="color:#c0c5ce;">yarn global add gluon-build@next
+
+</span><span style="color:#65737e;"># Note: Linux and mac users may have to run the above command with sudo
+</span></code></pre>
+<p>Now create a git repo and clone it to your local machine. Then run the following:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-sh" data-lang="sh"><span style="color:#bf616a;">gluon</span><span style="color:#c0c5ce;"> setup-project
+</span></code></pre>
+<p>This will ask you a variety of questions in relation to your project setup. Firstly, the release of the browser you want to bind to.</p>
+<pre style="background-color:#2b303b;">
+<code><span style="color:#c0c5ce;">? Select a product to fork › - Use arrow-keys. Return to submit.
+❯   Firefox stable
+    Firefox extended support (older)
+    Firefox extended support (newer)
+    Firefox developer edition (Not recommended)
+    Firefox beta (Not recommended)
+</span></code></pre>
+<p>You can change what version you are bound to at any time. Pulse Browser currently uses the stable releases, but if you want a lower workload, the newer Extended Support releases might be good for you.</p>
+<p>Then next is the version of the browser you want to use. By default melon will populate this with the latest version available, which we recommend using. Simply click enter to accept.</p>
+<pre style="background-color:#2b303b;">
+<code><span style="color:#c0c5ce;">? Enter the version of this product › 102.0.1
+</span></code></pre>
+<p>Next it will ask for the name of your browser. Avoid references to Firefox or other Mozilla brands, as this is likely to lead to trademark and copyright issues down the road.</p>
+<pre style="background-color:#2b303b;">
+<code><span style="color:#c0c5ce;">? Enter a product name › Gluon Example Browser
+</span></code></pre>
+<p>The binary name is the name that your program will be run from. We recommend that you add <code>-browser</code> to the end to <a href="https://github.com/dothq/browser/issues/604">avoid conflicts with common utilities</a>.</p>
+<pre style="background-color:#2b303b;">
+<code><span style="color:#c0c5ce;">? Enter the name of the binary › gluon-example-browser
+</span></code></pre>
+<p>Vendor is the company (or solo developer) who is creating the browser.</p>
+<pre style="background-color:#2b303b;">
+<code><span style="color:#c0c5ce;">? Enter a vendor › Fushra
+</span></code></pre>
+<p>The appid follows reverse dns naming conventions. For example, Fushra owns the domain <code>fushra.com</code>, so our browser is <code>com.fushra.browser.desktop</code>. If you do not have a domain, you can use your username / psudomim as the appid, e.g. <code>trickypr.watermelon</code>.</p>
+<pre style="background-color:#2b303b;">
+<code><span style="color:#c0c5ce;">? Enter an appid › dev.gluon.example
+</span></code></pre>
+<p>Next you need to chose a starting template for your browser. If you know what you are doing, you can go with <code>None</code> and configure it how you like. Otherwise, we recommend you stick with <code>UserChrome</code>.</p>
+<pre style="background-color:#2b303b;">
+<code><span style="color:#c0c5ce;">? Select a ui mode template › - Use arrow-keys. Return to submit.
+    None
+❯   User Chrome (custom browser css, simplest)
+</span></code></pre>
+<p>Now you have created the directory structure for your project, you can build it for the first time. First, ask melon to download the firefox source.</p>
+<pre style="background-color:#2b303b;">
+<code class="language-sh" data-lang="sh"><span style="color:#bf616a;">gluon</span><span style="color:#c0c5ce;"> download
+</span></code></pre>
+<p>If you are running this for the first time, you will need to install the firefox dependencies. You can do this via boostrapping:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-sh" data-lang="sh"><span style="color:#bf616a;">gluon</span><span style="color:#c0c5ce;"> bootstrap
+</span></code></pre>
+<p>After the source code has been downloaded, the changes to firefox described in the source code must be applied.</p>
+<pre style="background-color:#2b303b;">
+<code class="language-sh" data-lang="sh"><span style="color:#bf616a;">gluon</span><span style="color:#c0c5ce;"> import
+</span></code></pre>
+<p>Finally, you can start building the firefox source code. This takes around an hour and a half on my computer, but the binary output will be cached, making later builds faster</p>
+<pre style="background-color:#2b303b;">
+<code class="language-sh" data-lang="sh"><span style="color:#bf616a;">gluon</span><span style="color:#c0c5ce;"> build
+</span></code></pre>
+<p>Now you can finally start the browser!</p>
+<pre style="background-color:#2b303b;">
+<code class="language-sh" data-lang="sh"><span style="color:#bf616a;">gluon</span><span style="color:#c0c5ce;"> run
+</span></code></pre><h2 id="common-errors">Common errors</h2>
+<p>Here are some common errors that you might run into whilst running <code>gluon build</code> and some potential fixes.</p>
+<h3 id="anything-to-do-with-wasm-ld">Anything to do with <code>wasm-ld</code></h3>
+<p>On Arch linux, there were two errors that were thrown:</p>
+<pre style="background-color:#2b303b;">
+<code><span style="color:#c0c5ce;">Executable &quot;wasm-ld&quot; doesn&#39;t exist!
+wasm-ld: error: cannot open /usr/lib/clang/{CLANG_VERSION}/lib/wasi/libclang_rt.builtins-wasm32.a: No such file or directory
+</span></code></pre>
+<p>On Linux, I fixed the first error by installing <code>ldd</code>:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-sh" data-lang="sh"><span style="color:#bf616a;">apt-get</span><span style="color:#c0c5ce;"> install lld-7 </span><span style="color:#65737e;"># Debian
+</span><span style="color:#c0c5ce;">apt-get install lld-8 </span><span style="color:#65737e;"># Ubuntu
+</span><span style="color:#c0c5ce;">apk add lld </span><span style="color:#65737e;"># Alpine
+</span><span style="color:#c0c5ce;">pacman</span><span style="color:#bf616a;"> -S</span><span style="color:#c0c5ce;"> lld </span><span style="color:#65737e;"># Arch
+</span><span style="color:#c0c5ce;">dnf install lld </span><span style="color:#65737e;"># Fedora
+</span></code></pre>
+<p>The second error was fixed by installing the associated wasm libraries:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-sh" data-lang="sh"><span style="color:#bf616a;">sudo</span><span style="color:#c0c5ce;"> pacman</span><span style="color:#bf616a;"> -Syu</span><span style="color:#c0c5ce;"> wasi-libc wasi-libc++ wasi-compiler-rt
+</span></code></pre>
+<p>You will need to port the above command to your distrobution. If you do not care about the improved security of sandboxed libraries, you can simply disable them by adding the following to ``</p>
+ 
+  </div>
+
+</article>
+</main>
+
+  
+  <script type="text/javascript" src="https://docs.gluon.dev/elasticlunr.min.js" defer></script>
+  <script type="text/javascript" src="https://docs.gluon.dev/search_index.en.js" defer></script>
+  <script type="text/javascript" src="https://docs.gluon.dev/js.js" defer></script>
+  
+
+</body>
+</html>

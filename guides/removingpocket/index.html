@@ -1,0 +1,235 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+      <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://docs.gluon.dev/main.css">
+      
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+        <title> Removing pocket |  </title> 
+    </head>
+    <body>
+
+      
+    <script>
+         fetch('https://api.github.com/repos/pulse-browser/gluon/releases/latest')
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            let release_name = data.name;
+            let html_url = data.html_url;
+            release.innerHTML = `<a href='${html_url}'>${release_name}</a>`;
+          });
+    </script>
+      
+    <main>
+
+      
+
+        <nav>
+          
+            <a href="https:&#x2F;&#x2F;docs.gluon.dev">
+            <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Package/3D/package_3d.png" alt="" />
+                </a>
+            
+            
+          
+
+          
+            <div id="release"></div>
+          
+  
+  <a href="javascript:void(0);" onclick="burger()" id="mobile" class="ms-Icon--GlobalNavButton"></a>
+    <div id="trees">
+               
+            
+                 
+            
+ 
+        <input class="tree-toggle" type="checkbox" id="getting-started" 
+         />
+        <label class="tree-toggle-label" for="getting-started">Getting Started</label>
+                        
+        <ul class="subtree">
+                
+                                <li >
+                                    <a href="https://docs.gluon.dev/getting-started/overview/">Setting up your project</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/getting-started/filestructure/">Understanding the file structure</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/getting-started/userchrome/">Customizing Your Browser&#x27;s UI</a>
+                                </li>
+
+                            
+    
+    </ul>         
+    
+                 
+            
+ 
+        <input class="tree-toggle" type="checkbox" id="guides" 
+        checked />
+        <label class="tree-toggle-label" for="guides">Guides</label>
+                        
+        <ul class="subtree">
+                
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/windows/">Preparing Windows</a>
+                                </li>
+
+                            
+    
+                                <li class="active">
+                                    <a href="https://docs.gluon.dev/guides/removingpocket/">Removing pocket</a>
+                                </li>
+
+                             
+                                
+  
+  
+    
+    
+      
+      
+    
+      
+      
+    
+  
+
+  
+
+                        
+    
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/includingaddons/">Including addons</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/branding/">Branding your browser</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/autoupdates/">Automatic updates</a>
+                                </li>
+
+                            
+    
+    </ul>         
+    
+                 
+            
+ 
+        <input class="tree-toggle" type="checkbox" id="reference" 
+         />
+        <label class="tree-toggle-label" for="reference">Reference</label>
+                        
+        <ul class="subtree">
+                
+                                <li >
+                                    <a href="https://docs.gluon.dev/reference/config/">`gluon.json` Reference</a>
+                                </li>
+
+                            
+    
+    </ul>         
+    
+    </div>    
+  </nav>
+    
+
+<article>
+ 
+  
+  <div id="on_right">
+    <span id="search-ico" class="ms-Icon--Search"></span>
+  </div>
+    <div class="search-container">
+          <input id="search" type="search" placeholder="Search as you type...">
+            <div class="search-results">
+              <div class="search-results__header"></div>
+                <ul class="search-results__items"></ul>
+              </div>
+    </div>
+         
+
+  <div id="wrap">
+     <h1 id="removing-pocket">Removing pocket</h1>
+<p><strong>Note:</strong> This expects you have gluon setup.</p>
+<h2 id="disabling-in-firefox-js">Disabling in firefox.js</h2>
+<p>The goal of this guide is to disable pocket and remove its icon from the toolbar. The first changes we will need to make is to the firefox.js file located in <code>engine/browser/app/profile/firefox.js</code>. Scroll to the lines that include the following settings (around line 1980 in firefox 94):</p>
+<pre style="background-color:#2b303b;">
+<code class="language-js" data-lang="js"><span style="color:#8fa1b3;">pref</span><span style="color:#c0c5ce;">(&#39;</span><span style="color:#a3be8c;">extensions.pocket.api</span><span style="color:#c0c5ce;">&#39;, &#39;</span><span style="color:#a3be8c;">api.getpocket.com</span><span style="color:#c0c5ce;">&#39;)
+</span><span style="color:#8fa1b3;">pref</span><span style="color:#c0c5ce;">(&#39;</span><span style="color:#a3be8c;">extensions.pocket.enabled</span><span style="color:#c0c5ce;">&#39;, </span><span style="color:#d08770;">true</span><span style="color:#c0c5ce;">)
+</span><span style="color:#8fa1b3;">pref</span><span style="color:#c0c5ce;">(&#39;</span><span style="color:#a3be8c;">extensions.pocket.oAuthConsumerKey</span><span style="color:#c0c5ce;">&#39;, &#39;</span><span style="color:#a3be8c;">40249-e88c401e1b1f2242d9e441c4</span><span style="color:#c0c5ce;">&#39;)
+</span><span style="color:#8fa1b3;">pref</span><span style="color:#c0c5ce;">(&#39;</span><span style="color:#a3be8c;">extensions.pocket.site</span><span style="color:#c0c5ce;">&#39;, &#39;</span><span style="color:#a3be8c;">getpocket.com</span><span style="color:#c0c5ce;">&#39;)
+</span><span style="color:#8fa1b3;">pref</span><span style="color:#c0c5ce;">(&#39;</span><span style="color:#a3be8c;">extensions.pocket.onSaveRecs</span><span style="color:#c0c5ce;">&#39;, </span><span style="color:#d08770;">true</span><span style="color:#c0c5ce;">)
+</span><span style="color:#8fa1b3;">pref</span><span style="color:#c0c5ce;">(&#39;</span><span style="color:#a3be8c;">extensions.pocket.onSaveRecs.locales</span><span style="color:#c0c5ce;">&#39;, &#39;</span><span style="color:#a3be8c;">en-US,en-GB,en-CA</span><span style="color:#c0c5ce;">&#39;)
+</span></code></pre>
+<p>Delete these lines and replace them with the following:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-js" data-lang="js"><span style="color:#65737e;">// Taken from BetterFox user.js
+</span><span style="color:#8fa1b3;">user_pref</span><span style="color:#c0c5ce;">(&#39;</span><span style="color:#a3be8c;">extensions.pocket.enabled</span><span style="color:#c0c5ce;">&#39;, </span><span style="color:#d08770;">false</span><span style="color:#c0c5ce;">)
+</span><span style="color:#8fa1b3;">user_pref</span><span style="color:#c0c5ce;">(&#39;</span><span style="color:#a3be8c;">extensions.pocket.api</span><span style="color:#c0c5ce;">&#39;, &#39; &#39;)
+</span><span style="color:#8fa1b3;">user_pref</span><span style="color:#c0c5ce;">(&#39;</span><span style="color:#a3be8c;">extensions.pocket.oAuthConsumerKey</span><span style="color:#c0c5ce;">&#39;, &#39; &#39;)
+</span><span style="color:#8fa1b3;">user_pref</span><span style="color:#c0c5ce;">(&#39;</span><span style="color:#a3be8c;">extensions.pocket.site</span><span style="color:#c0c5ce;">&#39;, &#39; &#39;)
+</span></code></pre>
+<p>Next, you will need to remove pocket from the new tab page. You can do this by simply adding the following line to the bottom of <code>firefox.js</code>:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-js" data-lang="js"><span style="color:#8fa1b3;">user_pref</span><span style="color:#c0c5ce;">(
+  &#39;</span><span style="color:#a3be8c;">browser.newtabpage.activity-stream.section.highlights.includePocket</span><span style="color:#c0c5ce;">&#39;,
+  </span><span style="color:#d08770;">false
+</span><span style="color:#c0c5ce;">)
+</span></code></pre>
+<p>Now you simply need to export the changes made to <code>firefox.js</code>:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-sh" data-lang="sh"><span style="color:#bf616a;">gluon</span><span style="color:#c0c5ce;"> export-file browser/app/profile/firefox.js
+</span></code></pre><h2 id="removing-pocket-icon-from-toolbar">Removing pocket icon from toolbar</h2>
+<p>Whilst the steps above will have disabled pocket. The pocket icon will still be visible in the toolbar. Instead you must remove it from the CustomizableUI layout. Open <code>engine/browser/components/customizableui/CustomizableUI.jsm</code> and find the array that looks like this (around line 240):</p>
+<pre style="background-color:#2b303b;">
+<code class="language-js" data-lang="js"><span style="color:#b48ead;">let </span><span style="color:#bf616a;">navbarPlacements </span><span style="color:#c0c5ce;">= [
+  &#39;</span><span style="color:#a3be8c;">back-button</span><span style="color:#c0c5ce;">&#39;,
+  &#39;</span><span style="color:#a3be8c;">forward-button</span><span style="color:#c0c5ce;">&#39;,
+  &#39;</span><span style="color:#a3be8c;">stop-reload-button</span><span style="color:#c0c5ce;">&#39;,
+  </span><span style="color:#bf616a;">Services</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">policies</span><span style="color:#c0c5ce;">.</span><span style="color:#8fa1b3;">isAllowed</span><span style="color:#c0c5ce;">(&#39;</span><span style="color:#a3be8c;">removeHomeButtonByDefault</span><span style="color:#c0c5ce;">&#39;)
+    ? </span><span style="color:#d08770;">null
+    </span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">home-button</span><span style="color:#c0c5ce;">&#39;,
+  &#39;</span><span style="color:#a3be8c;">spring</span><span style="color:#c0c5ce;">&#39;,
+  &#39;</span><span style="color:#a3be8c;">urlbar-container</span><span style="color:#c0c5ce;">&#39;,
+  &#39;</span><span style="color:#a3be8c;">spring</span><span style="color:#c0c5ce;">&#39;,
+  &#39;</span><span style="color:#a3be8c;">save-to-pocket-button</span><span style="color:#c0c5ce;">&#39;,
+  &#39;</span><span style="color:#a3be8c;">downloads-button</span><span style="color:#c0c5ce;">&#39;,
+  </span><span style="color:#bf616a;">AppConstants</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">MOZ_DEV_EDITION </span><span style="color:#c0c5ce;">? &#39;</span><span style="color:#a3be8c;">developer-button</span><span style="color:#c0c5ce;">&#39; : </span><span style="color:#d08770;">null</span><span style="color:#c0c5ce;">,
+  &#39;</span><span style="color:#a3be8c;">fxa-toolbar-menu-button</span><span style="color:#c0c5ce;">&#39;,
+].</span><span style="color:#8fa1b3;">filter</span><span style="color:#c0c5ce;">((</span><span style="color:#bf616a;">name</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#bf616a;">name</span><span style="color:#c0c5ce;">)
+</span></code></pre>
+<p>Remove the <code>save-to-pocket-button</code> item from the array and export the changes:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-sh" data-lang="sh"><span style="color:#bf616a;">gluon</span><span style="color:#c0c5ce;"> export-file browser/components/customizableui/CustomizableUI.jsm
+</span></code></pre> 
+  </div>
+
+</article>
+</main>
+
+  
+  <script type="text/javascript" src="https://docs.gluon.dev/elasticlunr.min.js" defer></script>
+  <script type="text/javascript" src="https://docs.gluon.dev/search_index.en.js" defer></script>
+  <script type="text/javascript" src="https://docs.gluon.dev/js.js" defer></script>
+  
+
+</body>
+</html>

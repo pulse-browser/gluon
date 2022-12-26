@@ -1,0 +1,218 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+      <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://docs.gluon.dev/main.css">
+      
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+        <title> Automatic updates |  </title> 
+    </head>
+    <body>
+
+      
+    <script>
+         fetch('https://api.github.com/repos/pulse-browser/gluon/releases/latest')
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            let release_name = data.name;
+            let html_url = data.html_url;
+            release.innerHTML = `<a href='${html_url}'>${release_name}</a>`;
+          });
+    </script>
+      
+    <main>
+
+      
+
+        <nav>
+          
+            <a href="https:&#x2F;&#x2F;docs.gluon.dev">
+            <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Package/3D/package_3d.png" alt="" />
+                </a>
+            
+            
+          
+
+          
+            <div id="release"></div>
+          
+  
+  <a href="javascript:void(0);" onclick="burger()" id="mobile" class="ms-Icon--GlobalNavButton"></a>
+    <div id="trees">
+               
+            
+                 
+            
+ 
+        <input class="tree-toggle" type="checkbox" id="getting-started" 
+         />
+        <label class="tree-toggle-label" for="getting-started">Getting Started</label>
+                        
+        <ul class="subtree">
+                
+                                <li >
+                                    <a href="https://docs.gluon.dev/getting-started/overview/">Setting up your project</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/getting-started/filestructure/">Understanding the file structure</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/getting-started/userchrome/">Customizing Your Browser&#x27;s UI</a>
+                                </li>
+
+                            
+    
+    </ul>         
+    
+                 
+            
+ 
+        <input class="tree-toggle" type="checkbox" id="guides" 
+        checked />
+        <label class="tree-toggle-label" for="guides">Guides</label>
+                        
+        <ul class="subtree">
+                
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/windows/">Preparing Windows</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/removingpocket/">Removing pocket</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/includingaddons/">Including addons</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/branding/">Branding your browser</a>
+                                </li>
+
+                            
+    
+                                <li class="active">
+                                    <a href="https://docs.gluon.dev/guides/autoupdates/">Automatic updates</a>
+                                </li>
+
+                             
+                                
+  
+  
+    
+    
+      
+      
+    
+  
+
+  
+
+                        
+    
+    
+    </ul>         
+    
+                 
+            
+ 
+        <input class="tree-toggle" type="checkbox" id="reference" 
+         />
+        <label class="tree-toggle-label" for="reference">Reference</label>
+                        
+        <ul class="subtree">
+                
+                                <li >
+                                    <a href="https://docs.gluon.dev/reference/config/">`gluon.json` Reference</a>
+                                </li>
+
+                            
+    
+    </ul>         
+    
+    </div>    
+  </nav>
+    
+
+<article>
+ 
+  
+  <div id="on_right">
+    <span id="search-ico" class="ms-Icon--Search"></span>
+  </div>
+    <div class="search-container">
+          <input id="search" type="search" placeholder="Search as you type...">
+            <div class="search-results">
+              <div class="search-results__header"></div>
+                <ul class="search-results__items"></ul>
+              </div>
+    </div>
+         
+
+  <div id="wrap">
+     <h1 id="automatic-updates">Automatic updates</h1>
+<blockquote>
+<p><strong>Note</strong>
+Automatic updates only works for browsers using GitHub to host their binaries.</p>
+</blockquote>
+<p>Mozilla provides an automatic update service that can be used by anyone building a Firefox fork or any other application that depends on Mozilla toolkit.</p>
+<p>Attached to your &quot;brand&quot;, you will need to include information regarding that brand's release. For example, Pulse has the following information attached to its alpha brand.</p>
+<pre style="background-color:#2b303b;">
+<code class="language-json" data-lang="json"><span style="color:#c0c5ce;">{
+  </span><span style="background-color:#bf616a;color:#2b303b;">...,</span><span style="color:#c0c5ce;">
+  &quot;</span><span style="color:#a3be8c;">brands</span><span style="color:#c0c5ce;">&quot;: {
+    </span><span style="background-color:#bf616a;color:#2b303b;">...,</span><span style="color:#c0c5ce;">
+    &quot;</span><span style="color:#a3be8c;">alpha</span><span style="color:#c0c5ce;">&quot;: {
+      </span><span style="background-color:#bf616a;color:#2b303b;">...,</span><span style="color:#c0c5ce;">
+
+      &quot;</span><span style="color:#a3be8c;">release</span><span style="color:#c0c5ce;">&quot;: {
+        &quot;</span><span style="color:#a3be8c;">displayVersion</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">1.0.0-a.17</span><span style="color:#c0c5ce;">&quot;,
+        &quot;</span><span style="color:#a3be8c;">github</span><span style="color:#c0c5ce;">&quot;: {
+          &quot;</span><span style="color:#a3be8c;">repo</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">pulse-browser/browser</span><span style="color:#c0c5ce;">&quot;
+        },
+        &quot;</span><span style="color:#a3be8c;">x86</span><span style="color:#c0c5ce;">&quot;: {
+          &quot;</span><span style="color:#a3be8c;">windowsMar</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">windows.mar</span><span style="color:#c0c5ce;">&quot;,
+          &quot;</span><span style="color:#a3be8c;">macosMar</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">macosIntel.mar</span><span style="color:#c0c5ce;">&quot;,
+          &quot;</span><span style="color:#a3be8c;">linuxMar</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">linux.mar</span><span style="color:#c0c5ce;">&quot;
+        }
+      }
+    }
+  },
+  </span><span style="background-color:#bf616a;color:#2b303b;">...</span><span style="color:#c0c5ce;">
+}
+</span></code></pre>
+<p>The release key includes both the latest version (<code>displayVersion</code>) and release info. In this case, binaries are released to github. For <code>x86</code>, we provide a number of <code>.mar</code> files for each platform. <code>.mar</code> files are &quot;Mozilla Archives&quot; and are used to distribute updates.</p>
+<p>When creating update manifests, they will point to <a href="https://github.com/pulse-browser/browser/releases/tag/1.0.0-a.17">the release tagged <code>displayVersion</code></a>. The update manifests tell Mozilla's updater to download the update manifest with the version that corresponds with the file name above. So an x86 linux computer will download the <code>linux.mar</code> file and use that to update.</p>
+<h2 id="creating-mar-files-and-update-manifests">Creating MAR files and update manifests</h2>
+<p>Both <code>.mar</code> files and the update manifests are automatically created by running <code>gluon package</code>. This will generate a number of files in the <code>dist</code> directory.</p>
+<p>An <code>output.mar</code> will be included in the root, which you should rename to the appropriate platform. For example, <code>linux.mar</code> for linux. This should be included with your GitHub release.</p>
+<p>Update manifests are stored in the <code>dist/update</code> directory. The contents of this directory should be uploaded to a webserver (e.g. GitHub Pages or S3) such that their root is at <code>/updates/browser/</code>.</p>
+<p>You will then need to set the <code>updateHostname</code> in <code>gluon.json</code> to the url of your update server. For Pulse, this is <code>updates.pulsebrowser.app</code>. You may also need to change the update server specified <a href="https://searchfox.org/mozilla-central/rev/560b7b1b174ed36912b969eee0c1920f3c59bc56/build/moz.build#94">here</a>.</p>
+ 
+  </div>
+
+</article>
+</main>
+
+  
+  <script type="text/javascript" src="https://docs.gluon.dev/elasticlunr.min.js" defer></script>
+  <script type="text/javascript" src="https://docs.gluon.dev/search_index.en.js" defer></script>
+  <script type="text/javascript" src="https://docs.gluon.dev/js.js" defer></script>
+  
+
+</body>
+</html>

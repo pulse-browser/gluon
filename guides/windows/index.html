@@ -1,0 +1,224 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+      <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://docs.gluon.dev/main.css">
+      
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+        <title> Preparing Windows |  </title> 
+    </head>
+    <body>
+
+      
+    <script>
+         fetch('https://api.github.com/repos/pulse-browser/gluon/releases/latest')
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            let release_name = data.name;
+            let html_url = data.html_url;
+            release.innerHTML = `<a href='${html_url}'>${release_name}</a>`;
+          });
+    </script>
+      
+    <main>
+
+      
+
+        <nav>
+          
+            <a href="https:&#x2F;&#x2F;docs.gluon.dev">
+            <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Package/3D/package_3d.png" alt="" />
+                </a>
+            
+            
+          
+
+          
+            <div id="release"></div>
+          
+  
+  <a href="javascript:void(0);" onclick="burger()" id="mobile" class="ms-Icon--GlobalNavButton"></a>
+    <div id="trees">
+               
+            
+                 
+            
+ 
+        <input class="tree-toggle" type="checkbox" id="getting-started" 
+         />
+        <label class="tree-toggle-label" for="getting-started">Getting Started</label>
+                        
+        <ul class="subtree">
+                
+                                <li >
+                                    <a href="https://docs.gluon.dev/getting-started/overview/">Setting up your project</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/getting-started/filestructure/">Understanding the file structure</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/getting-started/userchrome/">Customizing Your Browser&#x27;s UI</a>
+                                </li>
+
+                            
+    
+    </ul>         
+    
+                 
+            
+ 
+        <input class="tree-toggle" type="checkbox" id="guides" 
+        checked />
+        <label class="tree-toggle-label" for="guides">Guides</label>
+                        
+        <ul class="subtree">
+                
+                                <li class="active">
+                                    <a href="https://docs.gluon.dev/guides/windows/">Preparing Windows</a>
+                                </li>
+
+                             
+                                
+  
+  
+    
+    
+      
+      
+    
+      
+      
+    
+  
+
+  
+
+                        
+    
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/removingpocket/">Removing pocket</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/includingaddons/">Including addons</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/branding/">Branding your browser</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/autoupdates/">Automatic updates</a>
+                                </li>
+
+                            
+    
+    </ul>         
+    
+                 
+            
+ 
+        <input class="tree-toggle" type="checkbox" id="reference" 
+         />
+        <label class="tree-toggle-label" for="reference">Reference</label>
+                        
+        <ul class="subtree">
+                
+                                <li >
+                                    <a href="https://docs.gluon.dev/reference/config/">`gluon.json` Reference</a>
+                                </li>
+
+                            
+    
+    </ul>         
+    
+    </div>    
+  </nav>
+    
+
+<article>
+ 
+  
+  <div id="on_right">
+    <span id="search-ico" class="ms-Icon--Search"></span>
+  </div>
+    <div class="search-container">
+          <input id="search" type="search" placeholder="Search as you type...">
+            <div class="search-results">
+              <div class="search-results__header"></div>
+                <ul class="search-results__items"></ul>
+              </div>
+    </div>
+         
+
+  <div id="wrap">
+     <h1 id="preparing-windows">Preparing Windows</h1>
+<p>Building on windows is significantly more complex than building on macos or linux. This guide will walk you through preparing your Windows machine for building a Firefox fork. Before building, you should be aware that <a href="https://firefox-source-docs.mozilla.org/build/buildsystem/supported-configurations.html#build-hosts">only Windows 10 or 11 are officially supported</a>, but you might be able to get other versions to work.</p>
+<h2 id="installing-dependencies">Installing Dependencies</h2>
+<p>The first thing you will need to do is install Microsoft's c++ build tools. You will need to download <a href="https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022">Build Tools for Visual Studio 2022</a>. The following will need to be need installed:</p>
+<ul>
+<li><strong>In the <em>Workloads</em> tab</strong>
+<ul>
+<li>Desktop development with C++</li>
+</ul>
+</li>
+<li><strong>In the <em>Individual components</em> tab</strong>
+<ul>
+<li>MSVC v143 - VS 2022 C++ x64/x86 build tools.</li>
+<li>Windows 10 SDK (at least 10.0.19041.0).</li>
+<li>C++ ATL for v143 build tools (x86 and x64).</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><strong>Note:</strong>
+If this guide ever gets out of date, you can get the latest build requirements from <a href="https://firefox-source-docs.mozilla.org/setup/windows_build.html#system-preparation">Mozilla's docs</a></p>
+</blockquote>
+<p>You will need to install <a href="https://ftp.mozilla.org/pub/mozilla/libraries/win32/MozillaBuildSetup-Latest.exe">MozillaBuild</a>. Next, <a href="https://git-scm.com/download/win">install Git</a>. You will need to set the following specific options on install to ensure high performance:</p>
+<ul>
+<li>Configuring the line ending conversions must be: Checkout as-is, commit as-is</li>
+<li>Enable experimental built-in file system monitor</li>
+</ul>
+<p>Install <a href="https://nodejs.org/en/download/current/">NodeJS</a> on your system. This should also install chocolatey. If it does not, <a href="https://docs.chocolatey.org/en-us/choco/setup">install it manually</a>. To install the final two dependencies, run:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-sh" data-lang="sh"><span style="color:#bf616a;">npm</span><span style="color:#c0c5ce;"> install</span><span style="color:#bf616a;"> --global</span><span style="color:#c0c5ce;"> yarn</span><span style="color:#c0c5ce;">
+</span><span style="color:#bf616a;">choco</span><span style="color:#c0c5ce;"> install make</span><span style="color:#c0c5ce;">
+</span></code></pre>
+<p>You should be good to return back to the main <a href="/getting-started/overview">Getting Started docs</a></p>
+<h2 id="additional-packages-required-for-releasing">Additional packages required for releasing</h2>
+<p>If you are creating binaries to target windows, you will need nsis (which mach calls <code>makensisu</code> for some reason, even though the binary is <code>makensis</code>):</p>
+<pre style="background-color:#2b303b;">
+<code class="language-powershell" data-lang="powershell"><span style="color:#c0c5ce;">choco install nsis</span><span style="color:#c0c5ce;">
+</span></code></pre>
+<p>Note that you will also have to provide a path to nsis on your system. For mine it is:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-sh" data-lang="sh"><span style="color:#b48ead;">export </span><span style="color:#bf616a;">MAKENSISU</span><span style="color:#c0c5ce;">=&quot;</span><span style="color:#a3be8c;">C:</span><span style="color:#96b5b4;">\\</span><span style="color:#a3be8c;">Program Files (x86)</span><span style="color:#96b5b4;">\\</span><span style="color:#a3be8c;">NSIS</span><span style="color:#96b5b4;">\\</span><span style="color:#a3be8c;">Bin</span><span style="color:#96b5b4;">\\</span><span style="color:#a3be8c;">makensis.exe</span><span style="color:#c0c5ce;">&quot;</span><span style="color:#c0c5ce;">
+</span></code></pre> 
+  </div>
+
+</article>
+</main>
+
+  
+  <script type="text/javascript" src="https://docs.gluon.dev/elasticlunr.min.js" defer></script>
+  <script type="text/javascript" src="https://docs.gluon.dev/search_index.en.js" defer></script>
+  <script type="text/javascript" src="https://docs.gluon.dev/js.js" defer></script>
+  
+
+</body>
+</html>

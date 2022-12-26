@@ -1,0 +1,495 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+      <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://docs.gluon.dev/main.css">
+      
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+        <title> `gluon.json` Reference |  </title> 
+    </head>
+    <body>
+
+      
+    <script>
+         fetch('https://api.github.com/repos/pulse-browser/gluon/releases/latest')
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            let release_name = data.name;
+            let html_url = data.html_url;
+            release.innerHTML = `<a href='${html_url}'>${release_name}</a>`;
+          });
+    </script>
+      
+    <main>
+
+      
+
+        <nav>
+          
+            <a href="https:&#x2F;&#x2F;docs.gluon.dev">
+            <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Package/3D/package_3d.png" alt="" />
+                </a>
+            
+            
+          
+
+          
+            <div id="release"></div>
+          
+  
+  <a href="javascript:void(0);" onclick="burger()" id="mobile" class="ms-Icon--GlobalNavButton"></a>
+    <div id="trees">
+               
+            
+                 
+            
+ 
+        <input class="tree-toggle" type="checkbox" id="getting-started" 
+         />
+        <label class="tree-toggle-label" for="getting-started">Getting Started</label>
+                        
+        <ul class="subtree">
+                
+                                <li >
+                                    <a href="https://docs.gluon.dev/getting-started/overview/">Setting up your project</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/getting-started/filestructure/">Understanding the file structure</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/getting-started/userchrome/">Customizing Your Browser&#x27;s UI</a>
+                                </li>
+
+                            
+    
+    </ul>         
+    
+                 
+            
+ 
+        <input class="tree-toggle" type="checkbox" id="guides" 
+         />
+        <label class="tree-toggle-label" for="guides">Guides</label>
+                        
+        <ul class="subtree">
+                
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/windows/">Preparing Windows</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/removingpocket/">Removing pocket</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/includingaddons/">Including addons</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/branding/">Branding your browser</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/autoupdates/">Automatic updates</a>
+                                </li>
+
+                            
+    
+    </ul>         
+    
+                 
+            
+ 
+        <input class="tree-toggle" type="checkbox" id="reference" 
+        checked />
+        <label class="tree-toggle-label" for="reference">Reference</label>
+                        
+        <ul class="subtree">
+                
+                                <li class="active">
+                                    <a href="https://docs.gluon.dev/reference/config/">`gluon.json` Reference</a>
+                                </li>
+
+                             
+                                
+  
+  
+    
+    
+      
+      
+    
+      
+      
+    
+      
+      
+    
+      
+      
+    
+      
+      
+    
+      
+      
+    
+      
+      
+    
+      
+      
+        
+      
+    
+      
+      
+    
+      
+      
+    
+  
+
+  
+      <ul id="toc">
+        
+          <li><a href="https://docs.gluon.dev/reference/config/#gluon-json-reference">gluon.json Reference</a>
+          
+          <ul>        
+            
+            <li><a href="https://docs.gluon.dev/reference/config/#name">name</a></li>
+            
+            <li><a href="https://docs.gluon.dev/reference/config/#vendor">vendor</a></li>
+            
+            <li><a href="https://docs.gluon.dev/reference/config/#appid">appId</a></li>
+            
+            <li><a href="https://docs.gluon.dev/reference/config/#binaryname">binaryName</a></li>
+            
+            <li><a href="https://docs.gluon.dev/reference/config/#updatehostname">updateHostname</a></li>
+            
+            <li><a href="https://docs.gluon.dev/reference/config/#license">license</a></li>
+            
+            <li><a href="https://docs.gluon.dev/reference/config/#version">version</a></li>
+            
+            <li><a href="https://docs.gluon.dev/reference/config/#buildoptions">buildOptions</a></li>
+            
+            <li><a href="https://docs.gluon.dev/reference/config/#addons">addons</a></li>
+            
+            <li><a href="https://docs.gluon.dev/reference/config/#brands">brands</a></li>
+            
+         </ul>
+    
+        </li>
+    
+      </ul>
+    
+
+                        
+    
+    
+    </ul>         
+    
+    </div>    
+  </nav>
+    
+
+<article>
+ 
+  
+  <div id="on_right">
+    <span id="search-ico" class="ms-Icon--Search"></span>
+  </div>
+    <div class="search-container">
+          <input id="search" type="search" placeholder="Search as you type...">
+            <div class="search-results">
+              <div class="search-results__header"></div>
+                <ul class="search-results__items"></ul>
+              </div>
+    </div>
+         
+
+  <div id="wrap">
+     <h1 id="gluon-json-reference">gluon.json Reference</h1>
+<p>This reference guide may get out dated. If you need to check something, you can read <a href="https://github.com/pulse-browser/gluon/blob/main/src/utils/config.ts#L96">the config interface type</a>.</p>
+<h2 id="name">name</h2>
+<p>This is the name of the product that is to be built.</p>
+<pre style="background-color:#2b303b;">
+<code class="language-json" data-lang="json"><span style="color:#c0c5ce;">{
+  &quot;</span><span style="color:#a3be8c;">name</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">Pulse Browser</span><span style="color:#c0c5ce;">&quot;
+}
+</span></code></pre><h2 id="vendor">vendor</h2>
+<p>The name of the company that is building the browser</p>
+<pre style="background-color:#2b303b;">
+<code class="language-json" data-lang="json"><span style="color:#c0c5ce;">{
+  &quot;</span><span style="color:#a3be8c;">vendor</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">Fushra</span><span style="color:#c0c5ce;">&quot;
+}
+</span></code></pre><h2 id="appid">appId</h2>
+<p>A reverse DNS identifier for the browser</p>
+<pre style="background-color:#2b303b;">
+<code class="language-json" data-lang="json"><span style="color:#c0c5ce;">{
+  &quot;</span><span style="color:#a3be8c;">appId</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">com.fushra.browser</span><span style="color:#c0c5ce;">&quot;
+}
+</span></code></pre><h2 id="binaryname">binaryName</h2>
+<p>The name of the output binary.</p>
+<pre style="background-color:#2b303b;">
+<code class="language-json" data-lang="json"><span style="color:#c0c5ce;">{
+  &quot;</span><span style="color:#a3be8c;">binaryName</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">pulse-browser</span><span style="color:#c0c5ce;">&quot;
+}
+</span></code></pre><h2 id="updatehostname">updateHostname</h2>
+<p>The host of the update server for updating. This is configured as part of the build command</p>
+<pre style="background-color:#2b303b;">
+<code class="language-json" data-lang="json"><span style="color:#c0c5ce;">{
+  &quot;</span><span style="color:#a3be8c;">updateHostname</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">updates.pulsebrowser.app</span><span style="color:#c0c5ce;">&quot;
+}
+</span></code></pre><h2 id="license">license</h2>
+<p>Information about the license the browser will be under. This is used by the Gluon license checker to ensure files have the MPL header if specified.</p>
+<p>Specification:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-ts" data-lang="ts"><span style="color:#b48ead;">interface </span><span style="color:#c0c5ce;">LicenseConfig {
+  </span><span style="color:#65737e;">/**
+   * What license you intend to put your project under. Currently MPL is the
+   * only one supported by the license checker, but if you want implement more
+   * please feel free to open a pull request.
+   *
+   * To disable the license checker, set this type to `unknown`
+   */
+  </span><span style="color:#bf616a;">licenseType</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">MPL-2.0</span><span style="color:#c0c5ce;">&#39; | &#39;</span><span style="color:#a3be8c;">unknown</span><span style="color:#c0c5ce;">&#39;
+  </span><span style="color:#65737e;">/**
+   * Files to be ignored by the license checker. For default values see the
+   * `defaultConfig` variable in the config.ts file
+   *
+   * These should be rejex tests because compiled regex tests are **really**
+   * fast which will stop the license checker from becoming absurdly slow with
+   * larger projects
+   */
+  </span><span style="color:#bf616a;">ignoredFiles</span><span style="color:#c0c5ce;">: string[]
+}
+</span></code></pre>
+<p>Example:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-json" data-lang="json"><span style="color:#c0c5ce;">{
+  &quot;</span><span style="color:#a3be8c;">licenseType</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">MPL-2.0</span><span style="color:#c0c5ce;">&quot;,
+  &quot;</span><span style="color:#a3be8c;">ignoredFiles</span><span style="color:#c0c5ce;">&quot;: [&quot;</span><span style="color:#a3be8c;">.*</span><span style="color:#96b5b4;">\\</span><span style="color:#a3be8c;">.json</span><span style="color:#c0c5ce;">&quot;]
+}
+</span></code></pre>
+<p>Commands that maybe used:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-sh" data-lang="sh"><span style="color:#bf616a;">gluon</span><span style="color:#c0c5ce;"> license-check
+</span><span style="color:#bf616a;">gluon</span><span style="color:#c0c5ce;"> lc </span><span style="color:#65737e;"># Alias
+</span></code></pre><h2 id="version">version</h2>
+<p>Provides information to gluon about the product and version that Gluon is responsible for managing.</p>
+<p>Specification:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-typescript" data-lang="typescript"><span style="color:#b48ead;">enum </span><span style="color:#c0c5ce;">SupportedProducts {
+  </span><span style="color:#bf616a;">Firefox </span><span style="color:#c0c5ce;">= &#39;</span><span style="color:#a3be8c;">firefox</span><span style="color:#c0c5ce;">&#39;,
+  </span><span style="color:#bf616a;">FirefoxESR </span><span style="color:#c0c5ce;">= &#39;</span><span style="color:#a3be8c;">firefox-esr</span><span style="color:#c0c5ce;">&#39;,
+  </span><span style="color:#bf616a;">FirefoxESRNext </span><span style="color:#c0c5ce;">= &#39;</span><span style="color:#a3be8c;">firefox-esr-next</span><span style="color:#c0c5ce;">&#39;,
+  </span><span style="color:#bf616a;">FirefoxDev </span><span style="color:#c0c5ce;">= &#39;</span><span style="color:#a3be8c;">firefox-dev</span><span style="color:#c0c5ce;">&#39;,
+  </span><span style="color:#bf616a;">FirefoxBeta </span><span style="color:#c0c5ce;">= &#39;</span><span style="color:#a3be8c;">firefox-beta</span><span style="color:#c0c5ce;">&#39;,
+  </span><span style="color:#bf616a;">FirefoxNightly </span><span style="color:#c0c5ce;">= &#39;</span><span style="color:#a3be8c;">firefox-nightly</span><span style="color:#c0c5ce;">&#39;,
+}
+
+</span><span style="color:#b48ead;">interface </span><span style="color:#c0c5ce;">VersionConfig {
+  </span><span style="color:#65737e;">/**
+   * What branch of firefox you are forking. e.g. stable (&#39;firefox&#39;), dev (&#39;firefox-dev&#39;)
+   * , esr (&#39;firefox-esr&#39;) etc.
+   *
+   * For use in code, use {</span><span style="color:#b48ead;">@link </span><span style="color:#bf616a;">SupportedProducts</span><span style="color:#65737e;">}
+   */
+  </span><span style="color:#bf616a;">product</span><span style="color:#c0c5ce;">: SupportedProducts
+  </span><span style="color:#65737e;">/**
+   * The version of the selected product you are forking
+   */
+  </span><span style="color:#bf616a;">version</span><span style="color:#c0c5ce;">?: string
+}
+</span></code></pre>
+<p>Example</p>
+<pre style="background-color:#2b303b;">
+<code class="language-json" data-lang="json"><span style="color:#c0c5ce;">{
+  &quot;</span><span style="color:#a3be8c;">version</span><span style="color:#c0c5ce;">&quot;: {
+    &quot;</span><span style="color:#a3be8c;">product</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">firefox</span><span style="color:#c0c5ce;">&quot;,
+    &quot;</span><span style="color:#a3be8c;">version</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">102.0.1</span><span style="color:#c0c5ce;">&quot;
+  }
+}
+</span></code></pre><h2 id="buildoptions">buildOptions</h2>
+<p>These are flags that change how parts of Gluon operate.</p>
+<h3 id="windowsusesymboliclinks">windowsUseSymbolicLinks</h3>
+<p>When set to <code>true</code>, symbolic links will be enabled on Windows. From internal testing, this appears to fail on a majority of computers</p>
+<h2 id="addons">addons</h2>
+<p>An index for each addon. These will be downloaded and configured as part of the <code>download</code> step that gluon performs. You can download extensions from AMO, Github or any URL. Note that the furha-robot will only be able to provide update checking to AMO and Github Extensions.</p>
+<p>Specification:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-typescript" data-lang="typescript"><span style="color:#b48ead;">export interface </span><span style="color:#c0c5ce;">GithubAddonInfo {
+  </span><span style="color:#bf616a;">platform</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">github</span><span style="color:#c0c5ce;">&#39;
+  </span><span style="color:#bf616a;">id</span><span style="color:#c0c5ce;">: string
+  </span><span style="color:#bf616a;">repo</span><span style="color:#c0c5ce;">: string
+  </span><span style="color:#bf616a;">version</span><span style="color:#c0c5ce;">: string
+  </span><span style="color:#bf616a;">fileGlob</span><span style="color:#c0c5ce;">: string
+}
+
+</span><span style="color:#b48ead;">export interface </span><span style="color:#c0c5ce;">AMOAddonInfo {
+  </span><span style="color:#bf616a;">platform</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">amo</span><span style="color:#c0c5ce;">&#39;
+  </span><span style="color:#bf616a;">id</span><span style="color:#c0c5ce;">: string
+  </span><span style="color:#bf616a;">amoId</span><span style="color:#c0c5ce;">: string
+  </span><span style="color:#bf616a;">version</span><span style="color:#c0c5ce;">: string
+}
+
+</span><span style="color:#b48ead;">export interface </span><span style="color:#c0c5ce;">UrlAddonInfo {
+  </span><span style="color:#bf616a;">platform</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">url</span><span style="color:#c0c5ce;">&#39;
+  </span><span style="color:#bf616a;">version</span><span style="color:#c0c5ce;">: string
+  </span><span style="color:#bf616a;">id</span><span style="color:#c0c5ce;">: string
+  </span><span style="color:#bf616a;">url</span><span style="color:#c0c5ce;">: string
+}
+
+</span><span style="color:#b48ead;">export type </span><span style="color:#c0c5ce;">AddonInfo = GithubAddonInfo | AMOAddonInfo | UrlAddonInfo
+
+</span><span style="color:#b48ead;">type </span><span style="color:#c0c5ce;">addons = Record&lt;string, AddonInfo&gt;
+</span></code></pre>
+<p>Example:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-json" data-lang="json"><span style="color:#c0c5ce;">{
+  &quot;</span><span style="color:#a3be8c;">addons</span><span style="color:#c0c5ce;">&quot;: {
+    &quot;</span><span style="color:#a3be8c;">ublock</span><span style="color:#c0c5ce;">&quot;: {
+      &quot;</span><span style="color:#a3be8c;">platform</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">github</span><span style="color:#c0c5ce;">&quot;,
+      &quot;</span><span style="color:#a3be8c;">id</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">uBlock0@raymondhill.net</span><span style="color:#c0c5ce;">&quot;,
+      &quot;</span><span style="color:#a3be8c;">repo</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">gorhill/uBlock</span><span style="color:#c0c5ce;">&quot;,
+      &quot;</span><span style="color:#a3be8c;">version</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">1.43.0</span><span style="color:#c0c5ce;">&quot;,
+      &quot;</span><span style="color:#a3be8c;">fileGlob</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">uBlock0_*.firefox.signed.xpi</span><span style="color:#c0c5ce;">&quot;
+    },
+    &quot;</span><span style="color:#a3be8c;">tabliss</span><span style="color:#c0c5ce;">&quot;: {
+      &quot;</span><span style="color:#a3be8c;">platform</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">amo</span><span style="color:#c0c5ce;">&quot;,
+      &quot;</span><span style="color:#a3be8c;">id</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">extension@tabliss.io</span><span style="color:#c0c5ce;">&quot;,
+      &quot;</span><span style="color:#a3be8c;">amoId</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">850407</span><span style="color:#c0c5ce;">&quot;,
+      &quot;</span><span style="color:#a3be8c;">version</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">2.6.0</span><span style="color:#c0c5ce;">&quot;
+    }
+  }
+}
+</span></code></pre>
+<p>Commands that use this:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-sh" data-lang="sh"><span style="color:#bf616a;">gluon</span><span style="color:#c0c5ce;"> download
+</span><span style="color:#bf616a;">gluon</span><span style="color:#c0c5ce;"> updates-addons </span><span style="color:#65737e;"># Generates update manifests for addons
+</span></code></pre><h2 id="brands">brands</h2>
+<p>These are different distrobutions, for example, beta and stable.</p>
+<p>Specification:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-typescript" data-lang="typescript"><span style="color:#b48ead;">export interface </span><span style="color:#c0c5ce;">ReleaseInfo {
+  </span><span style="color:#65737e;">/**
+   * The version of your output product. E.g. 1.3.5
+   */
+  </span><span style="color:#bf616a;">displayVersion</span><span style="color:#c0c5ce;">: string
+  </span><span style="color:#bf616a;">github</span><span style="color:#c0c5ce;">?: {
+    </span><span style="color:#bf616a;">repo</span><span style="color:#c0c5ce;">: string
+  }
+
+  </span><span style="color:#bf616a;">x86</span><span style="color:#c0c5ce;">?: {
+    </span><span style="color:#bf616a;">windowsMar</span><span style="color:#c0c5ce;">?: string
+    </span><span style="color:#bf616a;">macosMar</span><span style="color:#c0c5ce;">?: string
+    </span><span style="color:#bf616a;">linuxMar</span><span style="color:#c0c5ce;">?: string
+  }
+}
+
+</span><span style="color:#b48ead;">export interface </span><span style="color:#c0c5ce;">BrandInfo {
+  </span><span style="color:#bf616a;">backgroundColor</span><span style="color:#c0c5ce;">: string
+  </span><span style="color:#bf616a;">brandShorterName</span><span style="color:#c0c5ce;">: string
+  </span><span style="color:#bf616a;">brandShortName</span><span style="color:#c0c5ce;">: string
+  </span><span style="color:#bf616a;">brandFullName</span><span style="color:#c0c5ce;">: string
+  </span><span style="color:#bf616a;">release</span><span style="color:#c0c5ce;">: ReleaseInfo
+}
+
+</span><span style="color:#b48ead;">type </span><span style="color:#c0c5ce;">brands = Record&lt;string, BrandInfo&gt;
+</span></code></pre>
+<p>Example:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-json" data-lang="json"><span style="color:#c0c5ce;">{
+  &quot;</span><span style="color:#a3be8c;">brands</span><span style="color:#c0c5ce;">&quot;: {
+    &quot;</span><span style="color:#a3be8c;">stable</span><span style="color:#c0c5ce;">&quot;: {
+      &quot;</span><span style="color:#a3be8c;">backgroundColor</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">#2B2A33</span><span style="color:#c0c5ce;">&quot;,
+      &quot;</span><span style="color:#a3be8c;">brandShorterName</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">Pulse</span><span style="color:#c0c5ce;">&quot;,
+      &quot;</span><span style="color:#a3be8c;">brandShortName</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">Pulse Browser</span><span style="color:#c0c5ce;">&quot;,
+      &quot;</span><span style="color:#a3be8c;">brandFullName</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">Pulse Browser</span><span style="color:#c0c5ce;">&quot;,
+      &quot;</span><span style="color:#a3be8c;">release</span><span style="color:#c0c5ce;">&quot;: {
+        &quot;</span><span style="color:#a3be8c;">displayVersion</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">1.0.0</span><span style="color:#c0c5ce;">&quot;,
+        &quot;</span><span style="color:#a3be8c;">github</span><span style="color:#c0c5ce;">&quot;: {
+          &quot;</span><span style="color:#a3be8c;">repo</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">pulse-browser/browser</span><span style="color:#c0c5ce;">&quot;
+        },
+        &quot;</span><span style="color:#a3be8c;">x86</span><span style="color:#c0c5ce;">&quot;: {
+          &quot;</span><span style="color:#a3be8c;">windowsMar</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">windows.mar</span><span style="color:#c0c5ce;">&quot;,
+          &quot;</span><span style="color:#a3be8c;">macosMar</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">macosIntel.mar</span><span style="color:#c0c5ce;">&quot;,
+          &quot;</span><span style="color:#a3be8c;">linuxMar</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">linux.mar</span><span style="color:#c0c5ce;">&quot;
+        }
+      }
+    },
+    &quot;</span><span style="color:#a3be8c;">beta</span><span style="color:#c0c5ce;">&quot;: {
+      &quot;</span><span style="color:#a3be8c;">backgroundColor</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">#2B2A33</span><span style="color:#c0c5ce;">&quot;,
+      &quot;</span><span style="color:#a3be8c;">brandShorterName</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">Pulse</span><span style="color:#c0c5ce;">&quot;,
+      &quot;</span><span style="color:#a3be8c;">brandShortName</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">Pulse Browser</span><span style="color:#c0c5ce;">&quot;,
+      &quot;</span><span style="color:#a3be8c;">brandFullName</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">Pulse Browser Beta</span><span style="color:#c0c5ce;">&quot;,
+      &quot;</span><span style="color:#a3be8c;">release</span><span style="color:#c0c5ce;">&quot;: {
+        &quot;</span><span style="color:#a3be8c;">displayVersion</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">1.0.0-b.0</span><span style="color:#c0c5ce;">&quot;,
+        &quot;</span><span style="color:#a3be8c;">github</span><span style="color:#c0c5ce;">&quot;: {
+          &quot;</span><span style="color:#a3be8c;">repo</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">pulse-browser/browser</span><span style="color:#c0c5ce;">&quot;
+        },
+        &quot;</span><span style="color:#a3be8c;">x86</span><span style="color:#c0c5ce;">&quot;: {
+          &quot;</span><span style="color:#a3be8c;">windowsMar</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">windows.mar</span><span style="color:#c0c5ce;">&quot;,
+          &quot;</span><span style="color:#a3be8c;">macosMar</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">macosIntel.mar</span><span style="color:#c0c5ce;">&quot;,
+          &quot;</span><span style="color:#a3be8c;">linuxMar</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">linux.mar</span><span style="color:#c0c5ce;">&quot;
+        }
+      }
+    },
+    &quot;</span><span style="color:#a3be8c;">alpha</span><span style="color:#c0c5ce;">&quot;: {
+      &quot;</span><span style="color:#a3be8c;">backgroundColor</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">#2B2A33</span><span style="color:#c0c5ce;">&quot;,
+      &quot;</span><span style="color:#a3be8c;">brandShorterName</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">Pulse</span><span style="color:#c0c5ce;">&quot;,
+      &quot;</span><span style="color:#a3be8c;">brandShortName</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">Pulse Browser</span><span style="color:#c0c5ce;">&quot;,
+      &quot;</span><span style="color:#a3be8c;">brandFullName</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">Pulse Browser Alpha</span><span style="color:#c0c5ce;">&quot;,
+      &quot;</span><span style="color:#a3be8c;">release</span><span style="color:#c0c5ce;">&quot;: {
+        &quot;</span><span style="color:#a3be8c;">displayVersion</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">1.0.0-a.16</span><span style="color:#c0c5ce;">&quot;,
+        &quot;</span><span style="color:#a3be8c;">github</span><span style="color:#c0c5ce;">&quot;: {
+          &quot;</span><span style="color:#a3be8c;">repo</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">pulse-browser/browser</span><span style="color:#c0c5ce;">&quot;
+        },
+        &quot;</span><span style="color:#a3be8c;">x86</span><span style="color:#c0c5ce;">&quot;: {
+          &quot;</span><span style="color:#a3be8c;">windowsMar</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">windows.mar</span><span style="color:#c0c5ce;">&quot;,
+          &quot;</span><span style="color:#a3be8c;">macosMar</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">macosIntel.mar</span><span style="color:#c0c5ce;">&quot;,
+          &quot;</span><span style="color:#a3be8c;">linuxMar</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">linux.mar</span><span style="color:#c0c5ce;">&quot;
+        }
+      }
+    }
+  }
+}
+</span></code></pre>
+<p>Commands:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-sh" data-lang="sh"><span style="color:#bf616a;">gluon</span><span style="color:#c0c5ce;"> build
+</span><span style="color:#bf616a;">gluon</span><span style="color:#c0c5ce;"> package
+</span><span style="color:#bf616a;">gluon</span><span style="color:#c0c5ce;"> updates-browser
+</span><span style="color:#bf616a;">gluon</span><span style="color:#c0c5ce;"> set brand &lt;brand_name&gt;
+</span></code></pre> 
+  </div>
+
+</article>
+</main>
+
+  
+  <script type="text/javascript" src="https://docs.gluon.dev/elasticlunr.min.js" defer></script>
+  <script type="text/javascript" src="https://docs.gluon.dev/search_index.en.js" defer></script>
+  <script type="text/javascript" src="https://docs.gluon.dev/js.js" defer></script>
+  
+
+</body>
+</html>

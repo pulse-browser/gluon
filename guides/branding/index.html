@@ -1,0 +1,212 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+      <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://docs.gluon.dev/main.css">
+      
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+        <title> Branding your browser |  </title> 
+    </head>
+    <body>
+
+      
+    <script>
+         fetch('https://api.github.com/repos/pulse-browser/gluon/releases/latest')
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            let release_name = data.name;
+            let html_url = data.html_url;
+            release.innerHTML = `<a href='${html_url}'>${release_name}</a>`;
+          });
+    </script>
+      
+    <main>
+
+      
+
+        <nav>
+          
+            <a href="https:&#x2F;&#x2F;docs.gluon.dev">
+            <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Package/3D/package_3d.png" alt="" />
+                </a>
+            
+            
+          
+
+          
+            <div id="release"></div>
+          
+  
+  <a href="javascript:void(0);" onclick="burger()" id="mobile" class="ms-Icon--GlobalNavButton"></a>
+    <div id="trees">
+               
+            
+                 
+            
+ 
+        <input class="tree-toggle" type="checkbox" id="getting-started" 
+         />
+        <label class="tree-toggle-label" for="getting-started">Getting Started</label>
+                        
+        <ul class="subtree">
+                
+                                <li >
+                                    <a href="https://docs.gluon.dev/getting-started/overview/">Setting up your project</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/getting-started/filestructure/">Understanding the file structure</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/getting-started/userchrome/">Customizing Your Browser&#x27;s UI</a>
+                                </li>
+
+                            
+    
+    </ul>         
+    
+                 
+            
+ 
+        <input class="tree-toggle" type="checkbox" id="guides" 
+        checked />
+        <label class="tree-toggle-label" for="guides">Guides</label>
+                        
+        <ul class="subtree">
+                
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/windows/">Preparing Windows</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/removingpocket/">Removing pocket</a>
+                                </li>
+
+                            
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/includingaddons/">Including addons</a>
+                                </li>
+
+                            
+    
+                                <li class="active">
+                                    <a href="https://docs.gluon.dev/guides/branding/">Branding your browser</a>
+                                </li>
+
+                             
+                                
+  
+  
+    
+    
+      
+      
+    
+      
+      
+    
+  
+
+  
+
+                        
+    
+    
+                                <li >
+                                    <a href="https://docs.gluon.dev/guides/autoupdates/">Automatic updates</a>
+                                </li>
+
+                            
+    
+    </ul>         
+    
+                 
+            
+ 
+        <input class="tree-toggle" type="checkbox" id="reference" 
+         />
+        <label class="tree-toggle-label" for="reference">Reference</label>
+                        
+        <ul class="subtree">
+                
+                                <li >
+                                    <a href="https://docs.gluon.dev/reference/config/">`gluon.json` Reference</a>
+                                </li>
+
+                            
+    
+    </ul>         
+    
+    </div>    
+  </nav>
+    
+
+<article>
+ 
+  
+  <div id="on_right">
+    <span id="search-ico" class="ms-Icon--Search"></span>
+  </div>
+    <div class="search-container">
+          <input id="search" type="search" placeholder="Search as you type...">
+            <div class="search-results">
+              <div class="search-results__header"></div>
+                <ul class="search-results__items"></ul>
+              </div>
+    </div>
+         
+
+  <div id="wrap">
+     <h1 id="branding-your-browser">Branding your browser</h1>
+<p>Before you ship your browser, you will want to include your own branding, rather than just using Mozilla's template branding. Gluon will automatically generate branding once you configure it correctly.</p>
+<h2 id="creating-a-brand">Creating a brand</h2>
+<p>You will first need to add a <code>brands</code> key within your <code>gluon.json</code>. For example:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-json" data-lang="json"><span style="color:#c0c5ce;">{
+  </span><span style="background-color:#bf616a;color:#2b303b;">...</span><span style="color:#c0c5ce;">
+  &quot;</span><span style="color:#a3be8c;">brands</span><span style="color:#c0c5ce;">&quot;: {
+    &quot;</span><span style="color:#a3be8c;">stable</span><span style="color:#c0c5ce;">&quot;: {
+      &quot;</span><span style="color:#a3be8c;">backgroundColor</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">#2B2A33</span><span style="color:#c0c5ce;">&quot;,
+      &quot;</span><span style="color:#a3be8c;">brandShorterName</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">Pulse</span><span style="color:#c0c5ce;">&quot;,
+      &quot;</span><span style="color:#a3be8c;">brandShortName</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">Pulse Browser</span><span style="color:#c0c5ce;">&quot;,
+      &quot;</span><span style="color:#a3be8c;">brandFullName</span><span style="color:#c0c5ce;">&quot;: &quot;</span><span style="color:#a3be8c;">Pulse Browser</span><span style="color:#c0c5ce;">&quot;
+    }
+  },
+  </span><span style="background-color:#bf616a;color:#2b303b;">...</span><span style="color:#c0c5ce;">
+}
+</span></code></pre>
+<p>More information regarding the available keys for this config object can be found in the <a href="/reference/config/#brands">reference section</a>.</p>
+<p>You will then need to create the folder <code>config/branding/&lt;brand_name&gt;</code>. In here, you will need to add a high-resolution <code>logo.png</code> (which will then be downscaled on import) and a <code>MacOSInstaller.svg</code> file, which will be used as the background for the macOS dmg file.</p>
+<p>When you add or change a brand, you will need to reimport your changes and specify the brand to target using <code>gluon set brand</code>.</p>
+<h2 id="specifying-which-brand-to-target">Specifying which brand to target</h2>
+<p>You can specify the brand that you want to build for using the <code>gluon set brand &lt;brand_name&gt;</code> command. For example:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-sh" data-lang="sh"><span style="color:#bf616a;">gluon</span><span style="color:#c0c5ce;"> set brand stable
+</span></code></pre>
+<p>Note that once you have set a new brand, you will need to rebuild your browser for changes to take effect:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-sh" data-lang="sh"><span style="color:#bf616a;">gluon</span><span style="color:#c0c5ce;"> build
+</span></code></pre> 
+  </div>
+
+</article>
+</main>
+
+  
+  <script type="text/javascript" src="https://docs.gluon.dev/elasticlunr.min.js" defer></script>
+  <script type="text/javascript" src="https://docs.gluon.dev/search_index.en.js" defer></script>
+  <script type="text/javascript" src="https://docs.gluon.dev/js.js" defer></script>
+  
+
+</body>
+</html>
