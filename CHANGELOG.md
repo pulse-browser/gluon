@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - `update`: Update will abort if already up to date
+- `download`: Will send the correct UA to github
+
+### Removed
+
+- `import`: Gluon will no longer change the update url
 
 ## [1.0.0-rc.3]
 
