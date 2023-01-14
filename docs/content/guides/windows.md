@@ -29,7 +29,6 @@ You will need to install [MozillaBuild](https://ftp.mozilla.org/pub/mozilla/libr
 Install [NodeJS](https://nodejs.org/en/download/current/) on your system. This should also install chocolatey. If it does not, [install it manually](https://docs.chocolatey.org/en-us/choco/setup). To install the final two dependencies, run:
 
 ```sh
-npm install --global yarn
 choco install make
 ```
 
