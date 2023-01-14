@@ -7,9 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-rc.5]
+
 ### Fixed
 
 - `update`: Update will abort if already up to date
+- `download`: Will send the correct UA to github
+
+### Removed
+
+- `import`: Gluon will no longer change the update url
 
 ## [1.0.0-rc.3]
 
@@ -63,6 +70,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial beta release
 
+[1.0.0-rc.5]: https://github.com/pulse-browser/gluon/compare/v1.0.0-rc.3...v1.0.0-rc.4
 [1.0.0-rc.3]: https://github.com/pulse-browser/gluon/compare/v1.0.0-rc.2...v1.0.0-rc.3
 [1.0.0-rc.2]: https://github.com/pulse-browser/gluon/compare/v1.0.0-rc.1...v1.0.0-rc.2
 [1.0.0-rc.1]: https://github.com/pulse-browser/gluon/compare/v1.0.0-a.2...v1.0.0-rc.1

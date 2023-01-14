@@ -4,23 +4,20 @@
 
 import { bin_name, config } from '..'
 import { log } from '../log'
-import {
-  downloadInternals
-} from './download/firefox'
+import { downloadInternals } from './download/firefox'
 import { getLatestFF } from '../utils'
 
 export const update = async (): Promise<void> => {
   const version = await getLatestFF(config.version.product)
-  
-  if (version == config.version.product.version) {
-      log.error(`Firefox is already the latest version.`)
-      process.exit(1)
+
+  if (version == config.version.version) {
+    log.error(`Firefox is already the latest version.`)
+    process.exit(1)
   }
-    
 
   // We are using force here to delete the engine directory if it already
   // exists to make way for the new version.
-  await downloadInternals({version, force: true})
+  await downloadInternals({ version, force: true })
 
   log.success(
     `Firefox has successfully been updated to ${version}.`,
