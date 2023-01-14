@@ -5,7 +5,7 @@ weight = 0
 
 # Preparing Windows
 
-Building on windows is significantly more complex than building on macos or linux. This guide will walk you through preparing your Windows machine for building a Firefox fork. Before building, you should be aware that [only Windows 10 or 11 are officially supported](https://firefox-source-docs.mozilla.org/build/buildsystem/supported-configurations.html#build-hosts), but you might be able to get other versions to work.
+Building on Windows is significantly more complex than building on MacOS or Linux. This guide will walk you through preparing your Windows machine for building a Firefox fork. Before building, you should be aware that [only Windows 10 or 11 are officially supported](https://firefox-source-docs.mozilla.org/build/buildsystem/supported-configurations.html#build-hosts), but you might be able to get other versions to work.
 
 ## Installing Dependencies
 
@@ -26,7 +26,7 @@ You will need to install [MozillaBuild](https://ftp.mozilla.org/pub/mozilla/libr
 - Configuring the line ending conversions must be: Checkout as-is, commit as-is
 - Enable experimental built-in file system monitor
 
-Install [NodeJS](https://nodejs.org/en/download/current/) on your system. This should also install chocolatey. If it does not, [install it manually](https://docs.chocolatey.org/en-us/choco/setup). To install the final two dependencies, run:
+Install [NodeJS](https://nodejs.org/en/download/current/) on your system. This should also install Chocolatey. If it does not, [install it manually](https://docs.chocolatey.org/en-us/choco/setup). To install the final two dependencies, run:
 
 ```sh
 choco install make
@@ -36,13 +36,13 @@ You should be good to return back to the main [Getting Started docs](/getting-st
 
 ## Additional packages required for releasing
 
-If you are creating binaries to target windows, you will need nsis (which mach calls `makensisu` for some reason, even though the binary is `makensis`):
+If you are creating binaries to target Windows, you will need NSIS (which mach calls `makensisu` for some reason, even though the binary is `makensis`):
 
 ```powershell
 choco install nsis
 ```
 
-Note that you will also have to provide a path to nsis on your system. For mine it is:
+Note that you will also have to provide a path to NSIS on your system. For mine it is:
 
 ```sh
 export MAKENSISU="C:\\Program Files (x86)\\NSIS\\Bin\\makensis.exe"
