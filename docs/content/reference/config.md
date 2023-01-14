@@ -19,7 +19,7 @@ This is the name of the product that is to be built.
 
 ## vendor
 
-The name of the company that is building the browser
+The name of the company that is building the browser.
 
 ```json
 {
@@ -29,7 +29,7 @@ The name of the company that is building the browser
 
 ## appId
 
-A reverse DNS identifier for the browser
+A reverse DNS identifier for the browser.
 
 ```json
 {
@@ -49,7 +49,7 @@ The name of the output binary.
 
 ## updateHostname
 
-The host of the update server for updating. This is configured as part of the build command
+The host of the update server for updating. This is configured as part of the build command.
 
 ```json
 {
@@ -149,7 +149,7 @@ These are flags that change how parts of Gluon operate.
 
 ### windowsUseSymbolicLinks
 
-When set to `true`, symbolic links will be enabled on Windows. From internal testing, this appears to fail on a majority of computers
+When set to `true`, symbolic links will be enabled on Windows. From internal testing, this appears to fail on a majority of computers.
 
 ## addons
 
