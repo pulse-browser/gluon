@@ -28,7 +28,7 @@ export const download = async (options: Options): Promise<void> => {
   log.success(
     `You should be ready to make changes to ${config.name}.`,
     '',
-    'Remember to change the repository in configs/common/mozconfig to your own.'.
+    'Remember to change the repository in configs/common/mozconfig to your own.',
     `You should import the patches next, run |${bin_name} import|.`,
     `To begin building ${config.name}, run |${bin_name} build|.`
   )
