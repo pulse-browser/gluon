@@ -9,7 +9,7 @@ Building on windows is significantly more complex than building on macos or linu
 
 ## Installing Dependencies
 
-The first thing you will need to do is install Microsoft's c++ build tools. You will need to download [Build Tools for Visual Studio 2022](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022). The following will need to be need installed:
+The first thing you will need to do is install Microsoft's c++ build tools. You will need to download [Build Tools for Visual Studio 2022](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022). The following will need to be installed:
 
 - **In the _Workloads_ tab**
   - Desktop development with C++

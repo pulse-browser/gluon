@@ -131,7 +131,7 @@ index 404a88b218c652afac0cb2004676d22da53d48f3..5a4668ef2970dd773536907f51f3e7e7
    skin/classic/browser/monitor-border.png
 ```
 
-In this patch, you can see that I am adding a `*` to the start of a line. You generate these patches by modifying the file in the `engine/` directory and running `gluon export` to export your changes to the src directory. Be careful, if you do not export your changes, they will not be saved and will not work on other developer's computers or yours after an update!
+In this patch, you can see that I am adding a `*` to the start of a line. You generate these patches by modifying the file in the `engine/` directory and running `gluon export` to export your changes to the src directory. Be careful, if you do not export your changes, they will not be saved and will not work on other developers' computers or yours after an update!
 
 ```sh
 gluon export browser/themes/linux/jar.mn

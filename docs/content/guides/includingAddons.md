@@ -38,7 +38,7 @@ Note that the `id` is the gecko application id specified in the `manifest.json`.
 
 ## Specifying location in customizable ui
 
-By default, when an addon with a toolbar button, it will placed next to the hamburger menu. However, you may want to place it somewhere else. To do this, you must change the customizable ui in a similar way to how you would to remove pocket.
+By default, when adding an addon with a toolbar button, it will be placed next to the hamburger menu. However, you may want to place it somewhere else. To do this, you must change the customizable ui in a similar way to how you would when removing pocket.
 
 You are going to want to open `engine/browser/components/customizableui/CustomizableUI.jsm`. At the top, you want to import the `ExtensionCommon` module.
 
@@ -48,7 +48,7 @@ const { makeWidgetId } = ChromeUtils.import(
 ).ExtensionCommon
 ```
 
-Then, at the top add a constant with the id of the addon at the top of the file, for example:
+Then, add a constant with the id of the addon at the top of the file, for example:
 
 ```js
 const kUBlockOriginID = 'uBlock0@raymondhill.net'

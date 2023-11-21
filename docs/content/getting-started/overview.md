@@ -50,7 +50,7 @@ This will ask you a variety of questions in relation to your project setup. Firs
 
 You can change what version you are bound to at any time. Pulse Browser currently uses the stable releases, but if you want a lower workload, the newer Extended Support releases might be good for you.
 
-Then next is the version of the browser you want to use. By default melon will populate this with the latest version available, which we recommend using. Simply click enter to accept.
+Then next is the version of the browser you want to use. By default gluon will populate this with the latest version available, which we recommend using. Simply click enter to accept.
 
 ```
 ? Enter the version of this product › 102.0.1
@@ -74,7 +74,7 @@ Vendor is the company (or solo developer) who is creating the browser.
 ? Enter a vendor › Fushra
 ```
 
-The appid follows reverse dns naming conventions. For example, Fushra owns the domain `fushra.com`, so our browser is `com.fushra.browser.desktop`. If you do not have a domain, you can use your username / psudomim as the appid, e.g. `trickypr.watermelon`.
+The appid follows reverse dns naming conventions. For example, Fushra owns the domain `fushra.com`, so our browser is `com.fushra.browser.desktop`. If you do not have a domain, you can use your username / pseudonym as the appid, e.g. `trickypr.watermelon`.
 
 ```
 ? Enter an appid › dev.gluon.example
@@ -88,7 +88,7 @@ Next you need to chose a starting template for your browser. If you know what yo
 ❯   User Chrome (custom browser css, simplest)
 ```
 
-Now you have created the directory structure for your project, you can build it for the first time. First, ask melon to download the firefox source.
+Now you have created the directory structure for your project, you can build it for the first time. First, ask gluon to download the firefox source.
 
 ```sh
 gluon download
