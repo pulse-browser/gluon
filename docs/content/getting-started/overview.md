@@ -15,7 +15,7 @@ If you are having problems with following these instructions, or with gluon in g
 
 ### System requirements
 
-- **OS**: Linux and MacOS (If you are using windows, take a look at the [Windows Guide](../windows/))
+- **OS**: Linux and MacOS (If you are using windows, take a look at the [Windows Guide](../guides/windows/))
 - **Gluon dependencies**: NodeJS and npm
 - **Browser dependencies**: Will be handled by bootstrapping
 
