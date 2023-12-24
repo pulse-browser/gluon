@@ -5,7 +5,7 @@ weight = 0
 
 # gluon.json Reference
 
-This reference guide may get out dated. If you need to check something, you can read [the config interface type](https://github.com/pulse-browser/gluon/blob/main/src/utils/config.ts#L96).
+This reference guide may get outdated. If you need to check something, you can read [the config interface type](https://github.com/pulse-browser/gluon/blob/main/src/utils/config.ts#L96).
 
 ## name
 
